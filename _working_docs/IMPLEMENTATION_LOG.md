@@ -61,3 +61,42 @@
   - **a) Is the gap fully fixed?** Yes, all architectural features from the sketch are parsed and locked into `GAP-ASKC-04`.
   - **b) Is everything wired and ready for production?** Yes, when `GAP-ASKC-04` execution begins, these exact classes and behavior requirements will guide the Next.js component hierarchy.
   - **c) Is my test really validating that?** Yes, exact CSS variable names (`--left-width`, `--file-width`), DOM selectors, and JS interactions were extracted and verified against the source sketch.
+
+---
+
+## 2026-07-19 — GAP-INIT-04: GitHub Repository Creation & Storytelling Genesis Push
+
+- **Gap ID + One-line description:** GAP-INIT-04 — Created GitHub repo `Ahmed-Sleem/arabic-staff-knowledge-chatbot`, wrote story-driven `README.md`, and pushed initial governance structure.
+- **Files touched:**
+  - `README.md` (created with story-driven genesis of Kayan Al-Mamlaka HR assistant, strict technical stack, and directory layout)
+  - `.gitignore` (created)
+  - `_working_docs/AGENT_RULES.md` & `uploads/AGENT_RULES copy 2.md` (masked secret tokens `${GITHUB_PAT}` to pass GitHub push protection)
+- **Tests added:** API verification and git remote push validation.
+- **How I verified:**
+  - Called GitHub REST API to verify/create `https://github.com/Ahmed-Sleem/arabic-staff-knowledge-chatbot.git`.
+  - Executed `git push -u origin main` and verified successful push to `origin/main` (commit `257dbb9`).
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes, repository created and tracked under `Ahmed-Sleem/arabic-staff-knowledge-chatbot`.
+  - **b) Is everything wired and ready for production?** Yes, remote origin is configured and push protection compliant.
+  - **c) Is my test really validating that?** Yes, git push exit code `0` and remote branch setup confirmed via bash output.
+
+---
+
+## 2026-07-19 — GAP-ASKC-01: Backend Structure Ingestion Pipeline for `hr_source.pdf`
+
+- **Gap ID + One-line description:** GAP-ASKC-01 — Implemented Python structural ingestion engine (`parse_hr_pdf.py`), relational SQLAlchemy/Pydantic schemas (`models.py`, `database.py`), and test suite (`test_ingestion.py`).
+- **Files touched:**
+  - `src/backend/requirements.txt` (created and installed `fastapi`, `sqlalchemy`, `aiosqlite`, `pydantic`, `pypdf`, `pdfplumber`, `pytest`)
+  - `src/backend/__init__.py`, `src/backend/ingestion/__init__.py`, `src/backend/tests/__init__.py` (created)
+  - `src/backend/models.py` (created `SectionORM`, `JobDescriptionORM`, `KPIORM`, `EscalationRuleORM` + Pydantic schemas)
+  - `src/backend/database.py` (created async SQLite/Postgres engine and table initializer)
+  - `src/backend/ingestion/parse_hr_pdf.py` (created structural extraction pipeline with `fix_kerning` and `normalize_pdfplumber_table_cell` reversing RTL table strings and restoring numbers/acronyms)
+  - `src/backend/tests/test_ingestion.py` (created 4 comprehensive automated tests with `@pytest.fixture(scope="module")`)
+- **Tests added:** `test_arabic_detection_and_normalization`, `test_parse_pdf_structure_counts`, `test_specific_job_role_grounding`, `test_kpi_formula_and_target_precision`.
+- **How I verified:**
+  - Executed `PYTHONPATH=/home/user/src/backend python3 -m ingestion.parse_hr_pdf --pdf ../../uploads/hr_extracted/hr_source.pdf --out data/hr_indexed.json`. Confirmed extraction of `503 sections, 58 job descriptions, 220 KPIs, and 4 escalation rules`.
+  - Executed `PYTHONPATH=/home/user/src/backend pytest -v tests/test_ingestion.py`. All 4 tests PASSED (`4 passed in 17.78s`).
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes, `hr_source.pdf` is completely parsed into structured relational records without any vector DB embeddings.
+  - **b) Is everything wired and ready for production?** Yes, data is persisted to relational database (`data/hr_knowledge.db`) and exported to `hr_indexed.json` ready for consumption by our ReAct retrieval tools (`GAP-ASKC-03`).
+  - **c) Is my test really validating that?** Yes, exact assertions verify that PMO Manager (`مدير مكتب إدارة المشاريع`) and Pricing Officer (`مسؤول التسعير`) have direct managers and duties, and that QHSE safety incident rate (`TRIR`) contains its exact `200,000` hours calculation formula.

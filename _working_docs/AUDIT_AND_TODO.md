@@ -8,18 +8,13 @@
 
 ## Active Implementation Gaps (Arabic Staff Knowledge Chatbot Phase 3/4)
 
-### [M1] GAP-ASKC-01: Backend Structure Ingestion Pipeline for `hr_source.pdf`
-- **Description:** Implement the Python ingestion script (`src/backend/ingestion/parse_hr_pdf.py`) that extracts organizational sections, KPI tables, and administrative escalation paths from `uploads/hr_extracted/hr_source.pdf` into relational Postgres tables (`sections`, `job_descriptions`, `kpis`, `escalation_rules`) with Arabic `tsvector` indexing.
-- **Status:** Open
-- **Assigned:** Phase 3 Execution
-
 ### [M1] GAP-ASKC-02: FastAPI Core Routing & ARQ Redis Background Workers
 - **Description:** Implement FastAPI application (`src/backend/main.py`), async SQLAlchemy database session management, and ARQ background task queues (`src/backend/workers.py`) per `research/04_backend_fastapi.md`.
-- **Status:** Open
+- **Status:** Open (Next Step)
 - **Assigned:** Phase 3 Execution
 
 ### [M1] GAP-ASKC-03: DeepSeek Non-Thinking RAG Streaming & Tool Integration
-- **Description:** Implement the ReAct agent service (`src/backend/agent/react_agent.py`) utilizing `deepseek-chat` via OpenAI SDK with 5 tools (`search_sections`, `get_job_description`, `get_kpis`, `get_escalation_path`, `get_reporting_line`), inline citation formatting, and strict out-of-scope refusal handling.
+- **Description:** Implement the ReAct agent service (`src/backend/agent/react_agent.py`) utilizing `deepseek-chat` via OpenAI SDK with 5 tools (`search_sections`, `get_job_description`, `get_kpis`, `get_escalation_path`, `get_reporting_line`), inline citation formatting, and strict out-of-scope refusal handling. Supports dynamic ingestion of client-provided API keys via `X-LLM-API-Key` headers.
 - **Status:** Open
 - **Assigned:** Phase 3 Execution
 
@@ -30,6 +25,14 @@
   - **Document Scope Filtering:** Clicking any knowledge base card (`folder-card` or `file-card`) outlines it with `1px solid rgba(155,227,107,.55)` (Cyrkil green accent) and scopes the chat prompt (`Ask about [Source Name]...`).
   - **Inline Citation & Right-Hand Excerpt Drawer:** Interactive citation chips (`[المصدر: القسم X.Y]`) in AI responses that highlight and reveal the exact source passage from `hr_source.pdf`.
   - **Full RTL & Theme Toggling:** Native Arabic typography (IBM Plex Sans Arabic, `dir="rtl"`), subtle glass elevation, and seamless `#themeToggle` between dark and light modes (`.light-mode`).
+- **Status:** Open
+- **Assigned:** Phase 4 Execution
+
+### [M1] GAP-ASKC-06: Dynamic LLM API Key Management & Settings Modal (Cyrkil GUI)
+- **Description:** Implement a dedicated settings modal and top navigation pill (`إعدادات نموذج الذكاء الاصطناعي`) inside the Cyrkil GUI (`src/frontend/`) where users or administrators can enter, validate, and save their custom LLM API key (DeepSeek API key `sk-...` or OpenAI API key).
+  - **Storage:** Persists securely in `localStorage` or server-side session settings.
+  - **API Integration:** Automatically sends the saved API key to the backend streaming endpoint (`/api/v1/chat/stream`) via `X-LLM-API-Key` header (`Authorization: Bearer <user_key>`).
+  - **Fallback:** If no custom key is provided, the backend falls back cleanly to the configured server environment API key (`REMOVED_PROVIDER_CREDENTIAL`).
 - **Status:** Open
 - **Assigned:** Phase 4 Execution
 
@@ -45,3 +48,5 @@
 - **[CLOSED] GAP-INIT-01:** Project structure recovery and extraction of source materials (`uploads/hr_extracted/hr_source.pdf`, `PRD_ Arabic Staff Knowledge Chatbot.pdf`, `DESIGN_SYSTEM.md`). Verified on 2026-07-19.
 - **[CLOSED] GAP-INIT-02:** Recovery and completion of mandatory agent working rules (`_working_docs/AGENT_RULES.md` & governance files). Verified on 2026-07-19.
 - **[CLOSED] GAP-INIT-03:** UI/UX sketch analysis & architectural blueprint lock (`uploads/improved_rag_gui (16).html` $\rightarrow$ `GAP-ASKC-04`). Verified on 2026-07-19.
+- **[CLOSED] GAP-INIT-04:** GitHub repository creation (`Ahmed-Sleem/arabic-staff-knowledge-chatbot`), story-driven README, and initial git push. Verified on 2026-07-19.
+- **[CLOSED] GAP-ASKC-01:** Backend structure ingestion pipeline (`src/backend/ingestion/parse_hr_pdf.py`) and relational models (`models.py`, `database.py`) extracting `503 sections, 58 job descriptions, 220 KPIs, and 4 escalation rules` from `hr_source.pdf`. Verified via 100% green pytest suite (`test_ingestion.py`) on 2026-07-19.
