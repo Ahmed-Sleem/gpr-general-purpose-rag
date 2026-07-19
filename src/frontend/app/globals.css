@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-canvas: #0A0A0A;
+  --bg-surface: rgba(22, 22, 22, 0.75);
+  --bg-surface-hover: rgba(36, 36, 36, 0.85);
+  --bg-card: rgba(30, 30, 30, 0.6);
+  --text-primary: #F0F0F0;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666666;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(155, 227, 107, 0.55);
+  --accent-green: #9BE36B;
+  --accent-green-bg: rgba(155, 227, 107, 0.12);
+  --accent-blue: #5EB1FF;
+  --left-width: 280px;
+  --data-width: 400px;
+  --header-height: 56px;
+  --font-arabic: 'IBM Plex Sans Arabic', sans-serif;
+  --font-english: 'Inter', sans-serif;
+}
+
+body.light-mode {
+  --bg-canvas: #F5F6F8;
+  --bg-surface: rgba(255, 255, 255, 0.85);
+  --bg-surface-hover: rgba(240, 242, 245, 0.95);
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-primary: #1A1A1A;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(100, 180, 50, 0.65);
+  --accent-green: #64B432;
+  --accent-green-bg: rgba(100, 180, 50, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-english);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+body[dir="rtl"] {
+  font-family: var(--font-arabic);
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: var(--left-width) 6px minmax(0, 1fr) 6px var(--data-width);
+  height: calc(100vh - var(--header-height));
+  width: 100vw;
+}
+
+body[dir="rtl"] .main-layout {
+  grid-template-columns: var(--data-width) 6px minmax(0, 1fr) 6px var(--left-width);
+}
+
+.glass-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body[dir="rtl"] .glass-panel {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.resize-handle {
+  width: 6px;
+  background: transparent;
+  cursor: col-resize;
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+
+.resize-handle:hover, .resize-handle.active {
+  background: var(--accent-green);
+}
+
+.btn-cyrkil {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-cyrkil:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-accent {
+  background: var(--accent-green);
+  color: #0A0A0A;
+  border-color: var(--accent-green);
+  font-weight: 600;
+}
+
+.btn-accent:hover {
+  background: #8AD25A;
+  color: #0A0A0A;
+}
+
+.cyrkil-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cyrkil-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cyrkil-card.selected {
+  border: 1px solid var(--border-focus);
+  background: var(--accent-green-bg);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

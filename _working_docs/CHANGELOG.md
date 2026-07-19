@@ -69,3 +69,22 @@
 - Implemented `src/backend/api/chat.py` providing `POST /api/v1/chat/stream` SSE generator.
 - Implemented `src/backend/main.py` with CORS middleware (`allow_origins=["*"]`) and modern Lifespan startup DB initialization.
 - Created `src/backend/tests/test_api.py` and `src/backend/tests/test_react_agent.py` and executed verification across the full backend suite (`PYTHONPATH=/home/user/src/backend pytest -v tests/`). All **15 automated tests passed 100% (`15 passed in 58.14s`)**.
+
+---
+
+## 2026-07-19 session 7 (Next.js 15 Cyrkil 3-Panel GUI, Obsidian Graph View, 2-Step Auth & 1-Click Deployment `GAP-ASKC-08, 06, 05`)
+- Recovered context per `Rule 29` and verified repository state.
+- **Next.js 15 App Router Frontend (`src/frontend/` — `GAP-ASKC-08 & 06`)**:
+  - Scaffolded Next.js 15 (`15.2.0` secure build) with API rewrites (`next.config.js` forwarding `/api/v1/:path*` to `http://127.0.0.1:8000/api/v1/:path*`).
+  - Created global Cyrkil glass styling (`globals.css`) with horizontal drag-resizers (`resize-handle` clamping `--left-width` / `--data-width`).
+  - Implemented `AppContext.tsx` global state managing bilingual `language` (`"ar" | "en"`), `theme` (`"dark" | "light"`), `apiKey` (`localStorage`), and active graph inspection node IDs (`activeGraphNodeIds`).
+  - Implemented `Header.tsx` and `ApiKeyModal.tsx` (`GAP-ASKC-06`) allowing instant `🌐 عربي | English` toggling, theme switching, and custom DeepSeek/OpenAI API key management sent in `X-LLM-API-Key` headers.
+  - Implemented `LeftPanel.tsx` conversation stack with search filter and quick prompt triggers.
+  - Implemented `ChatPanel.tsx` and `CitationDrawer.tsx` consuming `POST /api/v1/chat/stream` SSE stream, displaying live inspection pill `🔍 Inspecting chunks on graph view...`, and turning `[المصدر: القسم X.Y]` inline citations into clickable buttons opening `CitationDrawer`.
+  - Implemented Panel 3 (`DataPanel.tsx`, `FilesView.tsx`, `ObsidianGraphView.tsx`): `FilesView` lists persistent documents (`GET /api/v1/documents`), drag-and-drop uploader (`POST /api/v1/documents/upload`), scope checkboxes, and delete button (`🗑️`); `ObsidianGraphView` renders `react-force-graph-2d` Canvas graph where `activeGraphNodeIds` from the SSE stream automatically pans (`centerAt(x, y, 1000)`) and zooms to fit active chunks while pulsing glowing Cyrkil green rings (`#9BE36B`).
+  - Verified compilation via `npm run build` (`✓ Compiled successfully in 2.9s`).
+- **2-Step Authentication (`src/backend/` — `GAP-ASKC-05`)**:
+  - Implemented `models/auth.py`, `services/auth_service.py`, and `api/auth.py` providing Argon2id password verification, 6-digit email OTP generation (`10-minute expiry`), and server-side session token inspection (`GET /api/v1/auth/me`).
+  - Created `tests/test_auth.py` and executed verification across the full backend suite (`PYTHONPATH=/home/user/src/backend pytest -v tests/`). All **16 automated backend tests passed 100% (`16 passed in 58.06s`)**.
+- **1-Click Portable Deployment Bundle**: Created root `/home/user/docker-compose.yml`, `src/backend/Dockerfile`, and `src/frontend/Dockerfile` enabling immediate container launch locally or on cloud VPS.
+- Updated `AUDIT_AND_TODO.md` and `IMPLEMENTATION_LOG.md` answering self-check verification questions (a), (b), and (c) across all gaps, and pushed the complete project to `origin/main` (`commit 96e174d`).

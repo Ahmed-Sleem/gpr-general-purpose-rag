@@ -3,7 +3,7 @@ Master FastAPI Application (`src/backend/main.py`).
 
 Initializes the Universal Relational RAG & Obsidian Graph Backend:
 - Configures CORS middleware for Next.js Cyrkil GUI (`localhost:3000`, `chat.cyrkil.com`).
-- Mounts modular routers (`/api/v1/documents`, `/api/v1/chat`).
+- Mounts modular routers (`/api/v1/auth`, `/api/v1/documents`, `/api/v1/chat`).
 - Initializes relational multi-document tables (`init_db`) on application startup via modern Lifespan handler.
 """
 
@@ -12,10 +12,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 try:
     from .db.session import init_db
-    from .api import documents_router, chat_router
+    from .api import auth_router, documents_router, chat_router
 except ImportError:
     from db.session import init_db
-    from api import documents_router, chat_router
+    from api import auth_router, documents_router, chat_router
 
 
 @asynccontextmanager
@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Cyrkil Universal Knowledge Workspace & Arabic/English Staff Chatbot API",
-    description="Relational structural RAG streaming backend without vector DBs, featuring Obsidian Graph View network queries and dynamic API key management.",
+    description="Relational structural RAG streaming backend without vector DBs, featuring Obsidian Graph View network queries, 2-Step Authentication, and dynamic API key management.",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -41,6 +41,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 app.include_router(documents_router)
 app.include_router(chat_router)
 
