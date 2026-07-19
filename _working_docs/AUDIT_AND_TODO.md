@@ -8,21 +8,13 @@
 
 ## Active Implementation Gaps (Universal Relational RAG Workspace - Phase 3/4)
 
-### [M1] GAP-ASKC-07: Universal Dynamic Relational RAG Pipeline & Multi-Document Database (`src/backend/ingestion/universal_pipeline.py`)
-- **Description:** Upgrade our data layer from single-PDF ingestion into a **Universal Relational RAG Engine** supporting any uploaded user file (`PDF`, `DOCX`, `TXT`, `MD`).
-  - **Dynamic Ingestion:** Accepts uploaded files (`POST /api/v1/documents/upload`), extracts raw text via multi-format parsers (`pypdf`, `pdfplumber`, `python-docx`, `markdown`), cleans and normalizes Arabic/English formatting, and chunks dynamically based on structural headings (`H1`, `H2`, `Table`, `List`).
-  - **Dynamic LLM Analysis & Semantic Graph Extraction:** Uses the user-provided LLM API key (`X-LLM-API-Key`) or heuristic parser to analyze each chunk, generate concise titles (`title`), extract semantic cross-references/links (`chunk_connections` / graph edges), and build the Table of Contents (`toc_tree`).
-  - **Persistent Multi-Document Storage:** Stores uploaded source files (`data/uploads/`) and relational records (`documents`, `chunks`, `chunk_connections`, `tables`) persistently inside SQLite/Postgres (`data/knowledge_workspace.db`). Survives app restarts and browser refreshes until explicit user deletion (`DELETE /api/v1/documents/{id}`).
-- **Status:** Open (Next Execution Step)
-- **Assigned:** Phase 3 Execution
-
 ### [M1] GAP-ASKC-02 & GAP-ASKC-03: FastAPI Streaming Server & ReAct Agent with Graph Events (`src/backend/main.py`, `agent/react_agent.py`)
 - **Description:** Implement the FastAPI application (`src/backend/main.py`), async session management, and ReAct agent service (`src/backend/agent/react_agent.py`) using `deepseek-chat` via OpenAI SDK.
   - **Universal Retrieval Tools:** Equip the agent with universal tools (`search_chunks`, `get_table`, `get_chunk_relations`, `get_document_toc`).
   - **Dynamic Header Key:** Routes requests dynamically using the user's `X-LLM-API-Key` header (`Authorization: Bearer <user_key>`), falling back to server environment key if missing.
   - **Live Graph Animation SSE Events:** During streaming (`POST /api/v1/chat/stream`), as the ReAct agent executes retrieval tools across chunks, emit live node-activation SSE events (`data: {"event": "agent_search", "query": "...", "active_node_ids": ["chunk_12", "chunk_15"]}`) so the frontend Obsidian Graph View can pan and highlight active chunks in real time.
   - **Bilingual Grounding:** Enforces exact inline citations (`[المصدر: ...]` / `[Source: ...]`) and answers cleanly in either Arabic or English based on the user's language toggle (`X-App-Language: ar | en`).
-- **Status:** Open
+- **Status:** Open (Next Execution Step)
 - **Assigned:** Phase 3 Execution
 
 ### [M1] GAP-ASKC-08: Next.js 15 Cyrkil 3-Panel GUI with Obsidian Graph View & Dual-View Toggle (`src/frontend/`)
@@ -57,3 +49,5 @@
 - **[CLOSED] GAP-INIT-03:** UI/UX sketch analysis & architectural blueprint lock (`uploads/improved_rag_gui (16).html` $\rightarrow$ `GAP-ASKC-04`). Verified on 2026-07-19.
 - **[CLOSED] GAP-INIT-04:** GitHub repository creation (`Ahmed-Sleem/arabic-staff-knowledge-chatbot`), story-driven README, and initial git push. Verified on 2026-07-19.
 - **[CLOSED] GAP-ASKC-01:** Backend structure ingestion pipeline (`src/backend/ingestion/parse_hr_pdf.py`) and relational models (`models.py`, `database.py`) extracting `503 sections, 58 job descriptions, 220 KPIs, and 4 escalation rules` from `hr_source.pdf`. Verified via 100% green pytest suite (`test_ingestion.py`) on 2026-07-19.
+- **[CLOSED] GAP-INIT-05:** Universal Workspace Architecture & Obsidian Graph Blueprint Lock (`AUDIT`, `ROADMAP`, `CHANGELOG`). Verified on 2026-07-19.
+- **[CLOSED] GAP-ASKC-07:** Universal Dynamic Relational RAG Pipeline (`services/ingestion/universal_pipeline.py`) & Multi-Document Database schemas (`models/orm.py`, `models/domain.py`, `db/repositories.py`) supporting any file format (`PDF`, `DOCX`, `TXT`, `MD`), dynamic structural chunking (`toc_tree_json`), Obsidian force-directed graph edge building (`chunk_connections`), and persistent multi-session storage across restarts. Verified via 100% green automated test suite (`test_universal_pipeline.py`) on 2026-07-19.

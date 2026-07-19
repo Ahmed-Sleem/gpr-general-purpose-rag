@@ -42,3 +42,17 @@
   - `Files View:` Persistent multi-document browser, status pills (`Ready`), dropzone uploader, delete button (`🗑️`), and chat scope selection.
   - `Obsidian Graph View:` High-fidelity force-directed interactive mindmap (`react-force-graph-2d` / HTML5 Canvas).
 - **Live Agent Traversal Animation:** Designed real-time SSE stream integration (`agent_search` / `active_node_ids`) causing the Obsidian Graph View to automatically pan/zoom (`centerAt(x, y, 1000)` / `zoomToFit`) to focus on active chunks, pulse glowing Cyrkil green node rings (`#9BE36B`), and open exact chunk content when clicked.
+
+---
+
+## 2026-07-19 session 5 (Modular Code Organization & Universal Dynamic RAG Execution `GAP-ASKC-07`)
+- Organized `src/backend/` into modular, domain-driven packages (`models/`, `db/`, `services/ingestion/parsers/`) suitable for clean production scaling and maintenance per `Rule 26`.
+- Migrated legacy `models.py` to `models/legacy.py` and implemented multi-document persistent schemas in `models/orm.py` and `models/domain.py` (`ConfigDict` clean Pydantic DTOs).
+- Implemented `db/session.py` and `db/repositories.py` (`DocumentRepository`, `ChunkRepository`, `GraphRepository`, `TableRepository`) with idempotent document replacement (`create_document` auto-cleans old chunks) and bilingual keyword `search_chunks`.
+- Implemented modular ingestion engine (`services/ingestion/`):
+  - `normalizer.py`: Bilingual text normalizer (`fix_kerning`, RTL table orientation repair, acronym protection).
+  - `parsers/` (`pdf_parser.py`, `docx_parser.py`, `text_parser.py`): Multi-format structural parsing for `.pdf`, `.docx`, `.md`, and `.txt`.
+  - `chunker.py`: Dynamic structural chunker dividing content by heading hierarchy and generating `toc_tree_json`.
+  - `graph_builder.py`: Extracts hierarchical parent-child edges AND semantic keyword cross-references across chunks (`ChunkConnectionORM`) for force-directed rendering.
+  - `universal_pipeline.py`: Master multi-document ingestion orchestrator.
+- Created `tests/test_universal_pipeline.py` and ran complete verification across all 10 unit and integration tests (`test_ingestion.py` + `test_universal_pipeline.py`). Confirmed 100% test pass (`10 passed in 38.17s`), including explicit verification that persistent documents, Table of Contents hierarchies, and `450+` Obsidian Graph nodes survive simulated database restarts.
