@@ -1,142 +1,194 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { useApp, DocumentDTO } from "../context/AppContext";
+/**
+ * WHY: GPR Grounded Knowledge Chunks & Document View (`FilesView.tsx`).
+ * Per Ahmed's exact redesign requirement (`GAP-GPR-16`), this component displays our scrollable,
+ * minimal monochrome list of rich semantic chunks (`Chunk cards`) along with document scope control.
+ */
+import React, { useState, useEffect } from "react";
+import { useApp } from "../context/AppContext";
+import { CitationDrawer } from "./CitationDrawer";
+
+interface ChunkCardDTO {
+  id: string;
+  label: string;
+  group: string;
+  val: number;
+  content_preview: string;
+}
 
 export const FilesView: React.FC = () => {
-  const { documents, fetchDocuments, selectedDocIds, setSelectedDocIds, language, t } = useApp();
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { documents, selectedDocIds, setSelectedDocIds, language, t } = useApp();
+  const [chunks, setChunks] = useState<ChunkCardDTO[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCiteCode, setActiveCiteCode] = useState<string | null>(null);
+  const [activeCiteTitle, setActiveCiteTitle] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleUpload = async (file: File) => {
-    setIsUploading(true);
-    setUploadError(null);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("title", file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " "));
-
-    try {
-      const res = await fetch("/api/v1/documents/upload", {
-        method: "POST",
-        body: formData
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ detail: res.statusText }));
-        throw new Error(errData.detail || "Upload failed");
+  useEffect(() => {
+    const fetchChunks = async () => {
+      setIsLoading(true);
+      try {
+        const docParam = selectedDocIds.length > 0 ? `?document_id=${selectedDocIds[0]}` : "";
+        const res = await fetch(`/api/v1/documents/graph${docParam}`);
+        if (res.ok) {
+          const data = await res.json();
+          setChunks(data.nodes || []);
+        }
+      } catch (e) {
+        console.error("Failed to load chunk cards:", e);
+      } finally {
+        setIsLoading(false);
       }
-      await fetchDocuments();
-    } catch (e: any) {
-      setUploadError(e.message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleDelete = async (docId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm(language === "ar" ? "هل أنت متأكد من حذف هذا المستند وكل فهرسته؟" : "Are you sure you want to delete this document?")) return;
-
-    try {
-      await fetch(`/api/v1/documents/${docId}`, { method: "DELETE" });
-      setSelectedDocIds(prev => prev.filter(id => id !== docId));
-      await fetchDocuments();
-    } catch (err) {
-      console.error("Delete failed:", err);
-    }
-  };
+    };
+    fetchChunks();
+  }, [selectedDocIds]);
 
   const toggleSelectDoc = (docId: string) => {
     if (selectedDocIds.includes(docId)) {
       setSelectedDocIds(prev => prev.filter(id => id !== docId));
     } else {
-      setSelectedDocIds([docId]); // single scope or multi scope
+      setSelectedDocIds([docId]);
     }
   };
 
+  const filteredChunks = chunks.filter(c =>
+    c.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.content_preview.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div style={{ height: "100%", overflowY: "auto", padding: "14px", display: "flex", flexDirection: "column", gap: "14px" }}>
-      {/* Upload Dropzone */}
-      <div
-        onClick={() => !isUploading && fileInputRef.current?.click()}
-        style={{
-          border: "2px dashed var(--border)", borderRadius: "10px", padding: "20px 14px",
-          textAlign: "center", cursor: isUploading ? "wait" : "pointer",
-          background: isUploading ? "var(--bg-card)" : "rgba(155, 227, 107, 0.04)",
-          transition: "all 0.2s"
-        }}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.docx,.doc,.txt,.md"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              handleUpload(e.target.files[0]);
-            }
-          }}
-          style={{ display: "none" }}
-        />
-        <div style={{ fontSize: "24px", marginBottom: "8px" }}>📤</div>
-        <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>
-          {isUploading ? (language === "ar" ? "جاري الرفع والفهرسة الهيكلية..." : "Uploading & indexing structural blocks...") : t("upload_dropzone")}
-        </div>
-        {uploadError && (
-          <div style={{ fontSize: "12px", color: "#FF5E5E", marginTop: "6px" }}>
-            ❌ {uploadError}
+    <div
+      style={{
+        height: "100%",
+        overflowY: "auto",
+        padding: "14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        position: "relative"
+      }}
+    >
+      {/* Top Document Scope Card */}
+      {documents.map(doc => {
+        const isSelected = selectedDocIds.includes(doc.id);
+        return (
+          <div
+            key={doc.id}
+            onClick={() => toggleSelectDoc(doc.id)}
+            className={`gpr-card ${isSelected ? "selected" : ""}`}
+            style={{
+              background: isSelected ? "var(--color-slate-raised)" : "var(--color-stone)",
+              border: isSelected ? "2px solid var(--color-accent)" : "1px solid var(--border-soft)",
+              padding: "12px 14px",
+              cursor: "pointer",
+              flexShrink: 0
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+              <span style={{ fontWeight: 700, fontSize: "13px", color: "var(--text-primary)" }}>
+                📘 {doc.title}
+              </span>
+              <span style={{
+                fontSize: "10px", fontWeight: 700, padding: "2px 6px", borderRadius: "var(--radius-xs)",
+                background: "var(--color-stone)", color: "var(--text-meta)"
+              }}>
+                {isSelected ? (language === "ar" ? "نطاق مفعل ✅" : "Scope Active ✅") : (language === "ar" ? "انقر للتقييد" : "Click to Scope")}
+              </span>
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-meta)" }}>
+              {language === "ar" ? `دليل معتمد يحتوي على ${doc.chunk_count} مقطع دلالي` : `Approved guide with ${doc.chunk_count} rich semantic cards`}
+            </div>
           </div>
-        )}
+        );
+      })}
+
+      {/* Chunk Search Filter */}
+      <div className="conversation-search" style={{ height: "34px" }}>
+        <svg viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/>
+        </svg>
+        <input
+          type="text"
+          placeholder={language === "ar" ? "البحث في بطاقات الموارد البشرية..." : "Search semantic chunk cards..."}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
-      {/* Scope Hint */}
-      <div style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>
-        📌 {t("select_doc_hint")} {selectedDocIds.length > 0 ? `(${selectedDocIds.length} scoped)` : (language === "ar" ? "(الجميع مفعل)" : "(All docs active)")}
+      {/* Chunks List Label */}
+      <div className="chat-list-label" style={{ padding: "0 2px" }}>
+        <span>{language === "ar" ? `بطاقات المعرفة المتاحة (${filteredChunks.length})` : `Available Semantic Cards (${filteredChunks.length})`}</span>
       </div>
 
-      {/* Persistent Documents List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        {documents.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)", fontSize: "12px" }}>
-            {t("no_docs")}
+      {/* Scrollable Chunk Cards List */}
+      <div className="chat-list scrollable" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px", paddingBottom: "10px" }}>
+        {isLoading ? (
+          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-meta)", fontSize: "12px" }}>
+            {language === "ar" ? "جاري تحميل بطاقات المعرفة..." : "Loading semantic cards..."}
+          </div>
+        ) : filteredChunks.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-meta)", fontSize: "12px" }}>
+            {language === "ar" ? "لا توجد نتائج مطابقة للبحث." : "No matching semantic cards found."}
           </div>
         ) : (
-          documents.map(doc => {
-            const isSelected = selectedDocIds.includes(doc.id);
+          filteredChunks.map((chunk) => {
+            const isRole = chunk.group === "text" || chunk.label.includes("وصف وظيفي");
+            const isKpi = chunk.group === "table" || chunk.label.includes("مؤشرات");
+            const isEsc = chunk.group === "escalation" || chunk.label.includes("تصعيد");
+
             return (
               <div
-                key={doc.id}
-                onClick={() => toggleSelectDoc(doc.id)}
-                className={`cyrkil-card ${isSelected ? "selected" : ""}`}
-                style={{ position: "relative" }}
+                key={chunk.id}
+                className="gpr-card"
+                onClick={() => {
+                  setActiveCiteCode(chunk.id);
+                  setActiveCiteTitle(chunk.label);
+                }}
+                style={{
+                  padding: "12px 14px",
+                  background: "var(--color-stone)",
+                  border: "1px solid var(--border-soft)",
+                  borderRadius: "var(--radius-btn)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px"
+                }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-                  <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--text-primary)", maxWidth: "80%" }}>
-                    📄 {doc.title}
-                  </div>
-                  <button
-                    onClick={(e) => handleDelete(doc.id, e)}
-                    style={{ background: "transparent", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "14px" }}
-                    title="Delete document"
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--text-meta)", background: "var(--color-slate)", padding: "2px 6px", borderRadius: "4px" }}>
+                    {chunk.id} • {isRole ? "JOB ROLE" : isKpi ? "KPI TABLE" : isEsc ? "ESCALATION" : "POLICY CHAPTER"}
+                  </span>
+                  <span
+                    style={{ display: "flex", alignItems: "center", color: "var(--text-meta)", opacity: 0.8 }}
+                    title={language === "ar" ? "فحص البطاقة وقراءة النص الكامل" : "Inspect full card text"}
                   >
-                    🗑️
-                  </button>
+                    <svg viewBox="0 0 24 24" style={{ width: "15px", height: "15px", stroke: "currentColor", strokeWidth: 2, fill: "none" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </span>
                 </div>
 
-                <div style={{ fontSize: "11px", color: "var(--text-secondary)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>{doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(1)} KB</span>
-                  <span style={{
-                    padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: 600,
-                    background: doc.status === "ready" ? "var(--accent-green-bg)" : "rgba(255, 180, 50, 0.15)",
-                    color: doc.status === "ready" ? "var(--accent-green)" : "#FFB432"
-                  }}>
-                    {doc.status === "ready" ? `${doc.chunk_count} ${language === "ar" ? "مقطع" : "chunks"}` : doc.status}
-                  </span>
+                <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)", lineClamp: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {chunk.label}
+                </div>
+
+                <div style={{ fontSize: "11px", color: "var(--text-body)", lineClamp: 2, overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1.5, opacity: 0.85 }}>
+                  {chunk.content_preview}
                 </div>
               </div>
             );
           })
         )}
       </div>
+
+      <CitationDrawer
+        isOpen={!!activeCiteCode}
+        citationCode={activeCiteCode}
+        citationTitle={activeCiteTitle}
+        onClose={() => setActiveCiteCode(null)}
+      />
     </div>
   );
 };

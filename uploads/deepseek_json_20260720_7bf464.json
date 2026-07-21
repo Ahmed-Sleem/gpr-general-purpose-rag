@@ -1,0 +1,642 @@
+[
+  {
+    "id": "1",
+    "name": "Introduction to the Guide",
+    "short_description": "Reference for organizational structure, job responsibilities, and KPIs.",
+    "section_path": ["1. Introduction to the Guide"],
+    "content": "This guide serves as a reference for the organizational structure, job responsibilities, and key performance indicators for all positions within Kayan Al-Mamlaka Company. It aims to clarify reporting lines, responsibilities, and performance measurement criteria to ensure operational efficiency and strategic alignment.",
+    "connections": []
+  },
+  {
+    "id": "2",
+    "name": "Purpose of the Guide",
+    "short_description": "Defines structure, responsibilities, KPIs, and provides a reference for HR decisions.",
+    "section_path": ["2. Purpose of the Guide"],
+    "content": "The purpose of this guide is to define the organizational structure and reporting relationships within the company. It clarifies job responsibilities for each position, establishes key performance indicators (KPIs) to measure performance, provides a reference for recruitment, evaluation, and training decisions, and ensures alignment with the company's strategic objectives.",
+    "connections": []
+  },
+  {
+    "id": "3",
+    "name": "Scope of Application",
+    "short_description": "Applies to all employees, departments, and functions.",
+    "section_path": ["3. Scope of Application"],
+    "content": "This guide applies to all employees, departments, and functions within Kayan Al-Mamlaka Company. It serves as an official reference for organizational matters and shall be used in all administrative and operational decisions related to human resources and performance management.",
+    "connections": []
+  },
+  {
+    "id": "4",
+    "name": "Administrative Escalation Base",
+    "short_description": "Outlines the escalation process from supervisor to CEO and Board.",
+    "section_path": ["4. Administrative Escalation Base"],
+    "content": "The administrative escalation process follows these principles: employees shall first address issues with their direct supervisor. If the issue cannot be resolved at the direct supervisor level, it shall be escalated to the department manager. If the issue is related to cost, time, risks, contracts, or clients, the relevant department such as PMO, Finance, Legal, or QHSE shall be involved. If the issue is high-impact or strategic, it shall be escalated to the CEO. In matters that substantially affect the company's obligations, reputation, or strategy, the CEO shall escalate to the Board of Directors when necessary.",
+    "connections": []
+  },
+  {
+    "id": "5",
+    "name": "Board of Directors",
+    "short_description": "Highest authority, oversees CEO and strategic direction.",
+    "section_path": ["5. Board of Directors"],
+    "content": "This section covers the Board of Directors, which is the highest authority in the company's structure. The CEO reports to the Board, and the Board holds ultimate responsibility for the strategic direction and governance of the company, ensuring the achievement of its long-term objectives in the interests of shareholders and stakeholders.",
+    "connections": ["5.1", "6.1"]
+  },
+  {
+    "id": "5.1",
+    "name": "Board of Directors (Detailed)",
+    "short_description": "Responsible for approving strategy, budgets, monitoring performance, and appointing the CEO.",
+    "section_path": ["5. Board of Directors", "5.1 Board of Directors"],
+    "content": "The Board of Directors supervises the CEO and represents the highest authority in the company's structure. Members are required to have extensive executive experience in business management or the relevant sector, along with familiarity with governance requirements and corporate regulations. The Board is responsible for approving the company's overall strategy and long-term growth plans, approving annual budgets and major investment plans, appointing and evaluating the CEO, monitoring overall financial and operational performance, approving high-level governance and compliance policies, reviewing periodic reports submitted by the CEO, and making substantive decisions such as expansions, partnerships, financing, or restructuring. The Board's performance is measured through four key indicators: the Strategic Objectives Achievement Rate (calculated as the number of achieved objectives divided by total approved objectives, multiplied by 100, with a target of 98% or higher), Return on Equity (calculated as net profit divided by owner's equity, multiplied by 100, with a target of 15% or higher), Governance Compliance Rate (calculated as the number of Board decisions implemented divided by total decisions, multiplied by 100, with a target of 100%), and Board Meeting Frequency (actual meetings divided by scheduled meetings, with a target of at least 4 meetings per year).",
+    "connections": ["5", "6.1"]
+  },
+  {
+    "id": "6",
+    "name": "Senior Executive Management",
+    "short_description": "Led by the CEO, oversees all executive departments.",
+    "section_path": ["6. Senior Executive Management"],
+    "content": "This section covers Senior Executive Management, which is led by the Chief Executive Officer who oversees all executive departments and leads the company's overall strategy and operations.",
+    "connections": ["6.1", "5.1"]
+  },
+  {
+    "id": "6.1",
+    "name": "Chief Executive Officer (CEO)",
+    "short_description": "Leads overall strategy, operations, and represents the company; reports to the Board.",
+    "section_path": ["6. Senior Executive Management", "6.1 Chief Executive Officer (CEO)"],
+    "content": "The Chief Executive Officer supervises all executive departments and reports to the Board of Directors. The role requires a Bachelor's degree in Engineering, Business Administration, or equivalent, with 15+ years of executive management experience including 8+ years in a leadership role, preferably with an MBA. The CEO leads the development and execution of the company's overall strategy, ensures achievement of financial and operational objectives, approves policies and strategies for departments, represents the company with clients and regulatory bodies, leads the executive management team, ensures governance compliance, builds strategic partnerships, approves major contracts and financial decisions, guides organizational culture and human capital development, and leads performance monitoring. The CEO's performance is measured through five key indicators: Revenue Achievement Rate (actual revenue divided by target revenue, multiplied by 100, target 95% or higher), Business Growth Rate (current year revenue minus previous year revenue, divided by previous year revenue, multiplied by 100, target 10% or higher), Strategic Client Satisfaction (average rating from key clients on a scale of 1 to 5, target 4.0 or higher), Executive Decisions Implementation Rate (implemented decisions divided by total decisions, multiplied by 100, target 90% or higher), and Leadership Retention Rate (retained leaders divided by total leaders, multiplied by 100, target 90% or higher).",
+    "connections": ["5.1", "7.1", "8.1", "9.1", "10.1", "11.1", "12.1", "13.1", "14.1"]
+  },
+  {
+    "id": "7",
+    "name": "QHSE Management",
+    "short_description": "Oversees quality, health, safety, and environment across all operations.",
+    "section_path": ["7. QHSE Management"],
+    "content": "This section covers Quality, Health, Safety, and Environment management functions. The QHSE department oversees compliance with international standards and regulatory requirements across all operations.",
+    "connections": ["7.1", "7.2", "7.3", "6.1"]
+  },
+  {
+    "id": "7.1",
+    "name": "QHSE Manager",
+    "short_description": "Leads QHSE systems, ensures compliance, and manages audits and incident investigations.",
+    "section_path": ["7. QHSE Management", "7.1 Quality, Health, Safety, and Environment (QHSE) Manager"],
+    "content": "The Quality, Health, Safety, and Environment Manager supervises the QA/QC Officer and HSE Officer, and reports to the CEO. This position requires a Bachelor's degree in Engineering or Science, ISO 45001/9001/14001 certification, and at least 8 years of QHSE experience with 3 years in a supervisory role. The QHSE Manager establishes and implements the QHSE management system, develops policies and procedures, ensures project compliance with safety and quality requirements, leads internal and external audits, investigates workplace incidents, reviews project quality and safety plans, prepares performance reports, coordinates operational risk management, submits compliance reports to the CEO, manages quality certifications, represents the company during regulatory inspections, and develops business continuity plans. Performance is measured through four key indicators: Total Recordable Incident Rate (number of incidents multiplied by 200,000, divided by total hours worked, target below 0.5), Quality Standards Compliance Rate (compliant operations divided by total audited operations, multiplied by 100, target 95% or higher), HSE Violations (target zero major violations), and Audit Findings Closure Rate (closed findings divided by total findings, multiplied by 100 within 30 days, target 90% or higher).",
+    "connections": ["6.1", "7.2", "7.3"]
+  },
+  {
+    "id": "7.2",
+    "name": "QA/QC Officer",
+    "short_description": "Implements quality assurance and control plans, inspects work and materials, and manages NCRs.",
+    "section_path": ["7. QHSE Management", "7.2 QA/QC Officer"],
+    "content": "The QA/QC Officer interacts with Project Managers, Execution Teams, Engineering, and Procurement, reporting to the QHSE Manager. This position requires a Bachelor's degree in Engineering or a related field, at least 4 years of quality control experience, and familiarity with ISO standards and technical documentation systems. The QA/QC Officer implements quality assurance and control plans in projects, inspects work and materials against approved technical specifications, prepares daily or weekly inspection reports, follows up on Non-Conformance Reports (NCRs), coordinates with execution teams to address technical observations, reviews quality documents of suppliers and contractors, maintains quality records, participates in audits, reports quality violations to the QHSE Manager, and supports project teams in meeting client requirements. Performance is measured through three key indicators: Inspection Compliance Rate (accepted inspections divided by total inspections, multiplied by 100, target 98% or higher), Rework Rate (rework cost divided by total project cost, multiplied by 100, target of at least 5% annual improvement), and NCR Closure Rate (closed NCRs divided by total NCRs, multiplied by 100 on time, target 95% or higher).",
+    "connections": ["7.1", "14.1", "13.2"]
+  },
+  {
+    "id": "7.3",
+    "name": "HSE Officer",
+    "short_description": "Implements health and safety requirements at sites, conducts inspections, and promotes safety awareness.",
+    "section_path": ["7. QHSE Management", "7.3 Health, Safety, and Environment (HSE) Officer"],
+    "content": "The HSE Officer interacts with Project Managers, Execution Teams, Operations, and Human Resources, reporting to the QHSE Manager. This position requires a Bachelor's degree or diploma in Occupational Safety or Engineering, preferably with NEBOSH certification, and at least 3 years of HSE experience in construction or industrial sites. The HSE Officer implements occupational health and safety instructions at worksites, conducts periodic site inspections, prepares daily or weekly safety reports, follows up on work permits and PPE, investigates incidents and near-misses, implements safety awareness and training programs, ensures contractor compliance with HSE requirements, escalates critical risks to the QHSE Manager, supports regulatory and environmental compliance, prepares emergency and evacuation plans, organizes drills and first aid training, verifies PPE validity, documents lessons learned, and prepares monthly safety performance indicators. Performance is measured through four key indicators: Incident Frequency Rate (number of incidents multiplied by 1,000,000, divided by total hours worked, target below 1.0), Safety Training Completion Rate (trained employees divided by total employees, multiplied by 100, target 100%), Preventive Inspections Completion Rate (completed inspections divided by scheduled inspections, multiplied by 100, target 95% or higher), and Days Without Lost-Time Injuries (accumulated days without recordable lost-time injury, target 365 days).",
+    "connections": ["7.1", "14.1", "13.1", "12.1"]
+  },
+  {
+    "id": "8",
+    "name": "PMO",
+    "short_description": "Project Management Office overseeing planning, cost control, reporting, risk, and claims.",
+    "section_path": ["8. PMO"],
+    "content": "This section covers the Project Management Office, which establishes project management frameworks and ensures standardized planning, execution, and control across all company projects.",
+    "connections": ["8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "6.1"]
+  },
+  {
+    "id": "8.1",
+    "name": "PMO Manager",
+    "short_description": "Leads the PMO, establishes methodologies, monitors project performance, and coordinates with other departments.",
+    "section_path": ["8. PMO", "8.1 PMO Manager"],
+    "content": "The PMO Manager supervises Planning, Cost Control, Reporting, Risk Management, and Claims functions, reporting to the CEO. This position requires a Bachelor's degree in Engineering or Business Administration, mandatory PMP certification, and at least 10 years of project management experience with 5 years in a PMO role. The PMO Manager establishes and develops a unified project management methodology, monitors project performance in time, cost, quality, and risks, standardizes reporting templates and dashboards, reviews project schedules and execution plans, monitors deviations and provides recommendations, supports project managers in resolving obstacles, prepares performance reports for executive management, manages the project portfolio and priorities, coordinates with Finance, Contracts, and Operations on progress and invoices, develops project KPIs, ensures application of PMBOK or equivalent standards, prepares portfolio reports for the Board, and documents lessons learned. Performance is measured through four key indicators: On-Time Project Completion Rate (projects completed on time divided by total projects, multiplied by 100, target 85% or higher), On-Budget Project Rate (projects within budget divided by total projects, multiplied by 100, target 90% or higher), PMO Methodology Application Rate (projects aligned with PMO standards divided by total projects, multiplied by 100, target 100%), and Project Management Maturity Level (assessment using OPM3 model, target Level 3).",
+    "connections": ["6.1", "8.2", "8.3", "8.4", "8.5", "8.6", "11.1", "9.1", "13.1"]
+  },
+  {
+    "id": "8.2",
+    "name": "Planning Officer",
+    "short_description": "Prepares project schedules, monitors progress, analyzes delays, and updates plans.",
+    "section_path": ["8. PMO", "8.2 Planning Officer"],
+    "content": "The Planning Officer reports to the PMO Manager and requires a Bachelor's degree in Engineering, at least 5 years of planning and scheduling experience, and proficiency in Primavera P6 and MS Project. The Planning Officer prepares project schedules and work breakdown structures, monitors actual progress against planned schedules, identifies critical path and potential delays, updates schedules based on progress and changes, prepares delay analysis and extension of time claims, coordinates with project teams to update plans, prepares planning reports and progress curves (S-curves), develops look-ahead schedules, supports PMO in schedule risk analysis, and archives planning documents. Performance is measured through three key indicators: Schedule Accuracy (activities completed on schedule divided by total scheduled activities, multiplied by 100, target 90% or higher), Schedule Performance Index (Earned Value divided by Planned Value, target 0.9 or higher), and Plan Update Timeliness (reports submitted on time divided by total required reports, multiplied by 100, target 100%).",
+    "connections": ["8.1", "8.6", "14.1"]
+  },
+  {
+    "id": "8.3",
+    "name": "Cost Control Officer",
+    "short_description": "Monitors project budgets, analyzes cost variances, and forecasts final costs.",
+    "section_path": ["8. PMO", "8.3 Cost Control Officer"],
+    "content": "The Cost Control Officer reports to the PMO Manager and requires a Bachelor's degree in Engineering, Accounting, or Business Administration, at least 5 years of cost control experience, and familiarity with EVM methodology. The Cost Control Officer monitors project budgets compared to actual costs, prepares project financial variance reports, monitors financial commitments and purchase orders, coordinates with Finance on expenditures and receivables, supports cost forecasts to project completion, reviews change orders with financial impact, analyzes costs of resources and materials, reports early warnings when budget is exceeded, prepares monthly cost reports, and supports cost reduction decisions. Performance is measured through four key indicators: Cost Performance Index (Earned Value divided by Actual Cost, target 1.0 or higher), Budget Variance Rate (actual cost minus planned budget, divided by planned budget, multiplied by 100, target below 5%), EAC Forecast Accuracy (actual EAC minus forecasted EAC, divided by forecasted EAC, multiplied by 100, target below 10%), and Cost Overrun Recovery Rate (recovered cost overruns divided by total cost overruns, multiplied by 100, target 80% or higher).",
+    "connections": ["8.1", "11.1", "11.4"]
+  },
+  {
+    "id": "8.4",
+    "name": "Reporting Officer",
+    "short_description": "Collects project performance data and prepares periodic reports and dashboards for management.",
+    "section_path": ["8. PMO", "8.4 Reporting Officer"],
+    "content": "The Reporting Officer reports to the PMO Manager and is responsible for collecting project performance data and preparing clear, organized periodic reports. The Reporting Officer collects performance data from projects and departments, prepares weekly and monthly project reports, develops performance dashboards, ensures data accuracy, tracks KPIs, standardizes report formats and content, archives reports and documents, analyzes trends and risks, prepares executive summaries for the CEO when needed, and supports performance review meetings. Performance is measured through three key indicators: On-Time Report Submission Rate (reports submitted on time divided by total required reports, multiplied by 100, target 100%), Report Data Accuracy (correct items divided by total audited items, multiplied by 100, target 98% or higher), and Report Recipient Satisfaction (average rating from stakeholders on a scale of 1 to 5, target 4.0 or higher).",
+    "connections": ["8.1", "6.1", "14.1"]
+  },
+  {
+    "id": "8.5",
+    "name": "Risk Management Officer",
+    "short_description": "Identifies, assesses, and monitors project risks and develops response plans.",
+    "section_path": ["8. PMO", "8.5 Risk Management Officer"],
+    "content": "The Risk Management Officer reports to the PMO Manager and requires a Bachelor's degree in Engineering or Project Management, preferably with PMI-RMP certification, and at least 5 years of project risk assessment and management experience. The Risk Management Officer prepares project risk registers, identifies and analyzes operational, financial, and contractual risks, monitors risk response plans, updates risk probability and impact periodically, and escalates critical risks to the PMO Manager. Performance is measured through three key indicators: Risk Identification and Treatment Rate (risks with response plans divided by total identified risks, multiplied by 100, target 100%), Risk Response Effectiveness (risks realized and effectively treated divided by total realized risks, multiplied by 100, target 80% or higher), and Risk Register Update Rate (completed updates divided by scheduled updates, multiplied by 100, target 95% or higher).",
+    "connections": ["8.1", "9.1", "11.1"]
+  },
+  {
+    "id": "8.6",
+    "name": "Claims Officer",
+    "short_description": "Manages contractual claims, prepares documentation, and coordinates with legal and planning teams.",
+    "section_path": ["8. PMO", "8.6 Claims Officer"],
+    "content": "The Claims Officer reports to the PMO Manager and requires a Bachelor's degree in Engineering, Law, or Business Administration, at least 5 years of contract and claims management experience, and familiarity with FIDIC general conditions. The Claims Officer studies claims related to time impact or additional costs, collects supporting documentation, coordinates with Planning to demonstrate time impact, coordinates with Cost Control to demonstrate financial impact, prepares claim drafts in coordination with Legal, follows up on company claims against clients or contractors, reviews claims from other parties and responds, maintains a claim register and status, submits recommendations on claim acceptance or rejection, and supports contractual dispute resolution. Performance is measured through three key indicators: Value of Recovered Claims (total value of recovered claims in SAR during the period, target 90% or higher of submitted claims), On-Time Claim Settlement Rate (claims settled within 60 days divided by total claims, multiplied by 100, target 75% or higher), and Claim Success Rate (accepted claims divided by total submitted claims, multiplied by 100, target 85% or higher).",
+    "connections": ["8.1", "8.2", "8.3", "9.1"]
+  },
+  {
+    "id": "9",
+    "name": "Legal and Contracts Affairs",
+    "short_description": "Manages all legal aspects, contracts, and regulatory compliance.",
+    "section_path": ["9. Legal and Contracts Affairs"],
+    "content": "This section covers Legal and Contracts Affairs management, including legal administration, contract review, dispute resolution, and regulatory compliance.",
+    "connections": ["9.1", "9.2", "9.3", "6.1"]
+  },
+  {
+    "id": "9.1",
+    "name": "Legal and Contracts Affairs Manager",
+    "short_description": "Leads legal and contract management, provides legal advice, and oversees disputes.",
+    "section_path": ["9. Legal and Contracts Affairs", "9.1 Legal and Contracts Affairs Manager"],
+    "content": "The Legal and Contracts Affairs Manager supervises Legal Administration and Contracts Management, reporting to the CEO. This position requires a Bachelor's degree in Law, membership in the Bar Association, and at least 10 years of experience in corporate legal affairs or project contracts. The Legal and Contracts Affairs Manager manages all legal and contractual aspects of the company, reviews contracts and agreements before signing, protects the company's interests and minimizes legal risks, provides legal advice to executive management, follows up on legal cases and disputes, manages negotiation of contractual terms, ensures regulatory and internal policy compliance, supports claims management, manages relationships with external legal counsel, submits legal reports to the CEO, supervises company licenses and renewals, provides legal memos for decisions with legal impact, and builds a library of model contracts and approved templates. Performance is measured through four key indicators: Dispute Resolution Rate (disputes resolved amicably divided by total disputes, multiplied by 100, target 70% or higher), On-Time Contract Review Rate (contracts reviewed on time divided by total required contracts, multiplied by 100, target 95% or higher), Legal Compliance Rate (compliant items divided by total legal obligations, multiplied by 100, target 100%), and Avoided Legal Losses (estimated value of legal risks that were mitigated, target maximization).",
+    "connections": ["6.1", "9.2", "9.3", "8.1", "8.6"]
+  },
+  {
+    "id": "9.2",
+    "name": "Legal Administration Officer",
+    "short_description": "Handles daily legal obligations, prepares correspondence, and maintains legal files.",
+    "section_path": ["9. Legal and Contracts Affairs", "9.2 Legal Administration Officer"],
+    "content": "The Legal Administration Officer reports to the Legal and Contracts Affairs Manager and requires a Bachelor's degree in Law, at least 3 years of legal work experience, and familiarity with corporate and labor regulations. The Legal Administration Officer reviews daily legal documents, prepares legal letters and memos, follows up on licenses and regulatory records, supports departments with legal inquiries, maintains and archives legal documents, monitors compliance with local regulations, coordinates with external lawyers when needed, prepares summaries of legal cases or risks, reviews internal policies from a legal perspective, and escalates sensitive legal matters. Performance is measured through three key indicators: Legal Consultation Response Time (average days from request to legal opinion submission, target 3 working days), Documented Cases Rate (fully documented cases divided by total cases, multiplied by 100, target 100%), and Legal Opinion Accuracy (accurate opinions divided by total submitted opinions, multiplied by 100, target 90% or higher).",
+    "connections": ["9.1"]
+  },
+  {
+    "id": "9.3",
+    "name": "Contract Management Officer",
+    "short_description": "Drafts and reviews contracts, monitors obligations, and maintains contract registers.",
+    "section_path": ["9. Legal and Contracts Affairs", "9.3 Contract Management Officer"],
+    "content": "The Contract Management Officer reports to the Legal and Contracts Affairs Manager and requires a Bachelor's degree in Law, Engineering, or Business Administration, at least 4 years of contract management experience, and familiarity with FIDIC terms and government contracts. The Contract Management Officer drafts and reviews contracts with clients, suppliers, and contractors, monitors contractual obligations and key dates, maintains contract registers and amendments, reviews change orders and extensions, coordinates with PMO on claims and delays, ensures contracts comply with approved policies, supports contract negotiations, alerts departments to contractual risks, follows up on guarantees and insurances, prepares contract status reports, reviews penalty and compensation clauses, ensures eligibility for government contracts, and standardizes contract templates. Performance is measured through four key indicators: Contract Renewal Rate Before Expiry (contracts renewed early divided by total expiring contracts, multiplied by 100, target 90% or higher), Contract Terms Compliance Rate (applied items divided by total contract items, multiplied by 100, target 98% or higher), Average Contract Completion Time (average days from negotiation to final signing, target 21 working days or less), and Penalty Recovery Rate (claimed and recovered penalties divided by total due penalties, multiplied by 100, target 85% or higher).",
+    "connections": ["9.1", "8.1", "8.6"]
+  },
+  {
+    "id": "10",
+    "name": "Business Development Management",
+    "short_description": "Drives growth by identifying opportunities, managing tenders, and building client relationships.",
+    "section_path": ["10. Business Development Management"],
+    "content": "This section covers Business Development Management, including business development strategy, tendering, pricing, market analysis, and relationship management to drive growth.",
+    "connections": ["10.1", "10.2", "10.3", "10.4", "10.5", "10.6", "10.7", "10.8", "6.1"]
+  },
+  {
+    "id": "10.1",
+    "name": "Business Development Manager",
+    "short_description": "Leads business development, manages client relationships, and oversees tenders and proposals.",
+    "section_path": ["10. Business Development Management", "10.1 Business Development Manager"],
+    "content": "The Business Development Manager supervises Tenders, Pricing, Market Analysis, and Relationship Management functions, reporting to the CEO. This position requires a Bachelor's degree in Business Administration or Engineering and at least 8 years of business development experience in the contracting, energy, or infrastructure sectors. The Business Development Manager develops the business development plan and growth opportunities, seeks new opportunities and projects, manages relationships with current and potential clients, supervises tenders and commercial and technical proposals, analyzes market and competitors, coordinates with Engineering, Operations, and Finance to prepare proposals, follows up on tender results, builds databases of opportunities and clients, submits reports on expected opportunities to the CEO, and supports commercial negotiation with clients. Performance is measured through four key indicators: Tender Win Rate (won tenders divided by total submitted tenders, multiplied by 100, target 30% or higher), New Revenue Growth (new business revenue current year minus previous year, divided by previous year revenue, multiplied by 100, target 15% or higher), Pipeline Volume (total value of opportunities in qualification and submission stages, target 3 times annual target or higher), and Opportunity-to-Contract Conversion Rate (opportunities converted to contracts divided by total qualified opportunities, multiplied by 100, target 25% or higher).",
+    "connections": ["6.1", "10.2", "10.3", "10.4", "10.5", "10.6", "10.7", "10.8", "14.8", "11.1", "13.1"]
+  },
+  {
+    "id": "10.2",
+    "name": "Pricing and Tenders Management Officer",
+    "short_description": "Oversees tender process from preparation to submission, and coordinates pricing.",
+    "section_path": ["10. Business Development Management", "10.2 Pricing and Tenders Management Officer"],
+    "content": "The Pricing and Tenders Management Officer reports to the Business Development Manager and is responsible for overseeing the preparation of pricing proposals and managing the tender process from preparation to submission. The Pricing and Tenders Management Officer manages the tender cycle from receipt to submission, reviews tender requirements and distributes tasks to relevant teams, prepares internal timeline for proposal submission, coordinates between Pricing, Technical, Legal, and Finance, ensures proposal documents are complete before submission, reviews compliance with tender terms and conditions, maintains tender records and results, prepares executive summaries for each opportunity, follows up on inquiries and responses with the client, and submits participation recommendations to the Business Development Manager. Performance is measured through three key indicators: Pricing Accuracy (actual profit margin minus target profit margin, divided by target profit margin, multiplied by 100, target deviation below 5%), On-Time Bid Submission Rate (bids submitted on time divided by total bids, multiplied by 100, target 100%), and Priced Tender Win Rate (won tenders divided by total priced tenders, multiplied by 100, target 30% or higher).",
+    "connections": ["10.1", "10.3", "10.4", "9.1", "11.1"]
+  },
+  {
+    "id": "10.3",
+    "name": "Tenders Study Officer",
+    "short_description": "Analyzes tender documents and evaluates feasibility before bid decision.",
+    "section_path": ["10. Business Development Management", "10.3 Tenders Study Officer"],
+    "content": "The Tenders Study Officer reports to the Business Development Manager and requires a Bachelor's degree in Engineering or Business Administration and at least 4 years of experience in tender and project analysis. The Tenders Study Officer studies tender documents and general and special conditions, identifies scope of work and key requirements, and prepares lists of inquiries and missing data. Performance is measured through three key indicators: Feasibility Study Completion Rate (studies completed on time divided by total required studies, multiplied by 100, target 95% or higher), Technical Requirements Estimation Accuracy (technical items accurately estimated divided by total items at execution, multiplied by 100, target 85% or higher), and Number of Tenders Studied Monthly (number of completed and submitted studies during the month, target per target).",
+    "connections": ["10.1", "10.2", "10.8"]
+  },
+  {
+    "id": "10.4",
+    "name": "Pricing Officer",
+    "short_description": "Prepares cost estimates, price schedules, and coordinates with suppliers and finance.",
+    "section_path": ["10. Business Development Management", "10.4 Pricing Officer"],
+    "content": "The Pricing Officer reports to the Business Development Manager and requires a Bachelor's degree in Civil Engineering or Quantity Surveying, at least 4 years of pricing experience, and proficiency in engineering pricing software. The Pricing Officer prepares estimated costs for projects and tenders, collects material and service prices from suppliers, coordinates with Finance to determine margins and indirect costs, prepares price and quantity schedules, analyzes competitor pricing when available, updates the price database, reviews impact of risks on final price, prepares different pricing scenarios, supports commercial negotiation, and maintains confidentiality of prices and margins. Performance is measured through three key indicators: Cost Analysis Accuracy (actual cost minus priced cost, divided by priced cost, multiplied by 100, target deviation below 8%), Pricing File Preparation Speed (average days from pricing instruction to file approval, target 5 working days), and Post-Submission Revisions Required Rate (bids requiring revision divided by total bids, multiplied by 100, target below 10%).",
+    "connections": ["10.1", "10.2", "11.1", "13.2"]
+  },
+  {
+    "id": "10.5",
+    "name": "Technical Proposals Preparation Officer",
+    "short_description": "Prepares technical proposal documents, methodology, and compliance with tender requirements.",
+    "section_path": ["10. Business Development Management", "10.5 Technical Proposals Preparation Officer"],
+    "content": "The Technical Proposals Preparation Officer reports to the Business Development Manager and requires a Bachelor's degree in Engineering or Business Administration and at least 3 years of experience in technical proposal writing and development. The Technical Proposals Preparation Officer prepares technical proposals according to tender requirements, collects technical inputs from relevant departments, develops execution methodology and initial resource plans, includes quality and safety plans when required, reviews compliance with technical specifications, prepares technical schedules and required appendices, standardizes technical proposal format and content, responds to technical inquiries, maintains final versions of technical proposals, and supports client presentations. Performance is measured through three key indicators: Technical Proposal Quality (average technical score received in external evaluation, target 80% or higher), Technically Accepted Proposals Rate (technically accepted proposals divided by total submitted proposals, multiplied by 100, target 90% or higher), and Tender Requirements Compliance (met tender conditions divided by total conditions, multiplied by 100, target 100%).",
+    "connections": ["10.1", "14.8", "7.1", "13.1"]
+  },
+  {
+    "id": "10.6",
+    "name": "Market Analysis Officer",
+    "short_description": "Conducts market research, monitors competitors and opportunities, and provides analytical reports.",
+    "section_path": ["10. Business Development Management", "10.6 Market Analysis Officer"],
+    "content": "The Market Analysis Officer reports to the Business Development Manager and requires a Bachelor's degree in Business Administration, Economics, or Marketing and at least 3 years of experience in market research and competitive analysis. The Market Analysis Officer collects and analyzes market data and target sectors, monitors competitors and market prices, prepares periodic reports on market trends, identifies potential clients and expected projects, monitors government electronic platforms (such as Etimad) for tender announcements and informs management immediately upon release, supports sales and business development plans with data, analyzes reasons for win and loss in tenders, updates market and client databases, provides recommendations for entering new sectors or regions, monitors regulatory changes, and supports management in expansion decisions. Performance is measured through three key indicators: Market Analysis Accuracy (extent to which market forecasts match actual results in quarterly assessment, target 75% accuracy), Market Reports Produced (number of market and competitor analysis reports submitted to management during the period, target 4 reports per year), and New Business Opportunities Identified (number of new business opportunities identified and submitted to management, target 6 opportunities per year).",
+    "connections": ["10.1", "10.8"]
+  },
+  {
+    "id": "10.7",
+    "name": "Relationship Management Officer",
+    "short_description": "Builds and maintains client and partner relationships, ensuring loyalty and repeat business.",
+    "section_path": ["10. Business Development Management", "10.7 Relationship Management Officer"],
+    "content": "The Relationship Management Officer reports to the Business Development Manager and is responsible for building and developing the company's relationships with current and potential clients and strategic partners to enhance loyalty and repeat business opportunities. The Relationship Management Officer builds and maintains professional relationships with clients and partners, follows up on client satisfaction after proposals or project delivery, coordinates meetings and visits with clients, identifies new opportunities through existing relationships, documents all client interactions, supports resolution of commercial issues with clients, follows up on client requests and routes to appropriate departments, supports professional presentation of the company in meetings, updates the contact database, and submits reports on relationship status and potential opportunities. Performance is measured through three key indicators: Key Client Retention Rate (retained key clients divided by total key clients at period start, multiplied by 100, target 90% or higher), Client Satisfaction (average rating from client satisfaction surveys on a scale of 1 to 5, target 4.2 or higher), and New Partnerships (number of new agreements and MOUs signed during the year, target per target).",
+    "connections": ["10.1", "14.1"]
+  },
+  {
+    "id": "10.8",
+    "name": "Government Tenders and Opportunities Monitoring Officer",
+    "short_description": "Monitors government platforms daily to identify tenders and opportunities, ensuring no deadlines are missed.",
+    "section_path": ["10. Business Development Management", "10.8 Government Tenders and Opportunities Monitoring Officer"],
+    "content": "The Government Tenders and Opportunities Monitoring Officer reports to the Business Development Manager and requires a Bachelor's degree in Business Administration, Engineering, or equivalent, at least 2 years of experience monitoring government tenders, and familiarity with Etimad platform and other government procurement platforms. The Government Tenders and Opportunities Monitoring Officer monitors Etimad platform and government procurement electronic platforms daily, identifies new government tenders and projects in water, energy, infrastructure, oil, and gas sectors, immediately informs the Business Development Manager of any tender matching the company's business activity, documents data for each tender (number, issuing entity, issue date, submission deadline), prepares weekly reports of monitored tenders and their status, communicates with government entities to obtain tender documents when needed, follows up on previous tender results, coordinates with the Tenders Study Officer to deliver documents in a timely manner, notifies the team of final submission deadlines at least one week in advance, and prepares monthly reports of monitored government opportunities and submitted bids. Performance is measured through three key indicators: On-Time Tender Monitoring Rate (tenders reported before deadline divided by total tenders issued, multiplied by 100, target 100%), Monthly Monitored Tenders (number of new government tenders identified and reported during the month, target per target), and Documented Data Accuracy (tenders fully documented (number, entity, date, deadline) divided by total monitored tenders, multiplied by 100, target 98% or higher).",
+    "connections": ["10.1", "10.3"]
+  },
+  {
+    "id": "11",
+    "name": "Financial Management",
+    "short_description": "Oversees financial planning, accounting, credit, treasury, and project financials.",
+    "section_path": ["11. Financial Management"],
+    "content": "This section covers Financial Management, including financial planning, budgeting, accounting, treasury, credit, and project financials to ensure financial sustainability.",
+    "connections": ["11.1", "11.2", "11.3", "11.4", "11.5", "11.6", "6.1"]
+  },
+  {
+    "id": "11.1",
+    "name": "Finance Director",
+    "short_description": "Leads financial management, budgeting, reporting, and cash flow, and ensures financial sustainability.",
+    "section_path": ["11. Financial Management", "11.1 Finance Director"],
+    "content": "The Finance Director supervises Accounts, Credit, General Accounts, Project Accounts, and Treasury, reporting to the CEO. This position requires a Bachelor's degree in Accounting or Finance, preferably with CPA or CMA certification, and at least 10 years of financial management experience including 4 years in a leadership position. The Finance Director manages the company's financial and accounting affairs, prepares annual budgets and financial forecasts, monitors cash flows and liquidity, prepares financial statements and reports for management, supervises general and project accounts, follows up on collections and credit, ensures compliance with tax and zakat regulations, reviews expenses and progress invoices, supports pricing and investment decisions, and submits financial reports to the CEO. Performance is measured through four key indicators: Current Ratio (current assets divided by current liabilities, target 1.5 or higher), Net Profit Margin (net profit divided by total revenue, multiplied by 100, target per target), Monthly Account Closing On-Time Rate (months closed on time divided by total months, multiplied by 100, target 100%), and Financial Forecast Accuracy (actual minus forecasted, divided by forecasted, multiplied by 100 at period end, target deviation below 5%).",
+    "connections": ["6.1", "11.2", "11.3", "11.4", "11.5", "11.6", "8.1", "8.3", "10.1"]
+  },
+  {
+    "id": "11.2",
+    "name": "Accounts Manager",
+    "short_description": "Oversees accounting operations, financial statements, and supervises the accounting team.",
+    "section_path": ["11. Financial Management", "11.2 Accounts Manager"],
+    "content": "The Accounts Manager reports to the Finance Director and requires a Bachelor's degree in Accounting, at least 7 years of financial accounting experience with 3 years in supervision, and familiarity with IFRS standards. The Accounts Manager manages daily accounting operations, reviews accounting entries and reconciliations, follows up on accounts receivable and payable, prepares monthly accounting reports, ensures integrity of document cycle, reviews expenses and statements, coordinates with auditors, follows up on monthly and annual account closures, maintains financial and accounting records, and submits accounting reports to the Finance Director. Performance is measured through two key indicators: Financial Statement Accuracy (correct items divided by total audited items, multiplied by 100, target 99% or higher), and On-Time Reconciliation Completion Rate (completed reconciliations divided by total required reconciliations, multiplied by 100, target 100%).",
+    "connections": ["11.1", "11.3", "11.4"]
+  },
+  {
+    "id": "11.3",
+    "name": "General Accounts Accountant",
+    "short_description": "Records daily entries, reconciles accounts, and handles general expenses and revenues.",
+    "section_path": ["11. Financial Management", "11.3 General Accounts Accountant"],
+    "content": "The General Accounts Accountant reports to the Accounts Manager and requires a Bachelor's degree in Accounting or Finance, at least 3 years of general accounting experience, and proficiency in accounting software such as SAP or Oracle. The General Accounts Accountant records daily entries in the accounting system, follows up on general expenses and revenues, prepares bank reconciliations, reviews supplier invoices, prepares accounts payable and receivable statements, maintains financial documents, supports monthly account closure, prepares preliminary tax or zakat reports, follows up on advances and trusts, and reports discrepancies to the accounts supervisor. Performance is measured through three key indicators: Daily Entries Accuracy (error-free entries divided by total entries, multiplied by 100, target 99.5% or higher), Monthly Reconciliation Completion Rate (completed reconciliation items divided by total required items, multiplied by 100 within 5 days, target 100%), and Accounting Errors Detected (number of errors detected during the period, target zero).",
+    "connections": ["11.2"]
+  },
+  {
+    "id": "11.4",
+    "name": "Project Accounts Accountant",
+    "short_description": "Monitors project-specific costs, compares to budgets, and prepares project financial reports.",
+    "section_path": ["11. Financial Management", "11.4 Project Accounts Accountant"],
+    "content": "The Project Accounts Accountant reports to the Accounts Manager and requires a Bachelor's degree in Accounting or Project Management and at least 4 years of project accounting or construction accounting experience. The Project Accounts Accountant monitors expenses and revenues specific to each project, prepares financial project cost reports, reviews client and contractor progress invoices, records costs of materials, labor, and equipment, compares actual costs to approved budgets, supports cost control with accurate financial reports, follows up on project-related invoices, prepares profitability reports for each project, coordinates with project managers regarding expenses, and reports financial deviations to the Finance Director and Accounts Manager. Performance is measured through three key indicators: Project Account Reconciliation Accuracy (matching project accounts divided by total project accounts, multiplied by 100, target 100%), Invoices Processed On-Time Rate (invoices processed within 30 days divided by total received invoices, multiplied by 100, target 95% or higher), and Cost Allocation Accuracy (correctly allocated items divided by total items, multiplied by 100, target 99% or higher).",
+    "connections": ["11.2", "8.3", "14.1"]
+  },
+  {
+    "id": "11.5",
+    "name": "Treasury Officer",
+    "short_description": "Manages daily cash flows, payments, receipts, and banking relationships.",
+    "section_path": ["11. Financial Management", "11.5 Treasury Officer"],
+    "content": "The Treasury Officer reports to the Finance Director and is responsible for managing the company's daily cash flows and overseeing payments, receipts, and banking relationships to ensure adequate liquidity. The Treasury Officer monitors bank balances and daily liquidity, prepares short-term cash flow plans, executes approved payments, follows up on client collections, manages checks and bank transfers, coordinates with banks and financial institutions, prepares liquidity reports, follows up on bank guarantees and letters of credit, ensures compliance with authority matrix for disbursement, and reports any expected cash shortfall to the Finance Director. Performance is measured through three key indicators: On-Time Payment Completion Rate (payments made on time divided by total scheduled payments, multiplied by 100, target 98% or higher), Days Cash on Hand (cash balance divided by average daily expenses, target 30 days), and Cash Flow Report Accuracy (actual variance divided by total planned flow, multiplied by 100, target deviation below 3%).",
+    "connections": ["11.1"]
+  },
+  {
+    "id": "11.6",
+    "name": "Credit Manager",
+    "short_description": "Manages banking facilities, credit relationships, and collection policies to ensure healthy cash flow.",
+    "section_path": ["11. Financial Management", "11.6 Credit Manager"],
+    "content": "The Credit Manager reports directly to the Finance Director and requires a Bachelor's degree in Finance, Accounting, or Business Administration, at least 6 years of credit management and banking relationships experience with 3 years in contracting or industrial companies, and preferably CFA, CAIIB, or CA certification. The Credit Manager leads the process of obtaining banking facilities (performance and advance payment guarantees, credit lines, project financing loans) from banks and financial institutions, builds strategic relationships with banks and negotiates facility terms, prepares banking facility application files (Credit Proposals), follows up on existing facility renewals, manages and tracks utilization of guarantee limits, establishes internal credit policies and credit limits for clients and subcontractors, assesses client creditworthiness, monitors accounts receivable aging and manages collection processes, prepares periodic reports for the Finance Director on banking facility status, coordinates with Project Management and Legal Affairs to meet guarantee requirements, prepares short-term liquidity plans in coordination with the Treasury Officer, analyzes Cost of Credits and compares between banks, escalates major changes to the Finance Director and Legal Affairs, coordinates with auditors regarding credit files, and monitors compliance with facility agreement covenants. Performance is measured through six key indicators: Banking Facilities Obtained Rate (value of facilities obtained divided by value of facilities requested, multiplied by 100, target 95% or higher), Guarantees Issued On-Time Rate (guarantees delivered on time divided by total requests, multiplied by 100, target 98% or higher), Cost of Credit (total interest and commissions divided by average utilized limits, multiplied by 100, target at least 5% improvement annually), Days Sales Outstanding (average accounts receivable divided by total revenue, multiplied by number of days in period, target 60 days or less), On-Time Client Collection Rate (amounts collected on time divided by total amounts due, multiplied by 100, target 90% or higher), and Covenant Compliance Rate (number of complied covenants divided by total covenants, multiplied by 100, target 100%).",
+    "connections": ["11.1", "11.5", "9.1", "14.1"]
+  },
+  {
+    "id": "12",
+    "name": "Human Resources Management",
+    "short_description": "Manages human capital including recruitment, payroll, training, employee relations, and Saudization.",
+    "section_path": ["12. Human Resources Management"],
+    "content": "This section covers Human Resources Management, including HR strategy, recruitment, payroll, training, employee relations, Saudization, and benefits management.",
+    "connections": ["12.1", "12.2", "12.3", "12.4", "12.5", "12.6", "12.7", "12.8", "6.1"]
+  },
+  {
+    "id": "12.1",
+    "name": "Human Resources Manager",
+    "short_description": "Leads HR strategy, policies, recruitment, payroll, performance, and employee relations.",
+    "section_path": ["12. Human Resources Management", "12.1 Human Resources Manager"],
+    "content": "The Human Resources Manager supervises Payroll, Recruitment, Training and Development functions, reporting to the CEO. This position requires a Bachelor's degree in Human Resources or Business Administration, preferably with SHRM or CIPD certification, and at least 8 years of HR management experience including 3 years in a leadership position. The Human Resources Manager develops and implements HR strategy, establishes administrative policies and procedures, manages recruitment, payroll, performance, and training, monitors compliance with labor regulations, manages organizational structure and job descriptions, develops succession planning and career paths, supervises employee relations and discipline, manages employee files, contracts, and leave, supports management in workforce planning, and submits HR reports to the CEO. Performance is measured through four key indicators: Employee Turnover Rate (number of leavers during the period divided by average total employees, multiplied by 100, target below 10%), Employee Satisfaction (Employee Net Promoter Score survey result, target 30 or higher), Performance Evaluation Completion Rate (employees evaluated divided by total employees, multiplied by 100, target 100%), and Average Time to Fill Vacancies (average days from announcement to actual hiring, target 45 days).",
+    "connections": ["6.1", "12.2", "12.3", "12.4", "12.5", "12.6", "12.7", "12.8"]
+  },
+  {
+    "id": "12.2",
+    "name": "Payroll Officer",
+    "short_description": "Prepares monthly payroll, handles deductions, allowances, and ensures compliance with labor regulations.",
+    "section_path": ["12. Human Resources Management", "12.2 Payroll Officer"],
+    "content": "The Payroll Officer reports to the HR Manager and requires a Bachelor's degree in Accounting or Human Resources, at least 3 years of payroll processing experience, and familiarity with labor regulations and social insurance. The Payroll Officer prepares monthly payroll, reviews attendance, absence, and leave, calculates allowances, deductions, overtime, and leave, coordinates with Finance for payroll disbursement, maintains payroll records confidentially, prepares payroll cost reports, follows up on end-of-service benefits, ensures compliance with labor regulations and social insurance, handles employee payroll inquiries, and reports discrepancies to the HR Manager. Performance is measured through four key indicators: On-Time Payroll Disbursement Rate (months paid on time divided by total months, multiplied by 100, target 100%), Payroll Accuracy (employees without errors divided by total employees, multiplied by 100, target 99.5% or higher), Payroll Complaint Rate (payroll complaints divided by total employees, multiplied by 100, target below 1%), and Regulatory Compliance (systemically registered employees divided by total employees, multiplied by 100, target 100%).",
+    "connections": ["12.1", "11.1"]
+  },
+  {
+    "id": "12.3",
+    "name": "Recruitment Officer",
+    "short_description": "Executes recruitment process, screens candidates, and coordinates interviews.",
+    "section_path": ["12. Human Resources Management", "12.3 Recruitment Officer"],
+    "content": "The Recruitment Officer reports to the HR Manager and is responsible for executing the recruitment and selection strategy to secure required competencies in a timely manner and within the approved budget. The Recruitment Officer receives approved recruitment requests from departments, prepares and posts job advertisements, screens resumes and conducts initial interviews, coordinates technical interviews with departments, prepares job offers and appointment letters, follows up on onboarding and appointment procedures, builds a candidate database, monitors recruitment metrics such as time-to-hire and cost-per-hire, ensures candidates match job requirements, and submits recruitment reports to the HR Manager. Performance is measured through four key indicators: Average Time to Fill (average days from job request to new employee's first day, target 45 days), Quality of Hire (employees passing probation divided by total hires, multiplied by 100, target 85% or higher), Cost Per Hire (total recruitment costs divided by number of hires, target within approved budget), and Internal Fill Rate (internal hires divided by total hires, multiplied by 100, target 20% or higher).",
+    "connections": ["12.1"]
+  },
+  {
+    "id": "12.4",
+    "name": "Training and Development Officer",
+    "short_description": "Designs and implements training programs, evaluates effectiveness, and supports employee development.",
+    "section_path": ["12. Human Resources Management", "12.4 Training and Development Officer"],
+    "content": "The Training and Development Officer reports to the HR Manager and requires a Bachelor's degree in Human Resources, Education, or Business Administration, at least 4 years of training and development experience, and familiarity with instructional design methodologies. The Training and Development Officer identifies training needs in coordination with departments, prepares the annual training plan, organizes internal and external courses, evaluates program effectiveness, follows up on employee development plans, supports new employee orientation programs, maintains training and certification records, coordinates with training providers, prepares training and development reports, and supports a culture of continuous learning within the company. Performance is measured through four key indicators: Annual Training Plan Completion Rate (executed programs divided by planned programs, multiplied by 100, target 90% or higher), Average Training Hours per Employee (total training hours divided by total employees, target 24 hours per year), Training Application Rate (department managers' rating of training impact on performance on a scale of 1 to 5, target 3.5 or higher), and Training Cost vs Budget (actual cost divided by approved budget, multiplied by 100, target 100% or higher).",
+    "connections": ["12.1"]
+  },
+  {
+    "id": "12.5",
+    "name": "Employee Affairs and Residency Officer",
+    "short_description": "Manages residency permits, contract renewals, and employee documentation with government entities.",
+    "section_path": ["12. Human Resources Management", "12.5 Employee Affairs and Residency Officer"],
+    "content": "The Employee Affairs and Residency Officer reports to the HR Manager and requires a Bachelor's degree in Human Resources, Administration, or related field, at least 3 years of experience in employee affairs and residencies, and familiarity with labor and residency regulations and government electronic service platforms. The Employee Affairs and Residency Officer monitors employee residency expiry dates and initiates renewal procedures well in advance, prepares and submits applications for new employee recruitment and work visas, renews employment contracts in coordination with employees and Finance before expiry, maintains updated records of all employee documents, follows up on sponsorship transfer or modification procedures, communicates with government entities (Ministry of Labor, Passports, GOSI), notifies employees and management of upcoming renewal dates, processes end-of-service settlement procedures and exit visas, responds to employee inquiries, and prepares periodic reports for the HR Manager. Performance is measured through four key indicators: On-Time Residency Renewal Rate (residencies renewed before expiry divided by total residencies, multiplied by 100, target 98% or higher), Contract Renewal Rate Before Expiry (contracts renewed on time divided by total due contracts, multiplied by 100, target 95% or higher), Average Recruitment Processing Time (total days processing recruitment requests divided by number of requests, target 30 days or less), and Employee File Completion Rate (complete files divided by total employee files, multiplied by 100, target 100%).",
+    "connections": ["12.1"]
+  },
+  {
+    "id": "12.6",
+    "name": "Employee Relations Officer",
+    "short_description": "Handles employee complaints, mediates disputes, and promotes a positive work environment.",
+    "section_path": ["12. Human Resources Management", "12.6 Employee Relations Officer"],
+    "content": "The Employee Relations Officer reports to the HR Manager and requires a Bachelor's degree in Human Resources or Business Administration, at least 3 years of experience in employee relations, and familiarity with Saudi Labor Law. The Employee Relations Officer receives and processes employee complaints according to approved policies, mediates disputes between employees or between employees and management, develops and implements workplace improvement programs to enhance employee satisfaction, conducts job satisfaction surveys and analyzes results, coordinates with various departments on disciplinary and professional conduct issues, develops and updates employee relations policies, documents dispute cases and complaints in official records, organizes team-building events and activities, provides guidance and advice to managers on handling employee issues, and prepares periodic reports on job satisfaction levels and resignation rates. Performance is measured through three key indicators: Average Complaint Resolution Time (total days processing complaints divided by number of complaints, target 5 working days), Employee Satisfaction with Complaint Resolution (complaints resolved with satisfaction divided by total complaints, multiplied by 100, target 80% or higher), and Overall Job Satisfaction Index (annual satisfaction survey result, target 75% or higher).",
+    "connections": ["12.1"]
+  },
+  {
+    "id": "12.7",
+    "name": "Saudization and Localization Officer",
+    "short_description": "Implements Saudization programs, monitors Nitaqat compliance, and coordinates with government entities.",
+    "section_path": ["12. Human Resources Management", "12.7 Saudization and Localization Officer"],
+    "content": "The Saudization and Localization Officer reports to the HR Manager and requires a Bachelor's degree in Human Resources or Business Administration, at least 3 years of experience in localization and Nitaqat programs, and thorough familiarity with Ministry of Human Resources electronic platforms. The Saudization and Localization Officer monitors workforce localization percentages and ensures compliance with Nitaqat requirements, coordinates with the Ministry of Human Resources on localization requirements, develops and implements phased and annual Saudization plans aligned with Vision 2030, builds partnerships with universities and technical institutes to attract national talent, supervises transitional training and qualification programs for national cadres, monitors performance of Saudi employees, prepares periodic Nitaqat reports, monitors changes in localization regulations, organizes cooperative training and summer internship programs for Saudi students, and prepares periodic analytical studies on localization status. Performance is measured through four key indicators: Actual Saudization Rate (Saudi employees divided by total employees, multiplied by 100, target per Nitaqat requirements), Nitaqat Classification (company classification on Nitaqat platform, target Platinum or higher), Average Time to Fill Target Positions with Saudis (total days vacancies remained open divided by number of vacancies, target 45 days or less), and Saudi Employee Retention Rate (Saudis retained after 12 months divided by total hired, multiplied by 100, target 85% or higher).",
+    "connections": ["12.1"]
+  },
+  {
+    "id": "12.8",
+    "name": "Benefits and Compensation Officer",
+    "short_description": "Manages compensation structures, benefits packages, and ensures market competitiveness.",
+    "section_path": ["12. Human Resources Management", "12.8 Benefits and Compensation Officer"],
+    "content": "The Benefits and Compensation Officer reports to the HR Manager and requires a Bachelor's degree in Human Resources, Accounting, or Business Administration, at least 4 years of experience in compensation and benefits management, and familiarity with payroll systems and job analysis programs. The Benefits and Compensation Officer designs and develops competitive salary and benefits structures aligned with market standards, conducts periodic market salary benchmarking studies, manages benefits packages such as health insurance and allowances, develops incentive and bonus models tied to KPI performance indicators, reviews and analyzes current salary structures and submits improvement proposals, ensures compensation packages comply with Saudi Labor Law, coordinates with Payroll to ensure accurate calculation of benefits and deductions, prepares workforce cost reports, manages the job evaluation system, and reviews and documents compensation policies. Performance is measured through four key indicators: Salary Package Competitiveness (comparison of company salaries to market survey, target within 10% of market average), Salary-Related Resignation Rate (employees leaving due to salary divided by total leavers, multiplied by 100, target 5% or higher), Benefits Disbursement Completion Rate (employees receiving full benefits divided by total employees, multiplied by 100, target 95% or higher), and Compensation Structure Review Frequency (number of market comparison studies completed annually, target at least 1 study per year).",
+    "connections": ["12.1", "12.2"]
+  },
+  {
+    "id": "13",
+    "name": "Operations Management",
+    "short_description": "Oversees daily operations, procurement, warehouses, logistics, equipment, and IT.",
+    "section_path": ["13. Operations Management"],
+    "content": "This section covers Operations Management, including procurement, supply chain, warehouses, logistics, equipment maintenance, and IT services to support project execution.",
+    "connections": ["13.1", "13.2", "13.3", "13.4", "13.5", "13.6", "13.7", "13.8", "13.9", "13.10", "6.1"]
+  },
+  {
+    "id": "13.1",
+    "name": "Operations Manager",
+    "short_description": "Leads operational processes, resource availability, and efficiency improvements.",
+    "section_path": ["13. Operations Management", "13.1 Operations Manager"],
+    "content": "The Operations Manager supervises Procurement and Supply Chain, Equipment and Maintenance, and Information Technology functions, reporting to the CEO. This position requires a Bachelor's degree in Engineering or Business Administration, at least 10 years of operations management experience including 4 years in a leadership role, and familiarity with Six Sigma and Lean methodologies. The Operations Manager manages daily operations supporting project execution, ensures availability of resources and materials in a timely manner, improves operational efficiency and reduces waste, supervises procurement, warehouses, and logistics, monitors equipment readiness and maintenance, supervises IT services, coordinates with Project Management and operational sectors, develops annual operational plans, monitors operational performance indicators, and submits operational performance reports to the CEO. Performance is measured through three key indicators: Operational Execution Efficiency Rate (operations completed on time and within cost divided by total operations, multiplied by 100, target 85% or higher), Operational Cost Reduction Rate (previous year cost minus current year cost, divided by previous year cost, multiplied by 100, target 5% or higher), and Internal Department Satisfaction Index (average rating from supported departments on a scale of 1 to 5, target 4.0 or higher).",
+    "connections": ["6.1", "13.2", "13.6", "13.7", "14.1"]
+  },
+  {
+    "id": "13.2",
+    "name": "Procurement and Supply Chain Manager",
+    "short_description": "Manages procurement, supplier relationships, inventory, and logistics.",
+    "section_path": ["13. Operations Management", "13.2 Procurement and Supply Chain Manager"],
+    "content": "The Procurement and Supply Chain Manager supervises Procurement, Warehouses, and Logistics, reporting to the Operations Manager. This position requires a Bachelor's degree in Engineering, Business Administration, or Supply Chain, preferably with CPSM or CPS certification, and at least 7 years of procurement and supply chain experience. The Procurement and Supply Chain Manager manages the procurement cycle from request to delivery, develops supplier and contractor databases, negotiates prices and commercial terms, ensures timely provision of materials and services for projects, follows up on purchase orders and contracts with suppliers, coordinates with Finance on payments and credits, monitors inventory and warehouse movement, manages transportation and customs clearance, evaluates supplier performance, and submits procurement and supply chain reports to the Operations Manager. Performance is measured through three key indicators: On-Time Delivery Rate (orders fulfilled on time divided by total orders, multiplied by 100, target 90% or higher), Procurement Savings Rate (procurement budget minus actual spend, divided by procurement budget, multiplied by 100, target 5% or higher), and Number of Qualified Suppliers (number of qualified and active suppliers in the approved supplier list, target per minimum threshold).",
+    "connections": ["13.1", "13.3", "13.4", "13.5", "14.1", "11.1"]
+  },
+  {
+    "id": "13.3",
+    "name": "Procurement Officer",
+    "short_description": "Processes purchase requests, obtains quotes, issues purchase orders, and follows up on deliveries.",
+    "section_path": ["13. Operations Management", "13.3 Procurement Officer"],
+    "content": "The Procurement Officer reports to the Procurement Manager and requires a Bachelor's degree in Business Administration or Engineering, at least 3 years of procurement experience, and familiarity with ERP procurement systems. The Procurement Officer receives approved purchase requests, requests price quotations from suppliers, prepares technical and commercial price comparisons, issues purchase orders after approval, follows up on delivery with suppliers, and updates the supplier database. Performance is measured through three key indicators: Purchase Order Cycle Time (average days from purchase request to PO issuance, target 7 working days), Error-Free Purchase Order Rate (POs without errors divided by total POs, multiplied by 100, target 98% or higher), and Supplier Performance (deliveries on time and in full quantity divided by total deliveries, multiplied by 100, target 90% or higher).",
+    "connections": ["13.2"]
+  },
+  {
+    "id": "13.4",
+    "name": "Warehouse Officer",
+    "short_description": "Manages receipt, storage, issuance, and inventory control of materials.",
+    "section_path": ["13. Operations Management", "13.4 Warehouse Officer"],
+    "content": "The Warehouse Officer reports to the Procurement Manager and requires a Bachelor's degree or diploma in Business Administration, Engineering, or Logistics, and at least 3 years of warehouse and inventory management experience. The Warehouse Officer receives and initially inspects materials, organizes and stores materials safely, issues materials to projects based on approved requests, updates inventory records, conducts periodic and annual physical inventory counts, reports obsolete or shortage materials, maintains warehouse safety and security, coordinates with Procurement and Logistics, prepares inventory reports, and ensures application of receipt and issuance procedures. Performance is measured through three key indicators: Warehouse Inventory Accuracy (items without discrepancies divided by total inventory items, multiplied by 100, target 98% or higher), Inventory Turnover Rate (cost of goods sold divided by average inventory value, target per target), and On-Time Issuance Completion Rate (issuance requests completed on time divided by total issuance requests, multiplied by 100, target 95% or higher).",
+    "connections": ["13.2"]
+  },
+  {
+    "id": "13.5",
+    "name": "Logistics Officer",
+    "short_description": "Coordinates transportation, shipping, and customs clearance of materials and equipment.",
+    "section_path": ["13. Operations Management", "13.5 Logistics Officer"],
+    "content": "The Logistics Officer reports to the Procurement Manager and requires a Bachelor's degree or diploma in Logistics or Business Administration, and at least 3 years of logistics and transportation experience. The Logistics Officer organizes transportation of materials and equipment to sites, monitors local and international shipments, coordinates with suppliers and transport companies, follows up on customs clearance if required, prepares transportation plans according to project needs, monitors transportation and shipping costs, ensures materials arrive on time, handles delays or damage during transportation, maintains shipping and delivery documents, and submits logistics reports to the direct manager. Performance is measured through three key indicators: On-Time Delivery Rate (shipments arrived on time divided by total shipments, multiplied by 100, target 92% or higher), Transportation Cost per Unit (total transportation costs divided by number of units or orders transported, target within approved budget), and Lost or Damaged Goods Rate (value of lost or damaged goods divided by total shipment value, multiplied by 100, target below 0.5%).",
+    "connections": ["13.2"]
+  },
+  {
+    "id": "13.6",
+    "name": "Equipment and Maintenance Manager",
+    "short_description": "Manages equipment fleet, preventive and corrective maintenance, and ensures readiness.",
+    "section_path": ["13. Operations Management", "13.6 Equipment and Maintenance Manager"],
+    "content": "The Equipment and Maintenance Manager reports to the Operations Manager and requires a Bachelor's degree in Mechanical or Electrical Engineering, at least 7 years of equipment and maintenance management experience, and familiarity with CMMS software. The Equipment and Maintenance Manager manages the fleet of equipment and tools, develops preventive and corrective maintenance plans, ensures equipment readiness for projects, maintains operation and maintenance records, manages maintenance workshops and technicians, monitors fuel consumption and spare parts, evaluates equipment performance and operating costs, coordinates with projects for equipment allocation, recommends equipment purchase or replacement, and submits readiness and breakdown reports to the Operations Manager. Performance is measured through four key indicators: Equipment Availability Rate (actual operating hours divided by planned operating hours, multiplied by 100, target 90% or higher), Maintenance Cost vs Asset Value (total maintenance costs divided by total asset value, multiplied by 100, target greater than 5%), Preventive vs Corrective Maintenance Rate (preventive maintenance hours divided by total maintenance hours, multiplied by 100, target 70% or higher), and Mean Time to Repair (total repair time divided by number of breakdowns, target 4 hours or less).",
+    "connections": ["13.1", "14.1"]
+  },
+  {
+    "id": "13.7",
+    "name": "Information Technology Manager",
+    "short_description": "Leads IT infrastructure, systems, cybersecurity, and technical support.",
+    "section_path": ["13. Operations Management", "13.7 Information Technology Manager"],
+    "content": "The IT Manager supervises Systems, Cybersecurity, and Technical Support, reporting to the Operations Manager. This position requires a Bachelor's degree in Information Technology or Computer Science, preferably with ITIL or PMP-IT certification, and at least 7 years of IT management experience. The IT Manager manages the company's technical infrastructure, ensures continuity of systems and network operations, supervises cybersecurity and data protection, manages user technical support, implements backup and data recovery policies, manages software and system licenses, supports digital transformation, monitors system and server performance, coordinates with technical service providers, submits IT reports to the Operations Manager, prepares annual digital transformation plans, evaluates new technical solutions, ensures systems comply with security requirements, and manages the IT budget. Performance is measured through four key indicators: System Uptime (actual operating hours divided by total period hours, multiplied by 100, target 99.5% or higher), Mean Time to Restore Service (total service downtime divided by number of outages, target 2 hours), Information Security Plan Implementation (implemented security requirements divided by total requirements, multiplied by 100, target 100%), and User Satisfaction with IT Services (average internal user rating on a scale of 1 to 5, target 4.0 or higher).",
+    "connections": ["13.1", "13.8", "13.9", "13.10"]
+  },
+  {
+    "id": "13.8",
+    "name": "Systems Officer",
+    "short_description": "Manages operation and maintenance of technical systems and applications.",
+    "section_path": ["13. Operations Management", "13.8 Systems Officer"],
+    "content": "The Systems Officer reports to the IT Manager and is responsible for managing the operation and maintenance of technical systems and applications to ensure continuity and optimal performance. The Systems Officer manages company systems and internal software, creates and updates user accounts, monitors server and system performance, performs periodic backups, handles system-related technical issues, updates software, prepares system availability reports, supports system integration between departments, maintains maintenance and update records, and escalates critical issues to the IT Manager. Performance is measured through three key indicators: Systems and Applications Availability Rate (actual availability hours divided by total required hours, multiplied by 100, target 99% or higher), Support Request Resolution Rate within SLA (requests resolved within SLA time divided by total requests, multiplied by 100, target 90% or higher), and Failed Update/Rollback Incidents (number of failures requiring rollback during the period, target 1 case per quarter or less).",
+    "connections": ["13.7"]
+  },
+  {
+    "id": "13.9",
+    "name": "Cybersecurity Officer",
+    "short_description": "Protects data and systems from cyber threats, implements security policies, and monitors for breaches.",
+    "section_path": ["13. Operations Management", "13.9 Cybersecurity Officer"],
+    "content": "The Cybersecurity Officer reports to the IT Manager and requires a Bachelor's degree in Cybersecurity or Information Technology, preferably with CISSP, CEH, or CompTIA Security+ certification, and at least 4 years of information security experience. The Cybersecurity Officer protects company systems and data from cyber threats, monitors intrusion attempts and abnormal activities, implements password and access policies, updates security and antivirus systems, conducts periodic security risk assessments, raises employee awareness of cybersecurity practices, prepares and updates incident response plans, and conducts periodic vulnerability assessments and penetration testing. Performance is measured through four key indicators: Critical Security Incidents (number of successful breaches or attacks during the period, target zero), Vulnerability Assessment Coverage Rate (systems scanned divided by total critical systems, multiplied by 100 quarterly, target 100%), Incident Detection and Response Time (average hours to detect and handle incidents, target MTTD 4 hours or less and MTTR 8 hours or less), and Information Security Policy Compliance Rate (employees complying with policies divided by total employees, multiplied by 100, target 100%).",
+    "connections": ["13.7"]
+  },
+  {
+    "id": "13.10",
+    "name": "Technical Support Officer",
+    "short_description": "Provides technical support to employees, resolves hardware/software issues, and maintains IT equipment.",
+    "section_path": ["13. Operations Management", "13.10 Technical Support Officer"],
+    "content": "The Technical Support Officer reports to the IT Manager and requires a Bachelor's degree or diploma in Information Technology, preferably with ITIL Foundation or CompTIA A+ certification, and at least 2 years of technical support experience. The Technical Support Officer provides daily technical support to employees, maintains computers, printers, and networks, receives and logs support tickets, resolves email and office software issues, sets up equipment for new employees, follows up on support requests until closure, escalates complex issues to the Systems Officer or Manager, manages IT accessories and equipment, prepares technical support reports, ensures quick response to user issues, documents maintenance and support activities, trains new employees on basic system and software usage, and contributes to developing support procedures and improving service levels. Performance is measured through four key indicators: First Call Resolution Rate (tickets resolved on first contact divided by total tickets, multiplied by 100, target 70% or higher), Average Ticket Resolution Time (average hours from ticket opening to closure, target 4 working hours or less), User Satisfaction with Support (average user rating after ticket closure on a scale of 1 to 5, target 4.2 or higher), and Tickets Exceeding SLA (tickets exceeding SLA divided by total tickets, multiplied by 100, target below 5%).",
+    "connections": ["13.7"]
+  },
+  {
+    "id": "14",
+    "name": "Project Management",
+    "short_description": "Oversees project execution across water, energy, oil & gas sectors, and engineering design.",
+    "section_path": ["14. Project Management"],
+    "content": "This section covers Project Management, including project portfolio management, sector management, project managers, execution teams, and engineering design.",
+    "connections": ["14.1", "14.2", "14.3", "14.4", "14.5", "14.6", "14.7", "14.8", "6.1"]
+  },
+  {
+    "id": "14.1",
+    "name": "Project Management Manager",
+    "short_description": "Leads project portfolio, supervises sector managers, and ensures delivery within time, cost, and quality.",
+    "section_path": ["14. Project Management", "14.1 Project Management Manager"],
+    "content": "The Project Management Manager supervises Water Sector, Energy Sector, Oil and Gas Sector, and Engineering and Design functions, reporting to the CEO. This position requires a Bachelor's degree in Engineering, mandatory PMP certification, and at least 12 years of infrastructure project management experience with 5 years in a leadership role. The Project Management Manager leads project execution across various sectors, supervises sector managers and project managers, ensures projects are executed within time, cost, and quality, coordinates with PMO on reports and schedules, coordinates with Operations for resource availability, monitors client satisfaction, resolves escalated issues, reviews project manager performance, approves major execution plans, and submits project performance reports to the CEO. Performance is measured through four key indicators: On-Time Project Completion Rate (projects completed on time divided by total projects, multiplied by 100, target 85% or higher), On-Budget Project Rate (projects within budget divided by total projects, multiplied by 100, target 88% or higher), Client Satisfaction at Project Delivery (average client rating at delivery on a scale of 1 to 5, target 4.0 or higher), and Lessons Learned Closure Rate (documented and applied lessons divided by total identified lessons, multiplied by 100, target 80% or higher).",
+    "connections": ["6.1", "14.2", "14.3", "14.4", "14.8", "8.1", "13.1"]
+  },
+  {
+    "id": "14.2",
+    "name": "Water Sector Manager",
+    "short_description": "Manages water and wastewater projects, ensuring technical quality and client satisfaction.",
+    "section_path": ["14. Project Management", "14.2 Water Sector Manager"],
+    "content": "The Water Sector Manager reports to the Project Management Manager and requires a Bachelor's degree in Civil or Chemical Engineering and at least 10 years of water and wastewater project experience with 4 years in supervision. The Water Sector Manager manages water sector projects in terms of execution and performance, distributes projects to project managers, monitors schedules, costs, and quality, coordinates with clients and consultants, supports project managers in resolving obstacles, monitors compliance with safety and quality requirements, reviews project progress invoices and reports, evaluates execution team performance, submits periodic reports to the Project Management Manager, and supports development of new opportunities when needed. Performance is measured through three key indicators: Water Projects On-Time Completion Rate (projects completed on time divided by water sector projects, multiplied by 100, target 85% or higher), Cost Performance Index for Water Sector (Earned Value divided by Actual Cost, target 1.0 or higher), and Client Satisfaction in Water Sector (average client rating per project on a scale of 1 to 5, target 4.0 or higher).",
+    "connections": ["14.1", "14.5", "14.6"]
+  },
+  {
+    "id": "14.3",
+    "name": "Energy Sector Manager",
+    "short_description": "Manages power and energy projects, ensuring technical quality and schedule adherence.",
+    "section_path": ["14. Project Management", "14.3 Energy Sector Manager"],
+    "content": "The Energy Sector Manager reports to the Project Management Manager and requires a Bachelor's degree in Electrical Engineering or Renewable Energy and at least 10 years of energy project experience with 4 years in supervision. The Energy Sector Manager manages energy sector projects from planning to delivery, monitors project managers and execution team performance, coordinates with Engineering, Procurement, and QHSE, reviews work progress against plan, monitors sector risks and provides solutions, manages operational relationships with clients, supports claim preparation or change orders, monitors project compliance with technical standards, submits sector performance reports to the Project Management Manager, and improves execution efficiency. Performance is measured through three key indicators: Energy Projects On-Time Completion Rate (projects completed on time divided by energy sector projects, multiplied by 100, target 85% or higher), Schedule Performance Index for Energy Sector (Earned Value divided by Planned Value, target 0.9 or higher), and Quality Standards Compliance Rate (compliant inspections divided by total inspections, multiplied by 100, target 95% or higher).",
+    "connections": ["14.1", "14.5", "14.6"]
+  },
+  {
+    "id": "14.4",
+    "name": "Oil and Gas Sector Manager",
+    "short_description": "Manages oil and gas projects, ensuring compliance with technical and safety requirements.",
+    "section_path": ["14. Project Management", "14.4 Oil and Gas Sector Manager"],
+    "content": "The Oil and Gas Sector Manager reports to the Project Management Manager and requires a Bachelor's degree in Petroleum, Chemical, or Mechanical Engineering and at least 10 years of oil and gas project experience with 4 years in supervision. The Oil and Gas Sector Manager manages oil and gas projects according to technical and regulatory requirements, supervises project managers and execution teams, ensures strict compliance with HSE requirements, reviews execution plans and resources, coordinates with clients and contractors, monitors costs and schedules, supports resolution of technical and contractual issues, monitors performance reports and progress invoices, escalates critical risks to the Project Management Manager, and ensures project delivery according to contract scope. Performance is measured through three key indicators: Oil and Gas Projects On-Time Completion Rate (projects completed on time divided by oil and gas sector projects, multiplied by 100, target 85% or higher), Safety Incident Rate in Sites (number of incidents multiplied by 200,000, divided by sector total work hours, target below 0.5), and Cost Performance Index for Sector (Earned Value divided by Actual Cost, target 1.0 or higher).",
+    "connections": ["14.1", "14.5", "14.6"]
+  },
+  {
+    "id": "14.5",
+    "name": "Project Manager",
+    "short_description": "Oversees complete project lifecycle, manages resources, and ensures delivery within time, quality, and cost.",
+    "section_path": ["14. Project Management", "14.5 Project Manager"],
+    "content": "The Project Manager supervises field execution teams and classified projects, reporting to the Sector Manager or Project Management Manager. The role is applied at three levels based on experience: Senior Project Manager (major projects, 7+ years experience, PMP), Project Manager (medium to large projects, 5 years experience), and Assistant Project Manager (medium projects, 3 years experience). The Project Manager manages the project from execution start to closure, prepares project execution plans in coordination with PMO, manages resources and materials, monitors progress against schedule and budget, coordinates with subcontractors and suppliers, prepares and submits progress reports, manages change orders and claims, ensures quality and safety standards are met, manages client relationships during execution, and leads project closure and handover. Performance is measured through four key indicators: Scope Achievement Rate (completed deliverables divided by total approved deliverables, multiplied by 100, target 100%), Cost Performance Index (Earned Value divided by Actual Cost, target 0.95 or higher), Schedule Performance Index (Earned Value divided by Planned Value, target 0.9 or higher), and Client Satisfaction at Project Completion (client rating in delivery record on a scale of 1 to 5, target 4.0 or higher).",
+    "connections": ["14.1", "14.2", "14.3", "14.4", "14.7", "8.1", "13.1"]
+  },
+  {
+    "id": "14.6",
+    "name": "Projects Manager",
+    "short_description": "Manages a portfolio of projects or medium projects, supervises execution teams, and monitors performance.",
+    "section_path": ["14. Project Management", "14.6 Projects Manager"],
+    "content": "The Projects Manager reports to the relevant Sector Manager, supervises Execution Teams, and requires a Bachelor's degree in Engineering and at least 5 years of engineering project management and execution experience. The Projects Manager manages a portfolio of projects or medium-sized projects, monitors daily project performance, coordinates with Planning, Cost Control, and Procurement, manages internal and external project meetings, monitors execution team compliance with approved plans, submits work progress reports to the Sector Manager, manages initial project changes and risks, supports collection and progress invoices in coordination with Finance, ensures client requirements are met, and manages work delivery and project closure. Performance is measured through three key indicators: Average CPI for Managed Projects (average Earned Value divided by Actual Cost across all active projects, target 0.95 or higher), Average SPI for Managed Projects (average Earned Value divided by Planned Value across all active projects, target 0.9 or higher), and Progress Report Submission Rate (reports submitted on time divided by total required reports, multiplied by 100, target 100%).",
+    "connections": ["14.1", "14.2", "14.3", "14.4", "14.7", "14.5"]
+  },
+  {
+    "id": "14.7",
+    "name": "Execution Teams",
+    "short_description": "Performs construction and installation works on site under supervision.",
+    "section_path": ["14. Project Management", "14.7 Execution Teams"],
+    "content": "Execution Teams report to the Project Manager and Site Supervisor, and require specialized technical and professional qualifications according to work nature, practical field experience, and commitment to HSE requirements. Execution Teams perform field work according to drawings and instructions, comply with quality and safety requirements, submit daily progress reports to the supervisor or Project Manager, maintain equipment and materials on site, report any obstacles or risks during execution, follow instructions from the Project Manager and supervisors, participate in inspection and acceptance, maintain site cleanliness and organization, adhere to work hours and productivity plans, and support closure of technical observations or client comments. Performance is measured through three key indicators: Actual vs Planned Achievement Rate (executed quantities divided by planned quantities for the period, multiplied by 100, target 90% or higher), Site Incident Rate (number of safety incidents divided by total work hours, multiplied by 200,000, target below 1.0), and Execution Quality (accepted inspections from first time divided by total inspections, multiplied by 100, target 90% or higher).",
+    "connections": ["14.5", "14.6", "15.1", "15.3"]
+  },
+  {
+    "id": "14.8",
+    "name": "Engineering and Design Manager",
+    "short_description": "Leads engineering design, reviews drawings, and supports tenders and technical proposals.",
+    "section_path": ["14. Project Management", "14.8 Engineering and Design Manager"],
+    "content": "The Engineering and Design Manager reports to the Project Management Manager and requires a Bachelor's degree in Civil, Electrical, or Mechanical Engineering, at least 10 years of engineering design experience with 4 years in supervision, and proficiency in AutoCAD or equivalent. The Engineering and Design Manager manages design and engineering work for projects, reviews and approves drawings and technical calculations, supports technical proposals and tenders, coordinates with project managers to resolve technical issues, manages design changes during execution, ensures design compliance with specifications and codes, reviews execution drawings, supports technical acceptance and testing, manages the engineering and design team, and submits technical reports to the Project Management Manager. Performance is measured through three key indicators: Drawings Delivered On-Time Rate (drawings delivered on time divided by total required drawings, multiplied by 100, target 90% or higher), Design Review Acceptance Rate (designs accepted from first review divided by total designs, multiplied by 100, target 80% or higher), and Change Orders Due to Design Errors (number of scope changes issued due to design errors, target 2 per project).",
+    "connections": ["14.1", "10.1", "10.5"]
+  },
+  {
+    "id": "15",
+    "name": "Supporting Common Functions",
+    "short_description": "Includes site engineers, office engineers, supervisors, document controllers, HSE officers, drivers, technicians, and workers.",
+    "section_path": ["15. Supporting Common Functions"],
+    "content": "This section covers supporting common functions that assist project execution and site operations, including site engineers, office engineers, supervisors, document controllers, HSE officers, drivers, technicians, and workers.",
+    "connections": ["15.1", "15.2", "15.3", "15.4", "15.5", "15.6", "15.7", "15.8", "14.1"]
+  },
+  {
+    "id": "15.1",
+    "name": "Site Engineer",
+    "short_description": "Supervises technical aspects of field work, ensures compliance with drawings and specifications.",
+    "section_path": ["15. Supporting Common Functions", "15.1 Site Engineer"],
+    "content": "The Site Engineer reports to the Project Manager or Site Supervisor and requires a Bachelor's degree in Civil, Electrical, or Mechanical Engineering and at least 3 years of field engineering experience. The Site Engineer supervises daily site technical activities, ensures work is executed according to approved drawings and specifications, coordinates with the consultant and subcontractors for technical matters, prepares site inspection reports and daily logs, manages quality control and testing activities on site, resolves site technical issues and coordinates with the office engineer, monitors material delivery and compliance with technical specifications, participates in site meetings and progress reviews, ensures safety and quality standards are followed, and prepares progress reports and assists in claim preparation. Performance is measured through three key indicators: Work Compliance with Specifications (inspections passed divided by total inspections, multiplied by 100, target 95% or higher), Daily Reporting Compliance (reports submitted on time divided by total work days, multiplied by 100, target 95% or higher), and Issue Resolution Time (average days to resolve site technical issues, target 2 days or less).",
+    "connections": ["14.5", "15.2", "15.3", "7.2"]
+  },
+  {
+    "id": "15.2",
+    "name": "Office Engineer for Project",
+    "short_description": "Prepares and reviews engineering documents, manages drawing registers, and supports technical coordination.",
+    "section_path": ["15. Supporting Common Functions", "15.2 Office Engineer for Project"],
+    "content": "The Office Engineer for Project reports to the Project Manager or Engineering Manager and requires a Bachelor's degree in Civil, Electrical, or Mechanical Engineering, at least 3 years of technical office experience, and proficiency in AutoCAD and MS Project. The Office Engineer reviews engineering drawings and ensures compliance with specifications and contract, prepares and distributes transmittal and receipt documents, follows up on drawing requests and shop details from site, prepares and updates Drawing Register and approved versions, prepares engineering memos and Requests for Information, reviews Material Submittals and submits to consultant, supports progress invoice preparation and quantity takeoffs, coordinates with the Site Engineer to resolve emerging technical issues, prepares weekly and monthly engineering status reports, maintains electronic archive of drawings and technical documents, and supports preparation of As-Built documents and Operation & Maintenance manuals. Performance is measured through four key indicators: Drawings Reviewed On-Time Rate (drawings reviewed on time divided by total received drawings, multiplied by 100, target 95% or higher), Documents Returned Due to Technical Errors Rate (documents returned due to errors divided by total sent documents, multiplied by 100, target 5% or less), RFI Response Time (average working days from request receipt to response, target 3 working days), and Weekly Progress Reporting Compliance (reports submitted on time divided by total required reports, multiplied by 100, target 100%).",
+    "connections": ["14.5", "15.1", "14.8"]
+  },
+  {
+    "id": "15.3",
+    "name": "Site Supervisor",
+    "short_description": "Oversees daily site work, directs teams, and ensures compliance with quality and safety.",
+    "section_path": ["15. Supporting Common Functions", "15.3 Site Supervisor"],
+    "content": "The Site Supervisor reports to the Project Manager and requires a Diploma in Civil Engineering or related field, at least 5 years of site supervision experience, and knowledge of construction methods and safety procedures. The Site Supervisor provides daily supervision of site work, distributes tasks to labor and technicians, ensures work is executed according to drawings, monitors daily productivity, reports material or equipment needs, ensures safety compliance, coordinates inspections with QA/QC, prepares daily reports of executed work, handles minor field issues, escalates obstacles to the Project Manager, verifies material suitability before use, supervises application of work permits and safety procedures, documents executed quantities daily, and participates in weekly site meetings. Performance is measured through four key indicators: Daily Achievement vs Plan Rate (daily executed quantities divided by planned quantities, multiplied by 100, target 90% or higher), Site Safety Incidents (number of documented incidents on site during the period, target zero major incidents), First-Time Inspection Acceptance Rate (inspections accepted without observations divided by total inspections, multiplied by 100, target 85% or higher), and Progress Report Submission Rate (reports submitted on time divided by total required reports, multiplied by 100, target 100%).",
+    "connections": ["14.5", "15.1", "15.4", "15.8"]
+  },
+  {
+    "id": "15.4",
+    "name": "Administrative Coordinator / Document Controller",
+    "short_description": "Organizes documents, manages correspondence, and ensures version control and archiving.",
+    "section_path": ["15. Supporting Common Functions", "15.4 Administrative Coordinator / Document Controller"],
+    "content": "The Administrative Coordinator / Document Controller reports to the Project Manager or Sector Manager and is responsible for organizing and maintaining physical and electronic documents. The Administrative Coordinator issues and tracks official correspondence, manages document copies and ensures use of latest versions, follows up on approvals and signatures, prepares incoming and outgoing registers, supports report and meeting preparation, archives contracts and drawings, ensures document confidentiality and protection, coordinates between departments when needed, reports document deficiencies or delays, applies uniform document numbering and classification systems, ensures drawings and technical documents are distributed to relevant parties immediately upon receipt, monitors and updates Document Distribution Matrix, and prepares periodic reports on pending or unapproved documents. Performance is measured through four key indicators: Properly Archived Documents Rate (documents archived per system divided by total received documents, multiplied by 100, target 99% or higher), Document Retrieval Time (average minutes from document request to delivery, target 15 minutes or less), Correspondence Processed On-Time Rate (correspondence processed same day divided by total correspondence, multiplied by 100, target 95% or higher), and Document Register Accuracy (documents with correct version divided by total covered documents, multiplied by 100, target 100%).",
+    "connections": ["14.5", "15.3"]
+  },
+  {
+    "id": "15.5",
+    "name": "Occupational Health and Safety Officer (HSE Officer) - Field",
+    "short_description": "Implements and monitors HSE systems at project sites, conducts inspections, and ensures compliance.",
+    "section_path": ["15. Supporting Common Functions", "15.5 Occupational Health and Safety Officer (HSE Officer) - Field"],
+    "content": "The Occupational Health and Safety Officer (Field) reports to the Project Manager and QHSE Manager and requires a Bachelor's degree in Engineering or Occupational Health and Safety, NEBOSH or IOSH certification, and at least 3 years of HSE experience in construction or industrial projects. The HSE Officer develops and implements project-specific occupational health and safety plans, conducts daily site inspection tours to identify safety hazards, organizes and delivers safety awareness and training programs for all site workers, investigates incidents and injuries and prepares root cause analysis, supervises provision and use of Personal Protective Equipment, coordinates with government and regulatory bodies, prepares and updates safety records and performance reports, reviews work plans for safety compliance, supervises storage and handling of hazardous materials, leads emergency drills and evacuation plans, and follows up on work permits for high-risk activities. Performance is measured through three key indicators: Site Incident Rate (number of incidents per month, target 0 incidents per month), Safety Standards Compliance Rate (inspection findings, target 95% or higher), and Safety Training Completion Rate (trained workers divided by total workers, multiplied by 100, target 100%).",
+    "connections": ["14.5", "7.1", "7.3"]
+  },
+  {
+    "id": "15.6",
+    "name": "Equipment/Vehicle Driver",
+    "short_description": "Operates and transports heavy equipment or vehicles, ensuring safety and maintenance.",
+    "section_path": ["15. Supporting Common Functions", "15.6 Equipment/Vehicle Driver"],
+    "content": "The Equipment/Vehicle Driver reports to the Site Supervisor or Equipment and Maintenance Manager and requires a valid driving license appropriate for the equipment or vehicle, at least 2 years of experience operating similar equipment, and familiarity with site safety procedures. The Equipment/Vehicle Driver operates assigned heavy equipment or vehicles efficiently and safely, conducts daily pre-operation inspection and reports any malfunctions, transports materials and equipment between sites according to operational schedule, complies with traffic safety rules and site instructions, maintains vehicle or equipment cleanliness and performs basic periodic maintenance, delivers and receives equipment to maintenance department when needed, signs daily operation logs, and immediately reports any incident or malfunction. Performance is measured through four key indicators: Actual Operating Hours Rate (actual operating hours divided by planned hours, multiplied by 100, target 90% or higher), Breakdown Rate During Operation (number of breakdowns recorded during the month, target 1 breakdown per month), Daily Operation Log Compliance (completed logs divided by total operation days, multiplied by 100, target 100%), and Operational Safety (number of operation-related incidents, target zero incidents).",
+    "connections": ["15.3", "13.6"]
+  },
+  {
+    "id": "15.7",
+    "name": "Specialist Technician",
+    "short_description": "Performs specialized technical work (electrical, mechanical, welding, etc.) under supervision.",
+    "section_path": ["15. Supporting Common Functions", "15.7 Specialist Technician"],
+    "content": "The Specialist Technician reports to the Site Supervisor or Site Engineer and requires a Diploma or professional certification in the relevant specialization, at least 2 years of field experience, and the ability to read basic technical drawings. The Specialist Technician performs specialized technical work according to approved drawings and specifications, conducts initial inspections and tests of equipment and systems, reports any technical issues to the Site Supervisor immediately upon discovery, maintains and cares for tools and equipment, complies with quality standards and safety procedures, participates in inspection and handover activities with QA/QC team, documents completed work daily, and trains new workers on basic tasks when needed. Performance is measured through four key indicators: First-Time Work Quality Acceptance Rate (accepted work divided by total executed work, multiplied by 100, target 90% or higher), Rework Rate (rework hours divided by total work hours, multiplied by 100, target 5% or less), Daily Work Report Compliance (reports submitted divided by work days, multiplied by 100, target 100%), and Work Safety (number of technician-related incidents, target zero incidents).",
+    "connections": ["15.3", "15.1"]
+  },
+  {
+    "id": "15.8",
+    "name": "Worker",
+    "short_description": "Performs manual and operational tasks at project sites, supporting execution teams.",
+    "section_path": ["15. Supporting Common Functions", "15.8 Worker"],
+    "content": "The Worker reports to the Site Supervisor and requires no specific educational qualification, but must be able to perform manual work and commit to safety instructions. The Worker performs excavation, backfilling, and manual handling work according to supervisor instructions, assists technicians in preparing work sites and arranging materials, maintains site cleanliness and organization, moves materials and tools between different site areas, wears Personal Protective Equipment at all times, immediately reports any hazards or incidents to the direct supervisor, participates in safety awareness and training programs, and performs any other tasks assigned by the direct supervisor. Performance is measured through four key indicators: Daily Productivity (actually executed quantities divided by planned quantities, multiplied by 100, target 85% or higher), Attendance and Discipline Compliance (actual attendance days divided by scheduled work days, multiplied by 100, target 95% or higher), Safety Standards Compliance (number of safety violations recorded against the worker, target zero violations), and Work Quality (number of positive observations from supervisor on work quality, target 2 observations per month).",
+    "connections": ["15.3"]
+  },
+  {
+    "id": "16",
+    "name": "Abbreviated Administrative Escalation Matrix",
+    "short_description": "Provides a quick reference for reporting lines and escalation paths for each function.",
+    "section_path": ["16. Abbreviated Administrative Escalation Matrix"],
+    "content": "The Abbreviated Administrative Escalation Matrix provides a quick reference for reporting lines and escalation paths for each function within the organization. The CEO reports to the Board of Directors. The QHSE Manager, PMO Manager, Legal and Contracts Affairs Manager, Business Development Manager, Finance Director, Human Resources Manager, Operations Manager, and Project Management Manager all report directly to the CEO. QA/QC Officers and HSE Officers report to the QHSE Manager. Planning, Cost Control, Reporting, Risk, and Claims Officers report to the PMO Manager. Legal Administration and Contract Management report to the Legal and Contracts Affairs Manager. Pricing, Tenders, Market Analysis, Relationship Management, and Government Tenders roles report to the Business Development Manager. Accounts Managers, General Accounts, Project Accounts, Treasury, and Credit report to the Finance Director. Payroll, Recruitment, Training, Employee Affairs, Employee Relations, Saudization, and Benefits report to the Human Resources Manager. Procurement, Warehouses, Logistics, Equipment and Maintenance, and IT functions report to the Operations Manager. Sector Managers, Project Managers, Execution Teams, Engineering and Design, Site Engineers, Office Engineers, Site Supervisors, and Administrative Coordinators report through the Project Management structure. HSE Officers in the field, Equipment Drivers, Technicians, and Workers have specific reporting lines to their respective supervisors.",
+    "connections": ["5.1", "6.1", "7.1", "7.2", "7.3", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "9.1", "9.2", "9.3", "10.1", "10.2", "10.3", "10.4", "10.5", "10.6", "10.7", "10.8", "11.1", "11.2", "11.3", "11.4", "11.5", "11.6", "12.1", "12.2", "12.3", "12.4", "12.5", "12.6", "12.7", "12.8", "13.1", "13.2", "13.3", "13.4", "13.5", "13.6", "13.7", "13.8", "13.9", "13.10", "14.1", "14.2", "14.3", "14.4", "14.5", "14.6", "14.7", "14.8", "15.1", "15.2", "15.3", "15.4", "15.5", "15.6", "15.7", "15.8"]
+  },
+  {
+    "id": "17",
+    "name": "Organizational Recommendations",
+    "short_description": "Recommends separation between PMO and project management, and coordination mechanisms between departments.",
+    "section_path": ["17. Organizational Recommendations"],
+    "content": "This section provides organizational recommendations for the company. First, there should be a clear separation between the PMO and the executive project management function. The PMO role is regulatory and supervisory, encompassing planning, reporting, risk management, cost control, claims, and standardizing project management methodologies. The Project Management role is executive and operational, including sector management, project managers management, execution teams management, work execution and project delivery, and daily client relationship management during execution. Second, the following periodic coordination meetings should be established: PMO with Project Management, PMO with Finance, PMO with Legal and Contracts, Business Development with Engineering, Finance, and Operations, and QHSE with Projects and Operations. A weekly coordination meeting between PMO and Project Managers should be held to review work progress. The company should implement an ERP system or unified project management program to improve information flow, and establish an internal communication platform to enhance inter-departmental coordination.",
+    "connections": ["8", "14", "11", "9", "10", "13", "7"]
+  },
+  {
+    "id": "18",
+    "name": "Guide Approval",
+    "short_description": "Details the approval process and review schedule for the guide.",
+    "section_path": ["18. Guide Approval"],
+    "content": "This guide becomes effective upon approval by the CEO and may be updated upon any change in the organizational structure or scope of departmental work. The guide shall be reviewed annually or upon any substantial structural change in the company. An approved copy of the guide shall be sent to all department managers upon approval. This guide is adopted as the official reference for recruitment, evaluation, and training decisions. The guide has been prepared by Eng. Mohammed Saleh Hassoun, reviewed by Human Resources Management, and approved by the Board of Directors or CEO, as indicated on the Approval Page.",
+    "connections": []
+  }
+]

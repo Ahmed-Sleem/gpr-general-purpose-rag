@@ -2,7 +2,7 @@
 Chat Streaming API Router (`src/backend/api/chat.py`).
 
 Provides Server-Sent Events (`SSE`) streaming endpoint (`POST /api/v1/chat/stream`) across AR/EN languages:
-- Accepts custom DeepSeek/OpenAI API keys via `X-LLM-API-Key` header.
+- Accepts custom DeepSeek, Groq, or OpenAI API keys and models via `X-LLM-API-Key`, `X-LLM-Provider`, `X-LLM-Model` headers.
 - Streams live retrieval tool execution events (`event: agent_search`) for Obsidian Graph camera animation.
 - Streams grounded AI answer tokens (`event: token`).
 """
@@ -35,13 +35,21 @@ async def stream_chat(
     payload: ChatRequestPayload,
     session: AsyncSession = Depends(get_db),
     x_llm_api_key: Optional[str] = Header(None, alias="X-LLM-API-Key"),
-    x_app_language: Optional[str] = Header("ar", alias="X-App-Language")
+    x_llm_provider: Optional[str] = Header("deepseek", alias="X-LLM-Provider"),
+    x_llm_model: Optional[str] = Header("deepseek-chat", alias="X-LLM-Model"),
+    x_app_language: Optional[str] = Header("ar", alias="X-App-Language"),
+    x_workflow_cycles: Optional[str] = Header("3", alias="X-Workflow-Cycles")
 ):
     """
-    Execute streaming grounded ReAct chat session.
+    Execute streaming grounded ReAct chat session across Groq, DeepSeek, or OpenAI.
     Streams SSE dictionaries for live Obsidian Graph animation (`agent_search`) and token generation (`token`).
     """
     language = payload.language if payload.language else (x_app_language or "ar")
+    try:
+        cycles_val = int(x_workflow_cycles or "3")
+        cycles_val = max(1, min(cycles_val, 6))
+    except Exception:
+        cycles_val = 3
 
     async def event_generator():
         try:
@@ -51,7 +59,10 @@ async def stream_chat(
                 language=language,
                 document_id=payload.document_id,
                 history=payload.history,
-                custom_api_key=x_llm_api_key
+                custom_api_key=x_llm_api_key,
+                provider=x_llm_provider or "deepseek",
+                model=x_llm_model or "deepseek-chat",
+                workflow_cycles=cycles_val
             ):
                 event_type = event_dict.get("event", "token")
                 data_content = event_dict.get("data", "")

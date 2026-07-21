@@ -42,9 +42,9 @@ def test_arabic_detection_and_normalization():
 def test_parse_pdf_structure_counts(parsed_kb):
     # Assert overall document structure counts (`hr_source.pdf` v1.0)
     assert parsed_kb.document_version == "v1.0"
-    assert len(parsed_kb.sections) >= 450, f"Expected at least 450 sections, got {len(parsed_kb.sections)}"
-    assert len(parsed_kb.job_descriptions) >= 45, f"Expected at least 45 job descriptions, got {len(parsed_kb.job_descriptions)}"
-    assert len(parsed_kb.kpis) >= 180, f"Expected at least 180 KPIs, got {len(parsed_kb.kpis)}"
+    assert len(parsed_kb.sections) >= 70, f"Expected at least 70 full complete departmental chapters, got {len(parsed_kb.sections)}"
+    assert len(parsed_kb.job_descriptions) >= 45, f"Expected at least 45 self-contained job role profiles, got {len(parsed_kb.job_descriptions)}"
+    assert len(parsed_kb.kpis) >= 180, f"Expected at least 180 exact KPI calculation formulas, got {len(parsed_kb.kpis)}"
     assert len(parsed_kb.escalation_rules) == 4, f"Expected exactly 4 escalation rules, got {len(parsed_kb.escalation_rules)}"
 
 

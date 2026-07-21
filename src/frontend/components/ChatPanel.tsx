@@ -1,37 +1,74 @@
 "use client";
 
+/**
+ * WHY: Chat Workspace Panel (`ChatPanel.tsx`) — exact DOM structure from `index (31).html`.
+ * Per Ahmed's exact instructions (`GAP-GPR-22`):
+ * 1. Decodes live JSON tokens (`data: {"token": "..."}`) to guarantee zero truncation and zero connected characters.
+ * 2. Displays a visible **Cycle Reasoning Log Card (`[ 🔄 TOC Navigation Steps ]`)** right inside the streaming bubble.
+ * 3. Clicking inline citations (`[Source: Section X.Y]`) triggers `setInspectingNodeId(code)` to open our universal `CitationDrawer.tsx`.
+ */
 import React, { useState, useRef, useEffect } from "react";
 import { useApp, ConversationTurn } from "../context/AppContext";
-import { CitationDrawer } from "./CitationDrawer";
+
+interface ExtendedTurn extends ConversationTurn {
+  cycle_logs?: string[];
+}
 
 export const ChatPanel: React.FC = () => {
   const {
     conversations, activeConversationId, addTurnToConversation,
-    apiKey, language, selectedDocIds, setActiveGraphNodeIds, t
+    apiKey, savedApiKeys, apiProvider, apiModel, language, selectedDocIds, setActiveGraphNodeIds, setInspectingNodeId, deviceId, workflowCycles, t
   } = useApp();
 
   const [inputMessage, setInputMessage] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
   const [activeSearchStatus, setActiveSearchStatus] = useState<string | null>(null);
-  const [activeCitationCode, setActiveCitationCode] = useState<string | null>(null);
-  const [activeCitationTitle, setActiveCitationTitle] = useState<string | null>(null);
+  const [cycleLogs, setCycleLogs] = useState<string[]>([]);
+  const [copyConvSuccess, setCopyConvSuccess] = useState(false);
+  const [showCopyBtn, setShowCopyBtn] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const activeConv = conversations.find(c => c.id === activeConversationId);
-  const turns = activeConv ? activeConv.turns : [];
+  const turns = activeConv ? (activeConv.turns as ExtendedTurn[]) : [];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (turns.length > 0) setShowCopyBtn(true);
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [turns, streamingContent, activeSearchStatus]);
+  }, [turns, streamingContent, activeSearchStatus, cycleLogs]);
+
+  useEffect(() => {
+    if (showCopyBtn && !copyConvSuccess) {
+      const timer = setTimeout(() => setShowCopyBtn(false), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [showCopyBtn, copyConvSuccess]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 40;
+    if (isAtBottom && turns.length > 0) {
+      setShowCopyBtn(true);
+    }
+  };
 
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!inputMessage.trim() || isStreaming) return;
+
+    const activeKey = apiKey || (savedApiKeys && savedApiKeys.length > 0 ? savedApiKeys[0].key : "");
+    if (!activeKey || !activeKey.trim()) {
+      alert(language === "ar"
+        ? "⚠️ يرجى إضافة وتفعيل مفتاح API أولاً (من شريط العنوان بالأعلى [ 🔑 Add API Key ]) قبل إرسال الرسالة."
+        : "⚠️ Please connect and activate an API key first (from the top header [ 🔑 Add API Key ]) before sending a message."
+      );
+      return;
+    }
 
     const userText = inputMessage.trim();
     setInputMessage("");
@@ -46,21 +83,28 @@ export const ChatPanel: React.FC = () => {
 
     setIsStreaming(true);
     setStreamingContent("");
-    setActiveSearchStatus(language === "ar" ? "🔍 جاري استرجاع وفحص المقاطع في الخريطة..." : "🔍 Inspecting chunks on graph view...");
+    setCycleLogs([]);
+    setActiveSearchStatus(language === "ar" ? "🔍 جاري تحليل السؤال ومراجعة الفهرس..." : "🔍 Analyzing query and examining TOC...");
+
+    let accumulatedLogs: string[] = [];
 
     try {
       const response = await fetch("/api/v1/chat/stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-LLM-API-Key": apiKey,
-          "X-App-Language": language
+          "X-LLM-API-Key": activeKey,
+          "X-LLM-Provider": apiProvider || "deepseek",
+          "X-LLM-Model": apiModel || "deepseek-chat",
+          "X-App-Language": language,
+          "X-Device-ID": deviceId,
+          "X-Workflow-Cycles": String(workflowCycles || 3)
         },
         body: JSON.stringify({
           message: userText,
           document_id: selectedDocIds.length > 0 ? selectedDocIds[0] : null,
           language: language,
-          history: turns.map(t => ({ role: t.role, content: t.content }))
+          history: turns.slice(-6).map(turnItem => ({ role: turnItem.role, content: turnItem.content }))
         })
       });
 
@@ -71,6 +115,7 @@ export const ChatPanel: React.FC = () => {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder("utf-8");
       let partialText = "";
+      let sseBuffer = "";
 
       if (reader) {
         let currentEvent = "token";
@@ -78,8 +123,9 @@ export const ChatPanel: React.FC = () => {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const chunkStr = decoder.decode(value, { stream: true });
-          const lines = chunkStr.split("\n");
+          sseBuffer += decoder.decode(value, { stream: true });
+          const lines = sseBuffer.split("\n");
+          sseBuffer = lines.pop() || "";
 
           for (const line of lines) {
             const trimmedLine = line.trim();
@@ -103,8 +149,26 @@ export const ChatPanel: React.FC = () => {
                       setActiveSearchStatus(language === "ar" ? `🔍 استرجاع في الخريطة: "${searchData.query}"` : `🔍 Graph querying: "${searchData.query}"`);
                     }
                   } catch (err) {}
+                } else if (currentEvent === "cycle_step") {
+                  try {
+                    const stepObj = JSON.parse(valStr);
+                    if (stepObj.status) {
+                      setActiveSearchStatus(stepObj.status);
+                      accumulatedLogs.push(stepObj.status);
+                      setCycleLogs([...accumulatedLogs]);
+                    }
+                  } catch (err) {}
                 } else if (currentEvent === "token") {
-                  partialText += valStr;
+                  try {
+                    const tokenObj = JSON.parse(valStr);
+                    if (tokenObj.token !== undefined) {
+                      partialText += tokenObj.token;
+                    } else {
+                      partialText += valStr;
+                    }
+                  } catch (err) {
+                    partialText += valStr;
+                  }
                   setStreamingContent(partialText);
                 }
               }
@@ -113,15 +177,16 @@ export const ChatPanel: React.FC = () => {
         }
       }
 
-      const assistantTurn: ConversationTurn = {
+      const assistantTurn: ExtendedTurn = {
         id: `turn_a_${Date.now()}`,
         role: "assistant",
         content: partialText || (language === "ar" ? "تم استكمال الاسترجاع من الدليل." : "Retrieval completed from workspace manual."),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        cycle_logs: accumulatedLogs
       };
       addTurnToConversation(assistantTurn);
     } catch (e: any) {
-      const errTurn: ConversationTurn = {
+      const errTurn: ExtendedTurn = {
         id: `turn_err_${Date.now()}`,
         role: "assistant",
         content: language === "ar" ? `عذراً، حدث خطأ في الاتصال بخادم الاسترجاع: ${e.message}` : `Sorry, error connecting to retrieval backend: ${e.message}`,
@@ -132,150 +197,319 @@ export const ChatPanel: React.FC = () => {
       setIsStreaming(false);
       setStreamingContent("");
       setActiveSearchStatus(null);
+      setCycleLogs([]);
     }
   };
 
+  const renderMarkdownContent = (text: string) => {
+    if (!text) return null;
+    // Basic structured markdown rendering for real-time output
+    const lines = text.split("\n");
+    const elements: React.ReactNode[] = [];
+    let listItems: React.ReactNode[] = [];
+    let listKey = 0;
+
+    const flushList = () => {
+      if (listItems.length > 0) {
+        elements.push(<ul key={`ul_${listKey++}`} style={{ paddingLeft: "16px", margin: "6px 0", listStyle: "disc" }}>{listItems}</ul>);
+        listItems = [];
+      }
+    };
+
+    lines.forEach((line, i) => {
+      // Heading
+      if (line.startsWith("## ") || line.startsWith("# ")) {
+        flushList();
+        elements.push(<h3 key={`h_${i}`} style={{ fontWeight: 700, fontSize: "15px", margin: "10px 0 6px 0", color: "var(--text-primary)" }}>{line.replace(/^##? /, "")}</h3>);
+        return;
+      }
+      // List item
+      if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
+        const content = line.trim().slice(2);
+        listItems.push(<li key={`li_${i}`} style={{ marginBottom: "4px", fontSize: "13px", lineHeight: 1.6 }}>{renderInlineMarkdown(content)}</li>);
+        return;
+      }
+      // Empty line -> flush list and add break
+      if (line.trim() === "") {
+        flushList();
+        elements.push(<div key={`br_${i}`} style={{ height: "6px" }} />);
+        return;
+      }
+      flushList();
+      elements.push(<p key={`p_${i}`} style={{ margin: "4px 0", fontSize: "13px", lineHeight: 1.65, color: "var(--text-body)", wordBreak: "break-word" }}>{renderInlineMarkdown(line)}</p>);
+    });
+    flushList();
+    return <div style={{ whiteSpace: "pre-wrap" }}>{elements}</div>;
+  };
+
+  const renderInlineMarkdown = (text: string) => {
+    // Split by bold (**text**) and italic (*text*) patterns
+    const parts: React.ReactNode[] = [];
+    let lastIdx = 0;
+    const regex = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
+    let match;
+    let keyIdx = 0;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIdx) {
+        parts.push(<span key={`t_${keyIdx++}`}>{text.slice(lastIdx, match.index)}</span>);
+      }
+      const token = match[0];
+      if (token.startsWith("**") && token.endsWith("**")) {
+        parts.push(<strong key={`b_${keyIdx++}`} style={{ fontWeight: 700 }}>{token.slice(2, -2)}</strong>);
+      } else if (token.startsWith("*") && token.endsWith("*")) {
+        parts.push(<em key={`i_${keyIdx++}`} style={{ fontStyle: "italic" }}>{token.slice(1, -1)}</em>);
+      } else {
+        parts.push(<span key={`t2_${keyIdx++}`}>{token}</span>);
+      }
+      lastIdx = match.index + token.length;
+    }
+    if (lastIdx < text.length) {
+      parts.push(<span key={`t_${keyIdx++}`}>{text.slice(lastIdx)}</span>);
+    }
+    if (parts.length === 0) return text;
+    return <span>{parts}</span>;
+  };
+
   const renderContentWithCitations = (content: string) => {
+    // Render structured markdown first, then handle citations
     const citationRegex = /\[(المصدر|Source):\s*(القسم|Section|جدول|Table)?\s*([0-9\.\w\-]+)\s*[\-\:]?\s*([^\]]+)?\]/g;
-    const parts = [];
+    const rawText = content;
+    // Split by citations; render markdown for non-citation text, citation buttons for citations
+    const parts: React.ReactNode[] = [];
     let lastIdx = 0;
     let match;
+    let keyIdx = 0;
 
-    while ((match = citationRegex.exec(content)) !== null) {
+    while ((match = citationRegex.exec(rawText)) !== null) {
       if (match.index > lastIdx) {
-        parts.push(<span key={`text_${lastIdx}`}>{content.slice(lastIdx, match.index)}</span>);
+        const segment = rawText.slice(lastIdx, match.index);
+        parts.push(<span key={`md_${keyIdx++}`}>{renderMarkdownContent(segment)}</span>);
       }
       const code = match[3] || "1.0";
-      const title = match[4] || match[0];
       parts.push(
         <button
-          key={`cite_${match.index}`}
-          onClick={() => {
-            setActiveCitationCode(code);
-            setActiveCitationTitle(title);
-          }}
-          style={{
-            background: "var(--accent-green-bg)", color: "var(--accent-green)",
-            border: "1px solid rgba(155, 227, 107, 0.4)", borderRadius: "12px",
-            padding: "2px 8px", fontSize: "11px", fontWeight: 600, cursor: "pointer",
-            display: "inline-flex", alignItems: "center", gap: "4px", margin: "0 4px"
-          }}
-          title="Click to open source excerpt"
+          key={`cite_${keyIdx++}`}
+          onClick={() => setInspectingNodeId(code)}
+          className="source-chip"
+          style={{ cursor: "pointer", border: "1px solid var(--border-soft)", outline: "none", margin: "0 4px", display: "inline-flex", alignItems: "center", gap: "4px", padding: "2px 8px", borderRadius: "9999px", background: "var(--color-blue-pale)", color: "var(--text-meta)", fontSize: "10px", fontWeight: 600 }}
+          title={language === "ar" ? "انقر لفحص البطاقة وقراءة النص الكامل المحمي" : "Click to inspect exact node JSON from manual"}
         >
-          📄 {code}
+          <span>📄</span>
+          <span>{code}</span>
         </button>
       );
       lastIdx = match.index + match[0].length;
     }
 
-    if (lastIdx < content.length) {
-      parts.push(<span key={`text_${lastIdx}`}>{content.slice(lastIdx)}</span>);
+    if (lastIdx < rawText.length) {
+      const segment = rawText.slice(lastIdx);
+      parts.push(<span key={`md_final_${keyIdx++}`}>{renderMarkdownContent(segment)}</span>);
     }
-    return parts.length > 0 ? parts : content;
+
+    if (parts.length === 0) {
+      return renderMarkdownContent(rawText);
+    }
+    return <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{parts}</div>;
   };
 
   return (
-    <div className="glass-panel" style={{ height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
+    <div className="chat-container">
       {/* Chat Messages Feed */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="chat-messages scrollable" id="chatMessages" role="log" aria-live="polite" aria-atomic="true" onScroll={handleScroll}>
         {turns.length === 0 && !isStreaming ? (
-          <div style={{ textAlign: "center", margin: "auto 0", color: "var(--text-secondary)", maxWidth: "380px" }}>
-            <div style={{ fontSize: "36px", marginBottom: "12px" }}>🤖</div>
-            <h3 style={{ fontSize: "16px", color: "var(--text-primary)", marginBottom: "8px" }}>
-              {language === "ar" ? "مرحباً بك في المساعد الداخلي المعتمد" : "Welcome to Cyrkil Grounded Assistant"}
-            </h3>
-            <p style={{ fontSize: "13px", lineHeight: 1.6 }}>
-              {language === "ar"
-                ? "يسترجع المساعد المعلومات حصرياً من دليل الهيكل التنظيمي المعتمد والمستندات المرفوعة. اسأل عن صلاحيات الأقسام، مؤشرات الأداء (KPIs)، أو مسارات التصعيد."
-                : "The assistant grounds answers strictly in your approved organizational manuals. Ask about department duties, KPI targets, or escalation paths."}
-            </p>
+          <div className="message" role="article" aria-label="Welcome message" style={{ alignSelf: "center", maxWidth: "90%", margin: "auto 0" }}>
+            <div className="bubble" style={{ alignItems: "center", textAlign: "center", padding: "20px" }}>
+              <span className="role-label" style={{ fontSize: "11px", marginBottom: "4px" }}>GPR Grounded Workspace v1.0</span>
+              <div className="content" style={{ background: "transparent", border: "none" }}>
+                <div style={{ fontSize: "32px", marginBottom: "8px" }}>◈</div>
+                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px" }}>
+                  {language === "ar" ? "مرحباً بك في المساعد الداخلي المعتمد (GPR)" : "Welcome to GPR Grounded Assistant"}
+                </h3>
+              </div>
+            </div>
           </div>
         ) : null}
 
         {turns.map(turn => (
           <div
             key={turn.id}
-            style={{
-              alignSelf: turn.role === "user" ? "flex-end" : "flex-start",
-              maxWidth: "82%",
-              background: turn.role === "user" ? "rgba(45, 45, 45, 0.85)" : "var(--bg-card)",
-              border: turn.role === "user" ? "1px solid rgba(255,255,255,0.12)" : "1px solid var(--border)",
-              borderLeft: turn.role === "assistant" && language === "en" ? "3px solid var(--accent-green)" : undefined,
-              borderRight: turn.role === "assistant" && language === "ar" ? "3px solid var(--accent-green)" : undefined,
-              borderRadius: "10px", padding: "14px 16px", fontSize: "14px", lineHeight: 1.6,
-              color: "var(--text-primary)", boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
-            }}
+            className={`message ${turn.role === "user" ? "sent" : ""}`}
+            role="article"
+            aria-label={turn.role === "user" ? "Message from you" : "Message from assistant"}
           >
-            <div style={{ fontSize: "11px", color: "var(--text-muted)", marginBottom: "6px", fontWeight: 600 }}>
-              {turn.role === "user" ? (language === "ar" ? "👤 الموظف" : "👤 Staff Query") : (language === "ar" ? "🤖 المساعد الذكي (Grounded RAG)" : "🤖 Grounded Assistant")}
-            </div>
-            <div style={{ whiteSpace: "pre-wrap" }}>
-              {turn.role === "assistant" ? renderContentWithCitations(turn.content) : turn.content}
+            <div className="bubble">
+              <span className="role-label">
+                {turn.role === "user" ? (language === "ar" ? "استفسار الموظف" : "Staff Query") : (language === "ar" ? "المساعد المعتمد (GPR)" : "GPR Grounded Assistant")}
+              </span>
+              <div className="content">
+                {/* Render cycle logs card if saved for assistant turn and actual nodes were requested (`Point 9 & Point 10`) */}
+                {turn.role === "assistant" && turn.cycle_logs && turn.cycle_logs.some(l => l.includes("Inspecting") || l.includes("Requested inspection") || l.includes("inspecting")) && (
+                  <div style={{
+                    background: "var(--color-slate)", border: "1px solid var(--border-soft)",
+                    borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: "12px",
+                    display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "var(--text-meta)"
+                  }}>
+                    <div style={{ fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>{language === "ar" ? "سجل الاستقصاء والتفكير:" : "THINKING LOG:"}</span>
+                    </div>
+                    {turn.cycle_logs.map((logStr, lIdx) => (
+                      <div key={lIdx} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span>•</span><span>{logStr}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {turn.role === "assistant" ? renderContentWithCitations(turn.content) : turn.content}
+              </div>
+              <span className="time">
+                {new Date(turn.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </span>
             </div>
           </div>
         ))}
 
         {isStreaming ? (
-          <div style={{
-            alignSelf: "flex-start", maxWidth: "82%", background: "var(--bg-card)",
-            border: "1px solid var(--border-focus)", borderRadius: "10px", padding: "14px 16px",
-            fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)"
-          }}>
-            <div style={{ fontSize: "11px", color: "var(--accent-green)", marginBottom: "6px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
-              <span>⚡ {language === "ar" ? "جاري الاسترجاع والتحليل..." : "Streaming grounded answer..."}</span>
-            </div>
-            {activeSearchStatus && (
-              <div style={{
-                fontSize: "12px", background: "rgba(155, 227, 107, 0.08)", border: "1px dashed var(--border-focus)",
-                padding: "6px 10px", borderRadius: "6px", color: "var(--accent-green)", marginBottom: "10px",
-                display: "flex", alignItems: "center", gap: "6px"
-              }}>
-                <span>{activeSearchStatus}</span>
+          <div className="message" role="article" aria-label="Message from assistant">
+            <div className="bubble">
+              <span className="role-label">{language === "ar" ? "المساعد المعتمد (GPR)" : "GPR Grounded Assistant"}</span>
+              <div className="content">
+                {/* Live Status Feed during Streaming — always visible when streaming (`Point 5`) */}
+                {isStreaming && (
+                  <div style={{
+                    background: "var(--color-slate)", border: "1px solid var(--border-soft)",
+                    borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: "12px",
+                    display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "var(--text-meta)"
+                  }}>
+                    <div style={{ fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>{language === "ar" ? "سجل الاستقصاء والتفكير الجاري:" : "THINKING LOG:"}</span>
+                    </div>
+                    {cycleLogs.length > 0 ? (
+                      cycleLogs.map((logStr, lIdx) => (
+                        <div key={lIdx} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span>•</span><span>{logStr}</span>
+                        </div>
+                      ))
+                    ) : activeSearchStatus ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span>•</span><span>{activeSearchStatus}</span>
+                      </div>
+                    ) : (
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", opacity: 0.7 }}>
+                        <span>•</span><span>{language === "ar" ? "جارٍ معالجة الاستفسار..." : "Processing query..."}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeSearchStatus && (
+                  <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-accent)", marginBottom: "6px", opacity: 0.9 }}>
+                    {activeSearchStatus}
+                  </div>
+                )}
+
+                {streamingContent ? (
+                  renderContentWithCitations(streamingContent)
+                ) : (
+                  <div className="typing-indicator" role="status" aria-label="Assistant is typing">
+                    <span></span><span></span><span></span>
+                  </div>
+                )}
               </div>
-            )}
-            <div style={{ whiteSpace: "pre-wrap" }}>
-              {streamingContent || (language === "ar" ? "..." : "...")}
             </div>
           </div>
         ) : null}
+
+        {/* Small circular copy conversation button at the end of the chat page (`Point 11 - Auto-Fade visibility`) */}
+        {turns.length > 0 && (
+          <div style={{
+            display: "flex", justifyContent: "center", margin: "12px 0 20px 0",
+            opacity: showCopyBtn || copyConvSuccess ? 1 : 0,
+            pointerEvents: showCopyBtn || copyConvSuccess ? "auto" : "none",
+            transition: "opacity 0.35s ease"
+          }}>
+            <button
+              type="button"
+              onClick={() => {
+                const fullConversationText = turns.map(t => `${t.role.toUpperCase()}: ${t.content}`).join("\n\n---\n\n");
+                navigator.clipboard.writeText(fullConversationText);
+                setCopyConvSuccess(true);
+                setTimeout(() => setCopyConvSuccess(false), 2500);
+              }}
+              style={{
+                width: "36px", height: "36px", borderRadius: "50%",
+                background: "var(--color-stone)", border: "1px solid var(--border-med)",
+                color: copyConvSuccess ? "var(--color-accent)" : "var(--text-meta)",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "var(--shadow-elevated)", transition: "all 0.2s ease"
+              }}
+              title={language === "ar" ? "نسخ المحادثة بأكملها (Copy entire chat)" : "Copy entire chat conversation"}
+              aria-label="Copy entire conversation"
+            >
+              {copyConvSuccess ? (
+                <svg viewBox="0 0 24 24" style={{ width: "18px", height: "18px", stroke: "currentColor", fill: "none", strokeWidth: 2.5 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px", stroke: "currentColor", fill: "none", strokeWidth: 2 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+              )}
+            </button>
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>
 
       {/* Chat Input Area */}
-      <div style={{ padding: "16px 20px", borderTop: "1px solid var(--border)", background: "var(--bg-surface)" }}>
-        <form onSubmit={handleSend} style={{ display: "flex", gap: "10px" }}>
-          <input
-            id="cyrkil-chat-input"
-            type="text"
-            placeholder={selectedDocIds.length > 0 ? (language === "ar" ? `اسأل في نطاق المستند المحدد...` : `Ask within scoped document...`) : t("ask_placeholder")}
+      <div className="chat-input-area" id="chatInputArea">
+        <div className="composer-row">
+          <textarea
+            ref={textareaRef}
+            id="chatInput"
+            className="chat-input"
+            placeholder={selectedDocIds.length > 0 ? (language === "ar" ? `اسأل في نطاق المستند المعتمد...` : `Ask within scoped document...`) : t("ask_placeholder")}
             value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            disabled={isStreaming}
-            style={{
-              flex: 1, padding: "12px 16px", borderRadius: "8px",
-              background: "var(--bg-canvas)", border: "1px solid var(--border)",
-              color: "var(--text-primary)", fontSize: "14px", outline: "none",
-              transition: "border-color 0.2s"
+            onChange={(e) => {
+              setInputMessage(e.target.value);
+              // Auto-grow height up to max-height
+              const ta = e.target;
+              ta.style.height = "auto";
+              const scrollHeight = ta.scrollHeight;
+              if (scrollHeight <= 120) {
+                ta.style.height = `${scrollHeight}px`;
+              } else {
+                ta.style.height = "120px";
+              }
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            disabled={isStreaming}
+            aria-label="Type your question"
+            autoComplete="off"
+            rows={1}
           />
           <button
-            type="submit"
+            className="send-btn"
+            id="sendButton"
+            onClick={handleSend}
             disabled={isStreaming || !inputMessage.trim()}
-            className="btn-cyrkil btn-accent"
-            style={{ padding: "0 22px", fontWeight: 600, opacity: isStreaming || !inputMessage.trim() ? 0.5 : 1 }}
+            aria-label="Send message"
+            title={language === "ar" ? "إرسال الاستفسار" : "Send Query"}
+            type="button"
+            style={{ padding: "8px 12px", minWidth: "38px", borderRadius: "8px", justifyContent: "center" }}
           >
-            {isStreaming ? (language === "ar" ? "..." : "...") : (language === "ar" ? "إرسال 🚀" : "Send 🚀")}
+            <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px" }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
           </button>
-        </form>
+        </div>
       </div>
-
-      <CitationDrawer
-        isOpen={!!activeCitationCode}
-        citationCode={activeCitationCode}
-        citationTitle={activeCitationTitle}
-        onClose={() => setActiveCitationCode(null)}
-      />
     </div>
   );
 };

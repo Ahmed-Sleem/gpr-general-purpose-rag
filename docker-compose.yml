@@ -5,17 +5,18 @@ services:
     build:
       context: ./src/backend
       dockerfile: Dockerfile
-    container_name: cyrkil-universal-rag-api
+    container_name: gpr-api
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:///data/knowledge_workspace.db
+      - DATABASE_URL=sqlite+aiosqlite:///data/gpr_workspace.db
     volumes:
       - ./src/backend/data:/app/data
+      - ./sample_manuals:/app/sample_manuals
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "python3 -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")'"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
       retries: 3
 
@@ -23,7 +24,7 @@ services:
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
-    container_name: cyrkil-universal-rag-gui
+    container_name: gpr-web
     ports:
       - "3000:3000"
     depends_on:
@@ -31,4 +32,5 @@ services:
         condition: service_healthy
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - API_INTERNAL_URL=http://api:8000
     restart: unless-stopped

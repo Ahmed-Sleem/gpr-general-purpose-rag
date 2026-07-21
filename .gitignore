@@ -50,4 +50,10 @@ _working_docs/thinking/*.md
 data/uploads/
 src/backend/data/uploads/
 src/backend/data/*.db
-src/backend/data/*.json
+uploads/2026*.txt
+.cache/
+.npm/
+_working_docs/thinking/
+.pytest_cache/
+__pycache__/
+*.pyc

@@ -5,6 +5,7 @@ Defines persistence tables and validation schemas for 2-Step Authentication (`re
 - `UserORM` (`users` table): Argon2id password hash, email, role (`admin`, `staff`).
 - `OTPRecordORM` (`otps` table): 6-digit email OTPs with 10-minute expiry (`expires_at`).
 - `SessionORM` (`sessions` table): Server-side sessions with secure token lookup.
+- API Key verification DTOs (`CheckApiRequest`, `CheckApiResponse`).
 """
 
 from datetime import datetime, timezone
@@ -81,7 +82,7 @@ class LoginStep1Response(BaseModel):
     status: str = "otp_sent"
     email: str
     message: str = "A 6-digit OTP code has been generated and sent to your email (valid for 10 minutes)."
-    dev_otp_preview: Optional[str] = None  # Returned for offline development/testing verification
+    dev_otp_preview: Optional[str] = None
 
 
 class LoginStep2Request(BaseModel):
@@ -93,3 +94,14 @@ class LoginStep2Response(BaseModel):
     status: str = "success"
     session_token: str
     user: UserDTO
+
+
+class CheckApiRequest(BaseModel):
+    provider: str = Field("deepseek", description="deepseek | groq | openai")
+    api_key: str = Field(..., description="API Key (`sk-...` or `gsk_...`)")
+    model: str = Field("deepseek-chat", description="Model name")
+
+
+class CheckApiResponse(BaseModel):
+    status: str = "valid"
+    message: str = "Connection verified successfully!"

@@ -42,7 +42,7 @@ This file is APPEND-ONLY. Every session I re-read it before doing anything.
 
 12. **Two products, two repos, one shared bundle for testing.**
     - **Vyne** (GitHub: `Ahmed-Sleem/vyne`) — the workflow engine. Multi-tenant capable. n8n competitor. GENERIC — no product-specific hardcoding.
-    - **Cyrkil** (GitHub: `Ahmed-Sleem/cyrkil`) — the flagship customer of Vyne. Chat GUI with sandbox.
+    - **GPR** (GitHub: `Ahmed-Sleem/gpr`) — the flagship customer of Vyne. Chat GUI with sandbox.
     - **`local-bundle/`** — throwaway testing sandbox. NEVER push its files (`docker-compose.yml`, `.env`, `start.sh`) to GitHub.
     - Any real bug fix in the bundle MUST be forward-ported to the git repo.
 
@@ -116,7 +116,7 @@ This file is APPEND-ONLY. Every session I re-read it before doing anything.
 
 ### Testing & Verification rules (added session 10 by Ahmed)
 
-27. **Live VPS is the acceptance environment.** Since session 9, the auto-deploy pipeline pushes every `main` commit live within ~30–90s to https://vyne.cyrkil.com and https://chat.cyrkil.com. The verification protocol is:
+27. **Live VPS is the acceptance environment.** Since session 9, the auto-deploy pipeline pushes every `main` commit live within ~30–90s to https://vyne.gpr.com and https://chat.gpr.com. The verification protocol is:
     - Local unit / integration tests still run for TDD (sandbox `npm test` or `pytest`).
     - The FINAL acceptance signal is the live VPS: exercise the feature at the real HTTPS URL and observe real behavior.
     - After a push, WAIT for the deploy workflow to succeed (poll `/repos/Ahmed-Sleem/{repo}/actions/runs`) before asking Ahmed to test.
@@ -145,7 +145,7 @@ This file is APPEND-ONLY. Every session I re-read it before doing anything.
     6. This rule applies EVERY time: every message that starts a new context, every summarization event, every "continue from where you left off" prompt.
     7. Skipping this rule = Rule 20 violation ("Never assume — verify").
 
-30. **Workspace Architecture & Document Governance.** When developing specialized internal tools or sub-projects within the Cyrkil/Vyne ecosystem (such as the *Arabic Staff Knowledge Chatbot*):
+30. **Workspace Architecture & Document Governance.** When developing specialized internal tools or sub-projects within the GPR/Vyne ecosystem (such as the *Arabic Staff Knowledge Chatbot*):
     - **`_working_docs/` is the master agent workflow controller.** All gap management (`AUDIT_AND_TODO.md`), session logs (`CHANGELOG.md`, `IMPLEMENTATION_LOG.md`), and thinking scratchpads (`thinking/*.md`) live strictly in `_working_docs/`.
     - **`_development_docs_REMOVE_BEFORE_DEPLOYMENT/` is for developer architecture & handoff docs.** It holds project blueprints (`IMPLEMENTATION_PLAN.md`, `PROJECT_MAP.md`, `SUPPORTING_NOTES.md`). Gaps discovered in those plans MUST be mirrored and tracked to completion inside `_working_docs/AUDIT_AND_TODO.md`.
     - **`research/` holds topic deep dives.** Append-only, never rewritten from scratch.
@@ -157,11 +157,11 @@ This file is APPEND-ONLY. Every session I re-read it before doing anything.
 - **Vyne admin creds after rotation**: `admin@vyne.local` / `REMOVED_ADMIN_PASSWORD`
 - **GitHub PAT** (scopes `repo` + `workflow`): `${GITHUB_PAT}`
 - **Vyne repo**: `Ahmed-Sleem/vyne`, primary branch = `main` (auto-deploys on push)
-- **Cyrkil repo**: `Ahmed-Sleem/cyrkil`, primary branch = `main` (auto-deploys on push)
+- **GPR repo**: `Ahmed-Sleem/gpr`, primary branch = `main` (auto-deploys on push)
 - **User's Mac path**: `~/local-bundle/`
 - **User's timezone**: Africa/Cairo
-- **`/home/user/vyne/` and `/home/user/cyrkil/`** are the GIT WORKING TREES. Do NOT delete. Use for GitHub pushes.
-- **`/home/user/local-bundle/{cyrkil,vyne}/`** are the EXPORT copies (no `.git`) that go into the user's testing bundle.
+- **`/home/user/vyne/` and `/home/user/gpr/`** are the GIT WORKING TREES. Do NOT delete. Use for GitHub pushes.
+- **`/home/user/local-bundle/{gpr,vyne}/`** are the EXPORT copies (no `.git`) that go into the user's testing bundle.
 
 ### Production VPS (live since session 9)
 
@@ -169,20 +169,20 @@ This file is APPEND-ONLY. Every session I re-read it before doing anything.
 - **IP**: `76.13.62.185`
 - **SSH access as deploy user**: `ssh -i /tmp/vps_privkey deploy@76.13.62.185` (agent regenerates the key each session from Ahmed's bootstrap output, per rule 20 verify-don't-assume)
 - **Domains**:
-  - https://vyne.cyrkil.com — Vyne admin UI + API + WebSocket (path-routed by Caddy)
-  - https://chat.cyrkil.com — Cyrkil chat GUI
-- **DNS**: A records at Hostinger hPanel → `cyrkil.com` DNS → `vyne` + `chat` → `76.13.62.185`
+  - https://vyne.gpr.com — Vyne admin UI + API + WebSocket (path-routed by Caddy)
+  - https://chat.gpr.com — GPR chat GUI
+- **DNS**: A records at Hostinger hPanel → `gpr.com` DNS → `vyne` + `chat` → `76.13.62.185`
 - **TLS**: Let's Encrypt (auto-renewed by Caddy)
-- **Deploy pipeline**: `push origin main` → GitHub Actions `Deploy to VPS` workflow → appleboy/ssh-action → `deploy@76.13.62.185:/opt/cyrkil-vyne/deploy.sh` → containers rebuilt + hot-swapped. Total ~30–90s for code changes, ~3–8min if any Dockerfile changes.
+- **Deploy pipeline**: `push origin main` → GitHub Actions `Deploy to VPS` workflow → appleboy/ssh-action → `deploy@76.13.62.185:/opt/gpr-vyne/deploy.sh` → containers rebuilt + hot-swapped. Total ~30–90s for code changes, ~3–8min if any Dockerfile changes.
 - **Actions secrets** (set on BOTH repos): `VPS_HOST=76.13.62.185`, `VPS_USER=deploy`, `VPS_SSH_KEY=<ed25519 private key from bootstrap>`
-- **VPS layout**: `/opt/cyrkil-vyne/` contains `vyne/` (git tree), `cyrkil/` (git tree), `deploy.sh`, `docker-compose.yml`, `.env`, `vyne-workspaces/`
+- **VPS layout**: `/opt/gpr-vyne/` contains `vyne/` (git tree), `gpr/` (git tree), `deploy.sh`, `docker-compose.yml`, `.env`, `vyne-workspaces/`
 - **All 6 containers** (must be healthy for any acceptance test):
-  - `cyrkil-vyne-server` — Fastify backend, `127.0.0.1:3001->3000`
-  - `cyrkil-vyne-ui` — nginx serving React SPA, `127.0.0.1:8081->80`
-  - `cyrkil-gui` — Next.js chat GUI, `127.0.0.1:8080->3000`
-  - `cyrkil-docker-proxy` — restricted docker socket for sandbox tool
-  - `cyrkil-searxng` — metasearch backend
-  - `cyrkil-search-api` — FastAPI wrapper for web.search / deep-search tools
+  - `gpr-vyne-server` — Fastify backend, `127.0.0.1:3001->3000`
+  - `gpr-vyne-ui` — nginx serving React SPA, `127.0.0.1:8081->80`
+  - `gpr-gui` — Next.js chat GUI, `127.0.0.1:8080->3000`
+  - `gpr-docker-proxy` — restricted docker socket for sandbox tool
+  - `gpr-searxng` — metasearch backend
+  - `gpr-search-api` — FastAPI wrapper for web.search / deep-search tools
 
 ## Ahmed's Repository Creation & Storytelling Style (Mandatory Rule)
 

@@ -78,6 +78,8 @@ class GraphNodeDTO(BaseModel):
     group: str = Field(..., description="Node group matching `chunk_type` for color coding")
     val: float = Field(..., description="Node size weight based on word count or hierarchy level")
     content_preview: str = Field(..., description="First 150 characters of chunk text for hover tooltips")
+    content: str = Field("", description="Full complete protected content of the node")
+    connections: List[str] = Field(default=[], description="List of connected target node IDs")
     page_number: Optional[int] = Field(None, description="Page number")
 
 

@@ -2,7 +2,8 @@
 Database Session Management (`src/backend/db/session.py`).
 
 Provides async SQLAlchemy session factories and multi-document table initialization (`init_db`).
-Supports local persistent SQLite (`data/knowledge_workspace.db`) and Postgres (`DATABASE_URL`).
+Supports local persistent SQLite (`data/gpr_workspace.db`) and cloud PostgreSQL (`DATABASE_URL`).
+All system and terminal messages are strictly English.
 """
 
 import os
@@ -21,7 +22,13 @@ except ImportError:
     except ImportError:
         LegacyBase = None
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///data/knowledge_workspace.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///data/gpr_workspace.db")
+
+# Normalize cloud PostgreSQL connection URLs (SnapDeploy, Supabase, Neon, Railway, AWS RDS) for async SQLAlchemy (`asyncpg`)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
+elif DATABASE_URL.startswith("postgresql://") and "+asyncpg" not in DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 if DATABASE_URL.startswith("sqlite"):
     os.makedirs("data", exist_ok=True)

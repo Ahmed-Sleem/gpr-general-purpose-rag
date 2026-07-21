@@ -2,7 +2,7 @@
 Documents API Router (`src/backend/api/documents.py`).
 
 Provides endpoints for universal multi-document ingestion, TOC fetching, deletion, and Obsidian Graph queries:
-- `POST /api/v1/documents/upload`: Uploads any file (`pdf`, `docx`, `txt`, `md`) and triggers structural pipeline.
+- `POST /api/v1/documents/upload`: Uploads any file (`pdf`, `docx`, `txt`, `md`) and triggers LLM semantic pipeline.
 - `GET /api/v1/documents`: Lists persistent workspace documents.
 - `GET /api/v1/documents/{id}`: Retrieves document details and Table of Contents (`toc_tree`).
 - `DELETE /api/v1/documents/{id}`: Deletes file from disk and wipes relational records.
@@ -13,7 +13,7 @@ import os
 import uuid
 import aiofiles
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi import APIRouter, Depends, Header, UploadFile, File, Form, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 try:
     from ...db.session import get_db
@@ -36,9 +36,12 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 async def upload_document(
     file: UploadFile = File(...),
     title: Optional[str] = Form(None),
-    session: AsyncSession = Depends(get_db)
+    session: AsyncSession = Depends(get_db),
+    x_llm_api_key: Optional[str] = Header(None, alias="X-LLM-API-Key"),
+    x_llm_provider: Optional[str] = Header("deepseek", alias="X-LLM-Provider"),
+    x_llm_model: Optional[str] = Header("deepseek-chat", alias="X-LLM-Model")
 ):
-    """Upload and ingest any document into persistent relational storage."""
+    """Upload and ingest any document into persistent relational storage using LLM semantic reasoning."""
     filename = file.filename or "uploaded_document.txt"
     doc_id = str(uuid.uuid4())
     save_path = os.path.join(UPLOAD_DIR, f"{doc_id}_{filename}")
@@ -54,7 +57,10 @@ async def upload_document(
         doc_id=doc_id,
         title=display_title,
         filename=filename,
-        file_path=save_path
+        file_path=save_path,
+        api_key=x_llm_api_key,
+        provider=x_llm_provider or "deepseek",
+        model=x_llm_model or "deepseek-chat"
     )
 
     if not success:

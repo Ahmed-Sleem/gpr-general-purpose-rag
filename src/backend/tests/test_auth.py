@@ -28,7 +28,7 @@ async def setup_db():
 @pytest.mark.anyio
 async def test_full_auth_lifecycle(setup_db):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
-        test_email = f"ahmed_staff_{int(time.time())}@cyrkil.com"
+        test_email = f"ahmed_staff_{int(time.time())}@gpr-workspace.com"
         reg_payload = {"email": test_email, "password": "SecurePassword123!"}
         
         # Step 1: Register test user

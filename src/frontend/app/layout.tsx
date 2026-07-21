@@ -3,8 +3,13 @@ import { AppProvider } from "../context/AppContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Cyrkil Universal Knowledge Workspace — RAG Chat & Obsidian Graph",
-  description: "Bilingual Arabic/English internal staff knowledge workspace with relational RAG and live Obsidian Graph View.",
+  title: "GPR — General Purpose RAG & Knowledge Workspace",
+  description: "Bilingual Arabic/English internal staff knowledge workspace with relational RAG without vector DBs, and live force-directed Obsidian Graph View.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="en" dir="ltr">
       <body>
         <AppProvider>
           {children}

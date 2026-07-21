@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPR — General Purpose RAG Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           DESIGN LANGUAGE — Minimal Monochrome / Modern Refined
+           ============================================================ */
+        *,
+        *::before,
+        *::after,
+        input,
+        button,
+        textarea,
+        select {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        :root {
+            --font-family: "Inter", system-ui, -apple-system, sans-serif;
+
+            /* ---- Canvas (ambient background behind floating panels) ---- */
+            --color-canvas: #f0f0f0;
+
+            /* ---- Primary Surface (center / paper) ---- */
+            --color-paper: #ffffff;
+
+            /* ---- Secondary Surface (sidebars) ---- */
+            --color-slate: #fafafa;
+            --color-slate-raised: #f2f2f2;
+
+            /* ---- Borders / hairlines ---- */
+            --border-soft: rgba(0, 0, 0, 0.06);
+            --border-med: rgba(0, 0, 0, 0.10);
+
+            /* ---- Accent (monochrome — rich dark) ---- */
+            --color-accent: #1a1a1a;
+            --color-accent-hover: #000000;
+            --color-accent-contrast: #ffffff;
+            --color-accent-soft: rgba(26, 26, 26, 0.06);
+
+            /* ---- Secondary accents ---- */
+            --color-blue-pale: rgba(26, 26, 26, 0.05);
+            --color-stone: rgba(26, 26, 26, 0.04);
+
+            /* ---- Text ---- */
+            --text-primary: #1a1a1a;
+            --text-body: rgba(26, 26, 26, 0.78);
+            --text-meta: rgba(26, 26, 26, 0.45);
+            --text-inverse: #1a1a1a;
+            --text-inverse-meta: rgba(26, 26, 26, 0.40);
+
+            /* ---- Shadows (soft, modern) ---- */
+            --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+            --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.05);
+            --shadow-elevated: 0 2px 6px rgba(0, 0, 0, 0.05), 0 16px 40px rgba(0, 0, 0, 0.07);
+
+            /* ---- Radius — consistent "round-square" system ---- */
+            --radius-xs: 6px;
+            --radius-sm: 8px;
+            --radius-btn: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            /* ---- Spacing (8px grid) ---- */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+
+            /* ---- Sizing & Grid Spacing System ---- */
+            --title-height: 44px;
+            --logo-gap: 8px;
+            --header-height: 38px;
+            --left-width: 260px;
+            --right-width: 290px;
+            --gutter: 14px;
+            --edge: 20px;
+
+            /* ---- Transitions & Easing ---- */
+            --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ============================================================
+           GLOBAL & BACKGROUND
+           ============================================================ */
+        body {
+            font-family: var(--font-family);
+            background: var(--color-canvas);
+            color: var(--text-primary);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s var(--ease-soft), color 0.4s var(--ease-soft);
+        }
+
+        /* ---- Dark Mode Overrides ---- */
+        body.dark-mode {
+            --color-canvas: #0e0e0e;
+            --color-paper: #161616;
+            --color-slate: #1c1c1c;
+            --color-slate-raised: #242424;
+
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-med: rgba(255, 255, 255, 0.14);
+
+            --color-accent: #f0f0f0;
+            --color-accent-hover: #ffffff;
+            --color-accent-contrast: #111111;
+            --color-accent-soft: rgba(255, 255, 255, 0.08);
+
+            --color-blue-pale: rgba(255, 255, 255, 0.07);
+            --color-stone: rgba(255, 255, 255, 0.05);
+
+            --text-primary: #f0f0f0;
+            --text-body: rgba(240, 240, 240, 0.80);
+            --text-meta: rgba(240, 240, 240, 0.45);
+            --text-inverse: #f0f0f0;
+            --text-inverse-meta: rgba(240, 240, 240, 0.40);
+
+            --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.40), 0 12px 36px rgba(0, 0, 0, 0.50);
+            --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.35), 0 8px 28px rgba(0, 0, 0, 0.45);
+            --shadow-elevated: 0 2px 6px rgba(0, 0, 0, 0.40), 0 16px 44px rgba(0, 0, 0, 0.55);
+        }
+
+        /* ============================================================
+           MAIN GRID (Desktop / Tablet)
+           ============================================================ */
+        .main-window {
+            position: relative;
+            z-index: 2;
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: var(--left-width) var(--gutter) minmax(0, 1fr) var(--gutter) var(--right-width);
+            grid-template-rows: var(--title-height) var(--logo-gap) minmax(0, 1fr) var(--gutter) var(--header-height);
+            padding: var(--edge);
+            gap: 0;
+            pointer-events: none;
+            transition: grid-template-columns 0.45s var(--ease-soft), grid-template-rows 0.45s var(--ease-soft), padding 0.35s var(--ease-soft);
+        }
+
+        /* When Right Panel is Closed via new button */
+        .main-window.right-panel-closed {
+            grid-template-columns: var(--left-width) var(--gutter) minmax(0, 1fr) 0px 0px !important;
+        }
+
+        /* ---- Title bar: brand title, sits at top left (Row 1) ---- */
+        .app-title {
+            pointer-events: auto;
+            grid-column: 1;
+            grid-row: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 var(--space-1);
+            min-height: var(--title-height);
+            transition: all 0.35s var(--ease-soft);
+        }
+        .app-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mobile-sidebar-btn {
+            display: none !important;
+        }
+        .app-title .brand-name {
+            font-family: var(--font-family);
+            font-weight: 900;
+            font-size: 38px;
+            letter-spacing: -0.04em;
+            color: var(--text-primary);
+            white-space: nowrap;
+            line-height: 1;
+            transition: color 0.35s var(--ease-soft), transform 0.25s var(--ease-soft);
+        }
+        .app-title .brand-name:hover {
+            transform: scale(1.02);
+        }
+        .app-title .brand-name .accent-char {
+            color: var(--color-accent);
+            opacity: 0.6;
+        }
+
+        /* ---- Tools bar: floating buttons UNDER the left panel (Row 5) ---- */
+        .app-header {
+            pointer-events: auto;
+            grid-column: 1;
+            grid-row: 5;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--header-height);
+            z-index: 3;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* All buttons together are smaller (`~220px`) than the left panel (`260px`) above and aligned dead center */
+        .header-tools {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: fit-content;
+            max-width: 92%;
+            margin: 0 auto;
+            padding: 0;
+            background: transparent;
+        }
+
+        /* ---- Panels: paper & slate ---- */
+        .panel {
+            pointer-events: auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            transition: background 0.35s var(--ease-soft), border-color 0.35s var(--ease-soft),
+                box-shadow 0.35s var(--ease-soft), width 0.45s var(--ease-soft), min-width 0.45s var(--ease-soft),
+                max-width 0.45s var(--ease-soft), opacity 0.3s var(--ease-soft), transform 0.45s var(--ease-soft);
+        }
+
+        /* Left Panel: height increased by shorter logo row and reduced logo gap (`--logo-gap: 8px`) */
+        .panel-left {
+            grid-column: 1;
+            grid-row: 3;
+            width: var(--left-width);
+            min-width: var(--left-width);
+            max-width: var(--left-width);
+            background: var(--color-slate);
+            padding: var(--space-3) var(--space-2) var(--space-2);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-panel);
+        }
+
+        .panel-center {
+            grid-column: 3;
+            grid-row: 1 / 6;
+            min-width: 0;
+            background: var(--color-paper);
+            box-shadow: var(--shadow-paper);
+            padding: var(--space-3) var(--space-4) var(--space-3);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-lg);
+        }
+
+        .panel-right {
+            grid-column: 5;
+            grid-row: 1 / 6;
+            width: var(--right-width);
+            min-width: 200px;
+            max-width: 620px;
+            background: var(--color-slate);
+            padding: var(--space-3) var(--space-2) var(--space-2);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-panel);
+            opacity: 1;
+            transform: scaleX(1) translateX(0);
+            transform-origin: right center;
+        }
+
+        /* Right Panel closed state animation */
+        .main-window.right-panel-closed .panel-right {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            min-width: 0 !important;
+            max-width: 0 !important;
+            width: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border-width: 0 !important;
+            margin: 0 !important;
+            transform: scaleX(0.92) translateX(24px) !important;
+            overflow: hidden !important;
+        }
+
+        /* ---- Resize handle (right only) ---- */
+        .resize-handle {
+            grid-row: 1 / 6;
+            grid-column: 4;
+            width: 100%;
+            height: 100%;
+            cursor: col-resize;
+            background: transparent;
+            border-radius: var(--radius-xs);
+            transition: background 0.2s var(--ease-soft), opacity 0.3s var(--ease-soft), width 0.45s var(--ease-soft);
+            position: relative;
+            z-index: 5;
+            min-height: 40px;
+            align-self: stretch;
+            pointer-events: auto;
+        }
+        .resize-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 40px;
+            border-radius: 2px;
+            background: var(--border-med);
+            opacity: 0.3;
+            transition: opacity 0.2s var(--ease-soft), background 0.2s var(--ease-soft), height 0.25s var(--ease-soft);
+        }
+        .resize-handle:hover::before,
+        .resize-handle:active::before {
+            opacity: 0.7;
+            background: var(--color-accent);
+            height: 56px;
+        }
+        .resize-handle:hover,
+        .resize-handle:active {
+            background: var(--color-accent-soft);
+        }
+
+        .main-window.right-panel-closed .resize-handle {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            width: 0 !important;
+            min-width: 0 !important;
+        }
+
+        /* ============================================================
+           SCROLLBARS — HIDDEN
+           ============================================================ */
+        .scrollable {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        .scrollable::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+        }
+
+        /* ============================================================
+           TOOLS — floating buttons UNDER the left panel
+           ============================================================ */
+        /* Round square buttons (`aspect-ratio: 1/1` / exact width × height) */
+        .tool-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0;
+            width: var(--header-height);
+            height: var(--header-height);
+            flex: 0 0 var(--header-height);
+            margin: 0;
+            border-radius: var(--radius-btn);
+            background: var(--color-slate);
+            border: 1px solid var(--border-med);
+            color: var(--text-inverse);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background 0.25s var(--ease-soft), border-color 0.25s var(--ease-soft),
+                color 0.25s var(--ease-soft), transform 0.25s var(--ease-spring),
+                box-shadow 0.25s var(--ease-soft);
+            white-space: nowrap;
+            box-shadow: var(--shadow-panel);
+            user-select: none;
+            overflow: hidden;
+        }
+        .tool-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-accent-contrast);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevated);
+        }
+        .tool-btn:active {
+            transform: translateY(0) scale(0.96);
+            box-shadow: var(--shadow-panel);
+            transition: transform 0.1s var(--ease-soft);
+        }
+        .tool-btn:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+        .tool-btn svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.35s var(--ease-spring);
+        }
+        .tool-btn:hover svg {
+            transform: scale(1.12);
+        }
+
+        .tool-btn .lang-text {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        #themeSwitch .icon-moon {
+            display: none;
+        }
+        body.dark-mode #themeSwitch .icon-sun {
+            display: none;
+        }
+        body.dark-mode #themeSwitch .icon-moon {
+            display: block;
+        }
+
+        /* ---- API button: wide compact pill, smaller so all buttons fit centered under left panel ---- */
+        #apiKeyBtn {
+            flex: 0 1 auto;
+            width: auto;
+            min-width: 76px;
+            max-width: 96px;
+            padding: 0 10px;
+            justify-content: center;
+        }
+        #apiKeyBtn .api-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #apiKeyBtn .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.7; }
+        }
+
+        /* ---- Right panel toggle button state styles ---- */
+        #panelToggleBtn.active-closed {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-accent-contrast);
+        }
+
+        /* ============================================================
+           LEFT PANEL — sidebar content
+           ============================================================ */
+        .left-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: var(--space-3);
+        }
+
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: 10px var(--space-4);
+            border-radius: var(--radius-btn);
+            background: var(--color-accent);
+            border: none;
+            color: var(--color-accent-contrast);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.25s var(--ease-soft), transform 0.25s var(--ease-spring),
+                box-shadow 0.25s var(--ease-soft);
+            font-family: inherit;
+            flex-shrink: 0;
+            width: 100%;
+            letter-spacing: 0.01em;
+        }
+        .new-chat-btn:hover {
+            background: var(--color-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        }
+        .new-chat-btn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: none;
+            transition: transform 0.1s var(--ease-soft);
+        }
+        .new-chat-btn:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+        .new-chat-btn svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .conversation-search {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            height: 36px;
+            padding: 0 var(--space-3);
+            background: var(--color-stone);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-btn);
+            transition: border-color 0.25s var(--ease-soft), background 0.25s var(--ease-soft),
+                box-shadow 0.25s var(--ease-soft);
+            flex-shrink: 0;
+        }
+        .conversation-search:focus-within {
+            border-color: var(--color-accent);
+            background: var(--color-slate-raised);
+            box-shadow: 0 0 0 3px var(--color-accent-soft);
+        }
+        .conversation-search svg {
+            width: 13px;
+            height: 13px;
+            color: var(--text-inverse-meta);
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .conversation-search input {
+            flex: 1;
+            height: 100%;
+            border: 0;
+            background: transparent;
+            color: var(--text-inverse);
+            font-size: 12px;
+            outline: none;
+            font-family: inherit;
+            padding: 0 var(--space-1);
+        }
+        .conversation-search input::placeholder {
+            color: var(--text-inverse-meta);
+        }
+
+        .chat-list-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-1) var(--space-1) 0;
+            flex-shrink: 0;
+        }
+        .chat-list-label span {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-inverse-meta);
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: var(--space-1) 0 var(--space-2);
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-2);
+            border-radius: var(--radius-btn);
+            cursor: pointer;
+            transition: background 0.25s var(--ease-soft), border-color 0.25s var(--ease-soft),
+                box-shadow 0.25s var(--ease-soft), transform 0.25s var(--ease-spring);
+            border: 1px solid transparent;
+            background: transparent;
+            outline: none;
+        }
+        .chat-item:hover {
+            background: var(--color-stone);
+            border-color: var(--border-soft);
+            transform: translateX(3px);
+        }
+        .chat-item:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: -2px;
+        }
+        .chat-item.active {
+            background: var(--color-slate-raised);
+            border-color: var(--border-med);
+            box-shadow: inset 0 0 0 1px var(--border-med);
+            transform: translateX(0);
+        }
+
+        .chat-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex: 1;
+        }
+        .chat-item-info .name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-inverse);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-item-info .meta {
+            font-size: 10px;
+            color: var(--text-inverse-meta);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-item-info .meta span+span::before {
+            content: " · ";
+            color: var(--text-inverse-meta);
+        }
+
+        /* ============================================================
+           CENTER PANEL
+           ============================================================ */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            width: 100%;
+            transition: max-width 0.45s var(--ease-soft);
+        }
+
+        .main-window.right-panel-closed .chat-container {
+            max-width: 1060px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            padding: var(--space-1) var(--space-1) var(--space-2) var(--space-1);
+        }
+
+        .message {
+            display: flex;
+            max-width: 88%;
+            align-self: flex-start;
+            animation: messageIn 0.35s var(--ease-soft) both;
+        }
+        .message.sent {
+            align-self: flex-end;
+        }
+
+        @keyframes messageIn {
+            0% {
+                opacity: 0;
+                transform: translateY(12px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .message .bubble {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-width: 100%;
+            min-width: 0;
+        }
+        .message .bubble .role-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-meta);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            padding: 0 var(--space-1);
+        }
+        .message .bubble .content {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-btn) var(--radius-btn) var(--radius-btn) var(--radius-xs);
+            font-size: 13px;
+            line-height: 1.6;
+            background: var(--color-stone);
+            border: 1px solid var(--border-soft);
+            word-break: break-word;
+            color: var(--text-body);
+            transition: background 0.35s var(--ease-soft), border-color 0.35s var(--ease-soft);
+        }
+        .message.sent .bubble .content {
+            border-radius: var(--radius-btn) var(--radius-btn) var(--radius-xs) var(--radius-btn);
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-accent-contrast);
+        }
+
+        .message .bubble .content .source-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px var(--space-2) 2px var(--space-1);
+            border-radius: var(--radius-full);
+            background: var(--color-blue-pale);
+            color: var(--text-meta);
+            font-size: 10px;
+            margin-top: var(--space-1);
+            font-weight: 600;
+            border: 1px solid var(--border-soft);
+        }
+        .message .bubble .content .source-chip::before {
+            content: "📄 ";
+            font-size: 10px;
+        }
+
+        .message .bubble .time {
+            font-size: 9px;
+            color: var(--text-meta);
+            margin-top: 2px;
+            opacity: 0.5;
+            padding: 0 var(--space-1);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 0;
+        }
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--text-meta);
+            display: inline-block;
+            animation: typing-bounce 1.4s ease-in-out infinite both;
+        }
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+        @keyframes typing-bounce {
+            0%,
+            80%,
+            100% {
+                transform: scale(0.6);
+                opacity: 0.3;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-area {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+            padding: var(--space-2) var(--space-3) var(--space-2);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-btn);
+            background: var(--color-stone);
+            flex-shrink: 0;
+            transition: border-color 0.25s var(--ease-soft), background 0.25s var(--ease-soft),
+                box-shadow 0.25s var(--ease-soft);
+        }
+        .chat-input-area:focus-within {
+            border-color: var(--color-accent);
+            background: var(--color-slate-raised);
+            box-shadow: 0 0 0 3px var(--color-accent-soft);
+        }
+
+        .composer-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        .chat-input {
+            flex: 1;
+            min-height: 34px;
+            padding: var(--space-1) var(--space-2);
+            border: 0;
+            border-radius: var(--radius-xs);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            resize: none;
+        }
+        .chat-input::placeholder {
+            color: var(--text-meta);
+        }
+
+        .send-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 20px 8px 16px;
+            border: 0;
+            border-radius: var(--radius-btn);
+            background: var(--color-accent);
+            color: var(--color-accent-contrast);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: background 0.25s var(--ease-soft), transform 0.25s var(--ease-spring),
+                box-shadow 0.25s var(--ease-soft);
+            flex-shrink: 0;
+            letter-spacing: 0.01em;
+            border: 1px solid var(--color-accent);
+        }
+        .send-btn:hover {
+            background: var(--color-accent-hover);
+            border-color: var(--color-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        }
+        .send-btn:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: none;
+            transition: transform 0.1s var(--ease-soft);
+        }
+        .send-btn:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+        .send-btn svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ============================================================
+           RIGHT PANEL (Map)
+           ============================================================ */
+        .panel-right .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-2);
+            flex-shrink: 0;
+        }
+        .panel-right .panel-header h4 {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-inverse);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.5;
+        }
+
+        .map-container {
+            flex: 1;
+            min-height: 0;
+            border-radius: var(--radius-btn);
+            background: var(--color-stone);
+            border: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--text-inverse-meta);
+            font-size: 12px;
+            padding: var(--space-4);
+            text-align: center;
+            gap: var(--space-2);
+            overflow: hidden;
+            position: relative;
+            transition: background 0.35s var(--ease-soft), border-color 0.35s var(--ease-soft);
+        }
+        .map-container .map-icon {
+            font-size: 34px;
+            opacity: 0.25;
+        }
+        .map-container .map-label {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-inverse);
+            opacity: 0.45;
+        }
+        .map-container .map-sub {
+            font-size: 10px;
+            color: var(--text-inverse-meta);
+            opacity: 0.35;
+        }
+
+        .map-container .graph-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            opacity: 0.08;
+            animation: float-dot 7s ease-in-out infinite alternate;
+        }
+        .map-container .graph-dot:nth-child(1) {
+            top: 18%;
+            left: 14%;
+            animation-delay: 0s;
+        }
+        .map-container .graph-dot:nth-child(2) {
+            top: 58%;
+            right: 18%;
+            animation-delay: 1.4s;
+            width: 6px;
+            height: 6px;
+        }
+        .map-container .graph-dot:nth-child(3) {
+            bottom: 28%;
+            left: 38%;
+            animation-delay: 2.8s;
+        }
+        .map-container .graph-dot:nth-child(4) {
+            top: 38%;
+            right: 8%;
+            animation-delay: 0.9s;
+            width: 4px;
+            height: 4px;
+        }
+        .map-container .graph-dot:nth-child(5) {
+            bottom: 12%;
+            right: 32%;
+            animation-delay: 2.0s;
+            width: 7px;
+            height: 7px;
+        }
+
+        @keyframes float-dot {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.05;
+            }
+            100% {
+                transform: translate(8px, -12px) scale(1.3);
+                opacity: 0.16;
+            }
+        }
+
+        /* Mobile Backdrop for Sidebar Drawer */
+        .mobile-backdrop {
+            display: none !important;
+        }
+
+        /* ============================================================
+           RESPONSIVE (Adaptive Layout)
+           ============================================================ */
+        @media (max-width: 1100px) {
+            :root {
+                --left-width: 220px;
+                --right-width: 240px;
+                --gutter: 10px;
+                --edge: 14px;
+                --title-height: 42px;
+                --logo-gap: 6px;
+                --header-height: 36px;
+            }
+            .main-window {
+                grid-template-columns: var(--left-width) var(--gutter) minmax(0, 1fr) var(--gutter) var(--right-width);
+                grid-template-rows: var(--title-height) var(--logo-gap) minmax(0, 1fr) var(--gutter) var(--header-height);
+            }
+            .panel-left {
+                width: var(--left-width);
+                min-width: var(--left-width);
+                max-width: var(--left-width);
+            }
+            .panel-right {
+                width: var(--right-width);
+                min-width: 180px;
+                max-width: 480px;
+            }
+            .app-title .brand-name {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 820px) {
+            :root {
+                --edge: 10px;
+                --gutter: 8px;
+                --left-width: 180px;
+                --right-width: 210px;
+                --header-height: 34px;
+                --title-height: 40px;
+                --logo-gap: 6px;
+            }
+            .main-window {
+                grid-template-columns: var(--left-width) var(--gutter) minmax(0, 1fr) var(--gutter) var(--right-width);
+                padding: var(--edge);
+                grid-template-rows: var(--title-height) var(--logo-gap) minmax(0, 1fr) var(--gutter) var(--header-height);
+            }
+            .panel {
+                padding: var(--space-2);
+            }
+            .panel-left {
+                width: var(--left-width);
+                min-width: var(--left-width);
+                max-width: var(--left-width);
+            }
+            .panel-right {
+                width: var(--right-width);
+                min-width: 160px;
+                max-width: 420px;
+            }
+            .app-header {
+                padding: 0;
+            }
+            .app-title .brand-name {
+                font-size: 26px;
+            }
+            .header-tools {
+                gap: 5px;
+                max-width: 94%;
+            }
+            .tool-btn {
+                width: var(--header-height);
+                height: var(--header-height);
+                flex: 0 0 var(--header-height);
+                padding: 0;
+                font-size: 11px;
+            }
+            #apiKeyBtn {
+                flex: 0 1 auto;
+                width: auto;
+                min-width: 60px;
+                max-width: 76px;
+                padding: 0 6px;
+                gap: 4px;
+            }
+            .tool-btn svg {
+                width: 13px;
+                height: 13px;
+            }
+            .chat-item .name {
+                font-size: 12px;
+            }
+            .message .bubble .content {
+                font-size: 12px;
+                padding: var(--space-1) var(--space-3);
+            }
+            .new-chat-btn {
+                font-size: 11px;
+                padding: 8px var(--space-3);
+            }
+            .send-btn {
+                font-size: 11px;
+                padding: 6px 16px 6px 12px;
+            }
+            .chat-input {
+                font-size: 12px;
+                min-height: 30px;
+            }
+            .conversation-search {
+                height: 32px;
+            }
+            .conversation-search input {
+                font-size: 11px;
+            }
+        }
+
+        /* ---- Adaptive Mobile Mode (Remove Map, Sidebar Drawer, Keyboard Offset) ---- */
+        @media (max-width: 768px) {
+            :root {
+                --edge: 0px;
+                --gutter: 0px;
+                --header-height: 36px;
+                --title-height: 52px;
+            }
+            .main-window {
+                position: static !important;
+                z-index: auto !important;
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+                overflow: hidden;
+                height: var(--viewport-height, 100dvh);
+                max-height: var(--viewport-height, 100dvh);
+                grid-template-rows: none;
+                grid-template-columns: none;
+            }
+            .app-title {
+                order: 1;
+                flex: 0 0 52px;
+                width: 100%;
+                height: 52px;
+                min-height: 52px;
+                padding: 0 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--color-paper);
+                border-bottom: 1px solid var(--border-soft);
+                z-index: 100;
+            }
+            .app-title-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .mobile-sidebar-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border-soft);
+                background: var(--color-slate);
+                color: var(--text-inverse);
+                cursor: pointer;
+                transition: background 0.2s var(--ease-soft);
+            }
+            .mobile-sidebar-btn:active {
+                background: var(--color-stone);
+            }
+            .mobile-sidebar-btn svg {
+                width: 18px;
+                height: 18px;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 2.2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+            .app-title .brand-name {
+                font-size: 24px;
+            }
+            /* Floating buttons sit inside the right side of the top bar on mobile */
+            .app-header {
+                order: unset;
+                grid-column: unset;
+                grid-row: unset;
+                position: absolute;
+                top: 8px;
+                right: 14px;
+                flex: 0 0 auto;
+                width: auto;
+                min-height: auto;
+                padding: 0;
+                background: transparent;
+                box-shadow: none;
+                border: none;
+                z-index: 101;
+            }
+            .header-tools {
+                gap: 6px;
+                width: auto;
+                margin: 0;
+            }
+            /* Map toggle removed on mobile along with the entire right panel */
+            #panelToggleBtn {
+                display: none !important;
+            }
+            .tool-btn {
+                width: 34px;
+                height: 34px;
+                flex: 0 0 34px;
+                font-size: 11px;
+            }
+            #apiKeyBtn {
+                flex: 0 1 auto;
+                width: auto;
+                min-width: 68px;
+                max-width: 84px;
+                padding: 0 8px;
+            }
+            .panel-center {
+                order: 2;
+                flex: 1;
+                width: 100%;
+                min-height: 0;
+                height: calc(var(--viewport-height, 100dvh) - 52px);
+                max-height: calc(var(--viewport-height, 100dvh) - 52px);
+                border-radius: 0;
+                border: none;
+                padding: var(--space-2);
+                background: var(--color-paper);
+                box-shadow: none;
+                display: flex;
+                flex-direction: column;
+            }
+            .resize-handle {
+                display: none !important;
+            }
+            /* Map panel completely removed on mobile mode */
+            .panel-right {
+                display: none !important;
+            }
+            /* Left Panel becomes an off-canvas slide-out drawer on mobile (stays completely clear and crisp above backdrop) */
+            #leftPanel.panel-left {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 86vw !important;
+                max-width: 320px !important;
+                height: var(--viewport-height, 100dvh) !important;
+                z-index: 1000 !important;
+                border-radius: 0 var(--radius-xl) var(--radius-xl) 0 !important;
+                transform: translateX(-102%);
+                transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.38s var(--ease-soft);
+                box-shadow: none;
+                margin: 0 !important;
+                grid-column: unset !important;
+                grid-row: unset !important;
+                background: var(--color-paper) !important;
+                border-right: 1px solid var(--border-med) !important;
+                padding: var(--space-4) var(--space-3) var(--space-3) !important;
+            }
+            body.mobile-sidebar-open #leftPanel.panel-left {
+                transform: translateX(0) !important;
+                box-shadow: 10px 0 60px rgba(0, 0, 0, 0.45) !important;
+            }
+            /* Backdrop behind mobile drawer */
+            .mobile-backdrop {
+                display: block !important;
+                position: fixed !important;
+                inset: 0 !important;
+                z-index: 998 !important;
+                background: rgba(0, 0, 0, 0.52) !important;
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.35s var(--ease-soft);
+            }
+            body.mobile-sidebar-open .mobile-backdrop {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
+            .chat-messages {
+                gap: var(--space-2);
+                padding: var(--space-1) var(--space-1) var(--space-3);
+                -webkit-overflow-scrolling: touch;
+            }
+            .message {
+                max-width: 94%;
+            }
+            .message .bubble .content {
+                font-size: 13px;
+                padding: var(--space-2) var(--space-3);
+            }
+            .chat-input-area {
+                position: relative;
+                z-index: 50;
+                background: var(--color-paper);
+                padding-bottom: max(var(--space-2), env(safe-area-inset-bottom));
+                border-top: 1px solid var(--border-soft);
+            }
+            .chat-input {
+                font-size: 13px;
+                min-height: 32px;
+            }
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent);
+            color: var(--color-accent-contrast);
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.2s var(--ease-soft);
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SKIP LINK
+    ============================================================ -->
+    <a class="skip-link" href="#chatMessages">Skip to chat</a>
+
+    <!-- ============================================================
+    MAIN WINDOW
+    ============================================================ -->
+    <div class="main-window" id="mainWindow">
+
+        <!-- ============================================================
+        TITLE — brand title & mobile top bar
+        ============================================================ -->
+        <div class="app-title" id="appTitle">
+            <div class="app-title-left">
+                <button class="mobile-sidebar-btn" id="mobileSidebarBtn" aria-label="Toggle conversations menu" type="button">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <span class="brand-name">GPR</span>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Backdrop (positioned before leftPanel so the drawer sits completely in front and unblurred) -->
+        <div class="mobile-backdrop" id="mobileBackdrop" aria-hidden="true"></div>
+
+        <!-- ============================================================
+        LEFT PANEL — sidebar (Row 3 on desktop, Drawer on mobile)
+        ============================================================ -->
+        <div class="panel panel-left" id="leftPanel" role="complementary" aria-label="Conversation history">
+            <div class="left-content">
+
+                <button class="new-chat-btn" id="newChatBtn" aria-label="Start a new conversation">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    New Chat
+                </button>
+
+                <div class="conversation-search" role="search">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/></svg>
+                    <input type="text" id="conversationSearch" placeholder="Search conversations…" aria-label="Search conversations" />
+                </div>
+
+                <div class="chat-list-label">
+                    <span>Recent</span>
+                </div>
+
+                <div class="chat-list scrollable" id="chatList" role="list" aria-label="Conversation list">
+                    <div class="chat-item active" role="listitem" tabindex="0" aria-current="true" data-conversation="active">
+                        <div class="chat-item-info">
+                            <span class="name">tell me what the file is about…</span>
+                            <span class="meta"><span>4 turns</span><span>01:13 AM</span></span>
+                        </div>
+                    </div>
+                    <div class="chat-item" role="listitem" tabindex="0" data-conversation="other1">
+                        <div class="chat-item-info">
+                            <span class="name">QHSE incident reporting workflow</span>
+                            <span class="meta"><span>8 turns</span><span>Yesterday</span></span>
+                        </div>
+                    </div>
+                    <div class="chat-item" role="listitem" tabindex="0" data-conversation="other2">
+                        <div class="chat-item-info">
+                            <span class="name">PMO organizational structure</span>
+                            <span class="meta"><span>6 turns</span><span>2 days ago</span></span>
+                        </div>
+                    </div>
+                    <div class="chat-item" role="listitem" tabindex="0" data-conversation="other3">
+                        <div class="chat-item-info">
+                            <span class="name">Administrative escalation policy</span>
+                            <span class="meta"><span>3 turns</span><span>3 days ago</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TOOLS — floating buttons centered UNDER the left panel (Row 5 on desktop, Top bar right on mobile)
+        ============================================================ -->
+        <header class="app-header" id="appHeader" role="banner">
+            <div class="header-tools" role="toolbar" aria-label="Workspace tools">
+
+                <!-- Language toggle -->
+                <button class="tool-btn" id="langSwitch" type="button" aria-label="Switch language to Arabic" title="Toggle Language">
+                    <span class="lang-text" id="langText">EN</span>
+                </button>
+
+                <!-- Theme toggle: sun in light mode, moon in dark mode -->
+                <button class="tool-btn" id="themeSwitch" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Toggle Dark Mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+
+                <!-- API key — compact wide pill -->
+                <button class="tool-btn" id="apiKeyBtn" type="button" aria-label="API key settings" title="API key active">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7V22l2-2 2 2 2-2 2 2V14.7c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="3"/></svg>
+                    <span class="api-label">API Key</span>
+                    <span class="status-dot" aria-hidden="true"></span>
+                </button>
+
+                <!-- Right Panel (Map) Toggle button beside the floating buttons -->
+                <button class="tool-btn" id="panelToggleBtn" type="button" aria-label="Toggle right map panel" aria-pressed="false" title="Close Right Panel (Map)">
+                    <svg class="icon-panel-open" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM15 3v18"/></svg>
+                    <svg class="icon-panel-closed" viewBox="0 0 24 24" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM9 3v18"/></svg>
+                </button>
+
+            </div>
+        </header>
+
+        <!-- ============================================================
+        CENTER PANEL — full-height, adapts to keyboard and mobile screen
+        ============================================================ -->
+        <div class="panel panel-center" id="centerPanel" role="main" aria-label="AI chat workspace">
+            <div class="chat-container">
+                <div class="chat-messages scrollable" id="chatMessages" role="log" aria-live="polite" aria-atomic="true">
+
+                    <div class="message sent" role="article" aria-label="Message from you">
+                        <div class="bubble">
+                            <span class="role-label">Staff Query</span>
+                            <div class="content">tell me what the file is about</div>
+                            <span class="time">01:12 AM</span>
+                        </div>
+                    </div>
+
+                    <div class="message" role="article" aria-label="Message from assistant">
+                        <div class="bubble">
+                            <span class="role-label">GPR Grounded Assistant</span>
+                            <div class="content">Sorrythisinformationisnotavailableinthecurrentlyapproveddocuments.</div>
+                            <span class="time">01:13 AM</span>
+                        </div>
+                    </div>
+
+                    <div class="message sent" role="article" aria-label="Message from you">
+                        <div class="bubble">
+                            <span class="role-label">Staff Query</span>
+                            <div class="content">tell me what the file is about</div>
+                            <span class="time">01:14 AM</span>
+                        </div>
+                    </div>
+
+                    <div class="message" role="article" aria-label="Message from assistant">
+                        <div class="bubble">
+                            <span class="role-label">GPR Grounded Assistant</span>
+                            <div class="content">
+                                (ExitFullScreen).ExitFullScreenDEPLOYMENT…GITHUBREPOSITORY…IMAGE…objects:212,done.objects:2% (1/…
+                                <span class="source-chip">📄 c_1-ExitFullScreen</span>
+                            </div>
+                            <span class="time">01:15 AM</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="chat-input-area" id="chatInputArea">
+                    <div class="composer-row">
+                        <input id="chatInput" type="text" class="chat-input" placeholder="Ask about staff duties, KPI calculations, or escalation paths…" aria-label="Type your question" autocomplete="off" />
+                        <button class="send-btn" id="sendButton" aria-label="Send message">
+                            Send
+                            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        RESIZE HANDLE (right only)
+        ============================================================ -->
+        <div class="resize-handle" data-target="right" role="separator" aria-orientation="vertical" aria-label="Resize document panel"></div>
+
+        <!-- ============================================================
+        RIGHT PANEL — full-height (Map, hidden on mobile)
+        ============================================================ -->
+        <div class="panel panel-right" id="rightPanel" role="complementary" aria-label="Knowledge graph map">
+            <div class="panel-header">
+                <h4>Map</h4>
+            </div>
+            <div class="map-container" id="mapContainer">
+                <span class="graph-dot"></span>
+                <span class="graph-dot"></span>
+                <span class="graph-dot"></span>
+                <span class="graph-dot"></span>
+                <span class="graph-dot"></span>
+
+                <div class="map-icon">◈</div>
+                <div class="map-label">Obsidian Graph View</div>
+                <div class="map-sub">Interactive knowledge graph coming soon</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            const $ = (s, ctx = document) => ctx.querySelector(s);
+            const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
+
+            const chatMessages = $('#chatMessages');
+            const chatInput = $('#chatInput');
+            const sendBtn = $('#sendButton');
+            const chatList = $('#chatList');
+            const conversationSearch = $('#conversationSearch');
+            const newChatBtn = $('#newChatBtn');
+            const rightPanel = $('#rightPanel');
+            const mainWindow = $('#mainWindow');
+            const leftPanel = $('#leftPanel');
+            const mobileSidebarBtn = $('#mobileSidebarBtn');
+            const mobileBackdrop = $('#mobileBackdrop');
+
+            const langSwitch = $('#langSwitch');
+            const langText = $('#langText');
+
+            const themeSwitch = $('#themeSwitch');
+            const panelToggleBtn = $('#panelToggleBtn');
+
+            let currentLang = 'en';
+            let isDark = false;
+            let isTyping = false;
+            let typingTimeout = null;
+
+            function scrollToBottom(el) {
+                if (!el) return;
+                requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+            }
+
+            function getTime() {
+                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            function addMessage(text, isUser, sourceChip) {
+                const wrapper = document.createElement('div');
+                wrapper.className = `message ${isUser ? 'sent' : ''}`;
+                wrapper.setAttribute('role', 'article');
+                wrapper.setAttribute('aria-label', isUser ? 'Message from you' : 'Message from assistant');
+
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+
+                const label = document.createElement('span');
+                label.className = 'role-label';
+                label.textContent = isUser ? 'Staff Query' : 'GPR Grounded Assistant';
+                bubble.appendChild(label);
+
+                const content = document.createElement('div');
+                content.className = 'content';
+                content.textContent = text;
+                if (sourceChip) {
+                    const chip = document.createElement('span');
+                    chip.className = 'source-chip';
+                    chip.textContent = sourceChip;
+                    content.appendChild(chip);
+                }
+                bubble.appendChild(content);
+
+                const time = document.createElement('span');
+                time.className = 'time';
+                time.textContent = getTime();
+                bubble.appendChild(time);
+
+                wrapper.appendChild(bubble);
+                chatMessages.appendChild(wrapper);
+                scrollToBottom(chatMessages);
+                return wrapper;
+            }
+
+            function showTypingIndicator() {
+                if (isTyping) return;
+                if ($('.typing-indicator', chatMessages)) return;
+                isTyping = true;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'message';
+                wrapper.style.alignSelf = 'flex-start';
+
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const label = document.createElement('span');
+                label.className = 'role-label';
+                label.textContent = 'GPR Grounded Assistant';
+                bubble.appendChild(label);
+
+                const indicator = document.createElement('div');
+                indicator.className = 'typing-indicator';
+                indicator.setAttribute('role', 'status');
+                indicator.setAttribute('aria-label', 'Assistant is typing');
+                indicator.innerHTML = '<span></span><span></span><span></span>';
+                bubble.appendChild(indicator);
+                wrapper.appendChild(bubble);
+                chatMessages.appendChild(wrapper);
+                scrollToBottom(chatMessages);
+            }
+
+            function hideTypingIndicator() {
+                const el = $('.typing-indicator', chatMessages);
+                if (el) {
+                    const msg = el.closest('.message');
+                    if (msg) msg.remove();
+                }
+                isTyping = false;
+            }
+
+            function simulateAIResponse() {
+                showTypingIndicator();
+                if (typingTimeout) clearTimeout(typingTimeout);
+                const delay = 600 + Math.random() * 1200;
+                typingTimeout = setTimeout(() => {
+                    hideTypingIndicator();
+                    const responses = [
+                        'I found relevant information in your indexed documents. The key insight is that the QHSE framework requires quarterly reporting with a 5-day escalation window.',
+                        'Based on the PMO governance documents, the Manager reports to the VP of Operations with a dotted line to the Strategy Office.',
+                        'The administrative escalation policy outlines a three-tier approval process with a 48-hour response SLA for level 1 escalations.',
+                        'Looking at the CLI ingested document, it contains deployment instructions and repository references for the GPR infrastructure stack.',
+                        'Your question about staff duties is addressed in section 4.2 of the governance framework, which defines role-based access and accountability.'
+                    ];
+                    const sources = [
+                        '📄 CLI Ingested Document · chunk 1785',
+                        '📄 QHSE Incident Report Template · line 42',
+                        '📄 PMO Governance Framework · page 7'
+                    ];
+                    const reply = responses[Math.floor(Math.random() * responses.length)];
+                    const chip = sources[Math.floor(Math.random() * sources.length)];
+                    addMessage(reply, false, chip);
+                    scrollToBottom(chatMessages);
+                }, delay);
+            }
+
+            function sendMessage() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+                addMessage(text, true);
+                chatInput.value = '';
+                chatInput.focus();
+                simulateAIResponse();
+                scrollToBottom(chatMessages);
+            }
+
+            function selectConversation(item) {
+                if (!item) return;
+                $$('.chat-item', chatList).forEach(el => {
+                    el.classList.remove('active');
+                    el.removeAttribute('aria-current');
+                });
+                item.classList.add('active');
+                item.setAttribute('aria-current', 'true');
+                chatMessages.innerHTML = '';
+                const name = item.querySelector('.name');
+                addMessage(`Welcome to "${name ? name.textContent : 'Conversation'}". How can I help you?`, false);
+                chatInput.focus();
+                scrollToBottom(chatMessages);
+                // Close mobile drawer when a conversation is selected
+                if (document.body.classList.contains('mobile-sidebar-open')) {
+                    document.body.classList.remove('mobile-sidebar-open');
+                }
+            }
+
+            function startNewConversation() {
+                chatMessages.innerHTML = '';
+                addMessage('New conversation started. Ask me anything about your documents.', false);
+                chatInput.value = '';
+                chatInput.focus();
+                const names = ['Research query', 'Document analysis', 'Policy review', 'KPI discussion', 'Staff query'];
+                const name = names[Math.floor(Math.random() * names.length)];
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.setAttribute('role', 'listitem');
+                item.setAttribute('tabindex', '0');
+                item.dataset.conversation = 'new-' + Date.now();
+                item.innerHTML = `
+                    <div class="chat-item-info">
+                        <span class="name">${name}</span>
+                        <span class="meta"><span>0 turns</span><span>Just now</span></span>
+                    </div>
+                `;
+                const first = $('.chat-item', chatList);
+                if (first && first.nextElementSibling) {
+                    chatList.insertBefore(item, first.nextElementSibling);
+                } else {
+                    chatList.appendChild(item);
+                }
+                selectConversation(item);
+                item.addEventListener('click', () => selectConversation(item));
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                        selectConversation(item); }
+                });
+                chatList.scrollTop = 0;
+            }
+
+            function toggleTheme() {
+                isDark = !isDark;
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    themeSwitch.setAttribute('aria-pressed', 'true');
+                    themeSwitch.setAttribute('aria-label', 'Switch to light mode');
+                    themeSwitch.setAttribute('title', 'Switch to Light Mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeSwitch.setAttribute('aria-pressed', 'false');
+                    themeSwitch.setAttribute('aria-label', 'Switch to dark mode');
+                    themeSwitch.setAttribute('title', 'Switch to Dark Mode');
+                }
+                localStorage.setItem('gpr-theme', isDark ? 'dark' : 'light');
+            }
+
+            function toggleLanguage() {
+                currentLang = currentLang === 'en' ? 'ar' : 'en';
+                langText.textContent = currentLang === 'en' ? 'EN' : 'AR';
+                langSwitch.setAttribute('aria-label', currentLang === 'en' ? 'Switch language to Arabic' :
+                    'Switch language to English');
+                console.log('Language switched to:', currentLang);
+            }
+
+            function toggleRightPanel() {
+                const isClosed = mainWindow.classList.toggle('right-panel-closed');
+                const iconOpen = $('.icon-panel-open', panelToggleBtn);
+                const iconClosed = $('.icon-panel-closed', panelToggleBtn);
+
+                if (isClosed) {
+                    panelToggleBtn.setAttribute('aria-pressed', 'true');
+                    panelToggleBtn.setAttribute('title', 'Open Map Panel');
+                    panelToggleBtn.classList.add('active-closed');
+                    if (iconOpen) iconOpen.style.display = 'none';
+                    if (iconClosed) iconClosed.style.display = 'block';
+                } else {
+                    panelToggleBtn.setAttribute('aria-pressed', 'false');
+                    panelToggleBtn.setAttribute('title', 'Close Right Panel (Map)');
+                    panelToggleBtn.classList.remove('active-closed');
+                    if (iconOpen) iconOpen.style.display = 'block';
+                    if (iconClosed) iconClosed.style.display = 'none';
+
+                    // Restore custom grid width if user resized previously
+                    if (rightPanel.style.width) {
+                        mainWindow.style.gridTemplateColumns =
+                            `var(--left-width) var(--gutter) minmax(0, 1fr) var(--gutter) ${rightPanel.style.width}`;
+                    } else {
+                        mainWindow.style.gridTemplateColumns = '';
+                    }
+                }
+            }
+
+            function toggleMobileSidebar() {
+                document.body.classList.toggle('mobile-sidebar-open');
+            }
+
+            let resizeData = null;
+
+            function initResize() {
+                const handles = $$('.resize-handle');
+                handles.forEach(handle => {
+                    handle.addEventListener('mousedown', (e) => {
+                        if (mainWindow.classList.contains('right-panel-closed')) return;
+                        e.preventDefault();
+                        resizeData = {
+                            target: handle.dataset.target,
+                            startX: e.clientX,
+                            startRight: rightPanel.getBoundingClientRect().width,
+                        };
+                        document.body.style.cursor = 'col-resize';
+                        document.body.style.userSelect = 'none';
+                    });
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!resizeData || mainWindow.classList.contains('right-panel-closed')) return;
+                    const { target, startX, startRight } = resizeData;
+                    const dx = e.clientX - startX;
+
+                    if (target === 'right') {
+                        let newWidth = Math.min(Math.max(startRight - dx, 160), 620);
+                        rightPanel.style.width = newWidth + 'px';
+                        rightPanel.style.minWidth = newWidth + 'px';
+                        rightPanel.style.maxWidth = newWidth + 'px';
+                        document.documentElement.style.setProperty('--right-width', newWidth + 'px');
+                        mainWindow.style.gridTemplateColumns =
+                            `var(--left-width) var(--gutter) minmax(0, 1fr) var(--gutter) ${newWidth}px`;
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (resizeData) {
+                        resizeData = null;
+                        document.body.style.cursor = '';
+                        document.body.style.userSelect = '';
+                    }
+                });
+                window.addEventListener('blur', () => {
+                    if (resizeData) {
+                        resizeData = null;
+                        document.body.style.cursor = '';
+                        document.body.style.userSelect = '';
+                    }
+                });
+            }
+
+            function filterConversations(query) {
+                const q = query.toLowerCase().trim();
+                $$('.chat-item', chatList).forEach(item => {
+                    item.hidden = q && !item.textContent.toLowerCase().includes(q);
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    conversationSearch.focus();
+                }
+                if (e.key === 'Escape') {
+                    if (document.body.classList.contains('mobile-sidebar-open')) {
+                        document.body.classList.remove('mobile-sidebar-open');
+                        return;
+                    }
+                    if (document.activeElement === conversationSearch) {
+                        conversationSearch.blur();
+                        chatInput.focus();
+                    }
+                }
+            });
+
+            function initMobileViewport() {
+                if (window.visualViewport) {
+                    const handleViewport = () => {
+                        const vh = window.visualViewport.height;
+                        document.documentElement.style.setProperty('--viewport-height', `${vh}px`);
+                        if (vh < window.innerHeight * 0.88) {
+                            document.body.classList.add('keyboard-open');
+                            scrollToBottom(chatMessages);
+                        } else {
+                            document.body.classList.remove('keyboard-open');
+                        }
+                    };
+                    window.visualViewport.addEventListener('resize', handleViewport);
+                    window.visualViewport.addEventListener('scroll', handleViewport);
+                    handleViewport();
+                }
+                chatInput.addEventListener('focus', () => {
+                    setTimeout(() => scrollToBottom(chatMessages), 250);
+                });
+            }
+
+            function init() {
+                const savedTheme = localStorage.getItem('gpr-theme');
+                if (savedTheme === 'dark') {
+                    isDark = true;
+                    document.body.classList.add('dark-mode');
+                    themeSwitch.setAttribute('aria-pressed', 'true');
+                    themeSwitch.setAttribute('aria-label', 'Switch to light mode');
+                }
+
+                sendBtn.addEventListener('click', sendMessage);
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                        sendMessage(); }
+                });
+
+                $$('.chat-item', chatList).forEach(item => {
+                    item.addEventListener('click', () => selectConversation(item));
+                    item.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                            selectConversation(item); }
+                    });
+                });
+
+                newChatBtn.addEventListener('click', startNewConversation);
+                conversationSearch.addEventListener('input', (e) => filterConversations(e.target.value));
+
+                $('#apiKeyBtn').addEventListener('click', () => alert('🔑 API Key management modal would open here.'));
+
+                themeSwitch.addEventListener('click', toggleTheme);
+                langSwitch.addEventListener('click', toggleLanguage);
+                if (panelToggleBtn) panelToggleBtn.addEventListener('click', toggleRightPanel);
+                if (mobileSidebarBtn) mobileSidebarBtn.addEventListener('click', toggleMobileSidebar);
+                if (mobileBackdrop) mobileBackdrop.addEventListener('click', () => document.body.classList.remove('mobile-sidebar-open'));
+
+                initResize();
+                initMobileViewport();
+
+                const first = $('.chat-item.active', chatList);
+                if (first) selectConversation(first);
+                chatInput.focus();
+                console.log('GPR — Minimal Monochrome Theme loaded.');
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1dde9adff3fe231',t:'MTc4NDUwODAwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
