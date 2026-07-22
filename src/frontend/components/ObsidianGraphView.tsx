@@ -186,9 +186,10 @@ export const ObsidianGraphView: React.FC = () => {
   // Smoothly center and pan when the AI model accesses chunks (`activeGraphNodeIds` updates via SSE)
   useEffect(() => {
     if (fgRef.current && activeGraphNodeIds.length > 0 && graphData.nodes.length > 0) {
-      const targetNodes = graphData.nodes.filter(n => activeGraphNodeIds.includes(n.id));
-      if (targetNodes.length > 0 && typeof targetNodes[0].x === "number" && typeof targetNodes[0].y === "number") {
-        fgRef.current.centerAt(targetNodes[0].x, targetNodes[0].y, 1200);
+      const lastActiveId = activeGraphNodeIds[activeGraphNodeIds.length - 1];
+      const targetNode = graphData.nodes.find(n => n.id === lastActiveId) || graphData.nodes.find(n => activeGraphNodeIds.includes(n.id));
+      if (targetNode && typeof targetNode.x === "number" && typeof targetNode.y === "number") {
+        fgRef.current.centerAt(targetNode.x, targetNode.y, 1200);
         fgRef.current.zoom(2.3, 1200);
       }
     }

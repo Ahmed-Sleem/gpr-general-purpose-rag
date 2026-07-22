@@ -915,3 +915,35 @@
   - **a) Is the gap fully fixed?** Yes for parser and real-time delta rendering. ChatPanel can now consume typed `delta` events from GAP-GPR-46 and still tolerates legacy token events.
   - **b) Is everything wired and ready for production?** Yes for stream consumption. The backend emits `delta`; frontend parses event blocks and displays received provider chunks without fake character animation. Visible stop/retry controls remain in the UI polish gap.
   - **c) Is my test really validating that?** The production build validates TypeScript and integration. Full interactive stream timing will be manually validated in the final acceptance pass with a real provider key.
+
+---
+
+## 2026-07-22 — GAP-GPR-48: Composer, Fades, Thinking Spacing, Sidebar/Mobile, Loading UI Polish
+
+- **Gap ID + one-line description:** GAP-GPR-48 — Completed the requested chat composer/layout polish: fixed send button anchoring, chat fades, composer shadow, balanced thinking spacing, sidebar/mobile geometry, loading mode continuity, and last-active graph focus.
+- **Files touched:**
+  - `src/frontend/components/ChatPanel.tsx` — replaced composer row with semantic `.composer-shell`, anchored `.composer-send`, added send-as-stop behavior via `AbortController`, added thinking card class, and preserved textarea auto-grow.
+  - `src/frontend/app/globals.css` — added composer sizing tokens, fixed composer/action rail CSS, chat top/bottom fade mask, composer elevation shadow, balanced `.thinking-log-card` spacing, sidebar control row classes, load-screen classes, responsive left-panel width tokens, and removed stale status-dot CSS.
+  - `src/frontend/components/LeftPanel.tsx` — replaced inline search/button sizing with full-width sidebar control row classes.
+  - `src/frontend/components/LoadScreen.tsx` — converted hardcoded light loading screen to shared theme-token classes.
+  - `src/frontend/app/layout.tsx` — added early theme/language script and hydration suppression so loading screen/main UI match persisted mode before React finishes booting.
+  - `src/frontend/app/page.tsx` — added mobile drawer React state, `aria-expanded`, `aria-controls`, Escape close, backdrop close, and body scroll lock.
+  - `src/frontend/components/ObsidianGraphView.tsx` — changed AI camera focus from first active graph node to the last active node in `activeGraphNodeIds`.
+  - `_working_docs/AUDIT_AND_TODO.md` — marked GAP-GPR-48 closed with verification evidence.
+- **Tests added/updated:**
+  - No new test files; UI validation uses frontend production build plus backend regression because no backend behavior was changed in this gap.
+- **How I verified:**
+  - Frontend production build:
+    - `cd src/frontend && npm install --legacy-peer-deps && npm run build`
+    - Result: `✓ Compiled successfully` (`Route / 11.3 kB`, First Load JS `124 kB`).
+  - Backend regression:
+    - Recreated `/tmp/gpr-backend-venv`, installed requirements, then ran `GPR_VAULT_MASTER_KEY=<test-key> GPR_COOKIE_SECURE=false PYTHONPATH=. pytest -q tests/` from `src/backend`.
+    - Result: `28 passed in 37.07s`.
+  - Secret scan:
+    - Workspace text scan for configured PAT/provider/PEM/admin-password patterns found `0` findings, excluding deliberate dummy backend test fixtures and tracked JSON data files.
+  - Cleanup:
+    - Removed ignored `node_modules`, `.next`, `gpr_workspace.db`, `__pycache__`, and `.pytest_cache` artifacts after validation.
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes. The send button is anchored in the composer shell, grows independently from textarea height, chat fade/shadow/thinking spacing are implemented, sidebar controls use full-width consistent geometry, mobile drawer is accessible, loading screen inherits final mode, and graph focuses the last active node.
+  - **b) Is everything wired and ready for production?** Yes. The UI changes are all wired to active components (`ChatPanel`, `LeftPanel`, `LoadScreen`, `page`, `layout`, `ObsidianGraphView`) and validated by a production Next.js build.
+  - **c) Is my test really validating that?** The frontend build validates TypeScript/React integration across the changed components. Final visual/touch behavior will still be manually checked in GAP-GPR-50 acceptance, but the implementation is compiled and wired.

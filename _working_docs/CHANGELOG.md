@@ -638,3 +638,13 @@
 - Added `src/frontend/utils/sseParser.ts`, a robust event-block SSE parser for CRLF, comments, multiple data lines, and final flush.
 - Updated ChatPanel to consume backend `delta` events and legacy token events, RAF-batch streaming paints, and keep exact received chunks without fake typewriter animation.
 - Verification: frontend production build compiled successfully; secret scan found 0 configured findings.
+
+## 2026-07-22 session 36 — GAP-GPR-48 UI polish
+
+- Added stable composer shell with bottom-right anchored send/stop button and preserved textarea auto-grow.
+- Added chat viewport top/bottom fade, composer elevation shadow, and balanced thinking-card spacing.
+- Reworked left sidebar controls into a full-width search + two equal icon buttons layout.
+- Added mobile drawer state, ARIA attributes, Escape/backdrop close, and body scroll lock.
+- Converted loading screen to shared theme tokens and added an early persisted theme/language script before React hydration.
+- Updated graph camera focus to center on the last active node.
+- Verification: frontend production build compiled successfully; backend regression `28 passed in 37.07s`; secret scan found 0 configured findings.

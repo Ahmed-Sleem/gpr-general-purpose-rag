@@ -20,8 +20,8 @@ export const LeftPanel: React.FC = () => {
   return (
     <div className="left-content">
       {/* Horizontal Row: Conversation Search Bar + New Chat [+] Button + Delete All Chats Button (`Point 4`) */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <div className="conversation-search" role="search" style={{ flex: 1, height: "32px", maxWidth: "160px" }}>
+      <div className="sidebar-control-row">
+        <div className="conversation-search sidebar-search" role="search">
           <svg viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/>
           </svg>
@@ -37,12 +37,12 @@ export const LeftPanel: React.FC = () => {
 
         <button
           onClick={createConversation}
-          className="tool-btn"
+          className="tool-btn sidebar-icon-btn"
           id="newChatBtn"
           aria-label="Start a new conversation"
           title={language === "ar" ? "محادثة جديدة" : "New Chat"}
           type="button"
-          style={{ width: "32px", height: "32px", flex: "0 0 32px", justifyContent: "center", padding: 0 }}
+          style={{ justifyContent: "center" }}
         >
           <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px" }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
@@ -51,13 +51,13 @@ export const LeftPanel: React.FC = () => {
 
         <button
           onClick={() => setConfirmDeleteAll(true)}
-          className="tool-btn"
+          className="tool-btn sidebar-icon-btn"
           id="deleteAllChatsBtn"
           aria-label="Delete all conversations"
           title={language === "ar" ? "حذف جميع المحادثات" : "Delete All Chats"}
           type="button"
           style={{
-            width: "32px", height: "32px", flex: "0 0 32px", justifyContent: "center", padding: 0,
+            justifyContent: "center",
             transition: "all 0.2s ease"
           }}
           onMouseEnter={(e) => {

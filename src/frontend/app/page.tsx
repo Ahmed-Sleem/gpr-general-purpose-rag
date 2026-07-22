@@ -5,7 +5,7 @@
  * Arranges Title, Mobile Drawer Backdrop, Left Panel, Header (floating toolbar in row 5),
  * Center Panel (Chat Workspace), right resize-handle, and Right Panel (Map / Obsidian Graph View).
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { LeftPanel } from "../components/LeftPanel";
 import { ChatPanel } from "../components/ChatPanel";
@@ -15,6 +15,21 @@ import { useApp } from "../context/AppContext";
 
 export default function Home() {
   const { language, isReady } = useApp();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("mobile-sidebar-open", isMobileSidebarOpen);
+    document.body.style.overflow = isMobileSidebarOpen ? "hidden" : "";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileSidebarOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.classList.remove("mobile-sidebar-open");
+      document.body.style.overflow = "";
+    };
+  }, [isMobileSidebarOpen]);
 
   if (!isReady) {
     return <LoadScreen />;
@@ -65,8 +80,10 @@ export default function Home() {
             className="mobile-sidebar-btn"
             id="mobileSidebarBtn"
             aria-label="Toggle conversations menu"
+            aria-expanded={isMobileSidebarOpen}
+            aria-controls="leftPanel"
             type="button"
-            onClick={() => document.body.classList.toggle("mobile-sidebar-open")}
+            onClick={() => setIsMobileSidebarOpen(prev => !prev)}
           >
             <svg viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
@@ -80,8 +97,8 @@ export default function Home() {
       <div
         className="mobile-backdrop"
         id="mobileBackdrop"
-        aria-hidden="true"
-        onClick={() => document.body.classList.remove("mobile-sidebar-open")}
+        aria-hidden={!isMobileSidebarOpen}
+        onClick={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Left Panel — Sidebar (Row 3 / Col 1 on desktop, Drawer on mobile) */}

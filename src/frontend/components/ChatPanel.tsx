@@ -32,6 +32,7 @@ export const ChatPanel: React.FC = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const streamingContentRef = useRef("");
   const rafRef = useRef<number | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const activeConv = conversations.find(c => c.id === activeConversationId);
   const turns = activeConv ? (activeConv.turns as ExtendedTurn[]) : [];
@@ -70,7 +71,11 @@ export const ChatPanel: React.FC = () => {
 
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!inputMessage.trim() || isStreaming) return;
+    if (isStreaming) {
+      abortControllerRef.current?.abort();
+      return;
+    }
+    if (!inputMessage.trim()) return;
 
     const activeProfileId = activeApiKeyId || (savedApiKeys && savedApiKeys.length > 0 ? savedApiKeys[0].id : null);
     if (!activeProfileId) {
@@ -102,8 +107,11 @@ export const ChatPanel: React.FC = () => {
     let accumulatedLogs: string[] = [];
 
     try {
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
       const response = await fetch("/api/v1/chat/stream", {
         method: "POST",
+        signal: abortController.signal,
         headers: {
           "Content-Type": "application/json",
           "X-LLM-Profile-ID": activeProfileId,
@@ -187,14 +195,18 @@ export const ChatPanel: React.FC = () => {
       };
       addTurnToConversation(assistantTurn);
     } catch (e: any) {
+      const isAbort = e?.name === "AbortError";
       const errTurn: ExtendedTurn = {
         id: `turn_err_${Date.now()}`,
         role: "assistant",
-        content: language === "ar" ? `عذراً، حدث خطأ في الاتصال بخادم الاسترجاع: ${e.message}` : `Sorry, error connecting to retrieval backend: ${e.message}`,
+        content: isAbort
+          ? (language === "ar" ? "تم إيقاف توليد الإجابة." : "Response generation stopped.")
+          : (language === "ar" ? `عذراً، حدث خطأ في الاتصال بخادم الاسترجاع: ${e.message}` : `Sorry, error connecting to retrieval backend: ${e.message}`),
         timestamp: new Date().toISOString()
       };
       addTurnToConversation(errTurn);
     } finally {
+      abortControllerRef.current = null;
       setIsStreaming(false);
       setStreamingContent("");
       setActiveSearchStatus(null);
@@ -345,9 +357,9 @@ export const ChatPanel: React.FC = () => {
               <div className="content">
                 {/* Render cycle logs card if saved for assistant turn and actual nodes were requested (`Point 9 & Point 10`) */}
                 {turn.role === "assistant" && turn.cycle_logs && turn.cycle_logs.some(l => l.includes("Inspecting") || l.includes("Requested inspection") || l.includes("inspecting")) && (
-                  <div style={{
+                  <div className="thinking-log-card" style={{
                     background: "var(--color-slate)", border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: "12px",
+                    borderRadius: "var(--radius-sm)",
                     display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "var(--text-meta)"
                   }}>
                     <div style={{ fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -377,9 +389,9 @@ export const ChatPanel: React.FC = () => {
               <div className="content">
                 {/* Live Status Feed during Streaming — always visible when streaming (`Point 5`) */}
                 {isStreaming && (
-                  <div style={{
+                  <div className="thinking-log-card" style={{
                     background: "var(--color-slate)", border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: "12px",
+                    borderRadius: "var(--radius-sm)",
                     display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "var(--text-meta)"
                   }}>
                     <div style={{ fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -465,11 +477,11 @@ export const ChatPanel: React.FC = () => {
 
       {/* Chat Input Area */}
       <div className="chat-input-area" id="chatInputArea">
-        <div className="composer-row">
+        <form className="composer-shell" onSubmit={(event) => { event.preventDefault(); void handleSend(); }}>
           <textarea
             ref={textareaRef}
             id="chatInput"
-            className="chat-input"
+            className="chat-input composer-input"
             placeholder={selectedDocIds.length > 0 ? (language === "ar" ? `اسأل في نطاق المستند المعتمد...` : `Ask within scoped document...`) : t("ask_placeholder")}
             value={inputMessage}
             onChange={(e) => {
@@ -496,20 +508,18 @@ export const ChatPanel: React.FC = () => {
             rows={1}
           />
           <button
-            className="send-btn"
+            className="send-btn composer-send"
             id="sendButton"
-            onClick={handleSend}
-            disabled={isStreaming || !inputMessage.trim()}
-            aria-label="Send message"
-            title={language === "ar" ? "إرسال الاستفسار" : "Send Query"}
-            type="button"
-            style={{ padding: "8px 12px", minWidth: "38px", borderRadius: "8px", justifyContent: "center" }}
+            disabled={!isStreaming && !inputMessage.trim()}
+            aria-label={isStreaming ? "Stop generation" : "Send message"}
+            title={isStreaming ? (language === "ar" ? "إيقاف التوليد" : "Stop Generation") : (language === "ar" ? "إرسال الاستفسار" : "Send Query")}
+            type="submit"
           >
             <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px" }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
             </svg>
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
