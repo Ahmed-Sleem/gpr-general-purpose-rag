@@ -709,3 +709,9 @@
 - Restores saved panel widths and right panel visibility on app open.
 - Saves panel widths after resize and saves right panel closed/open state when toggled.
 - Verification: frontend production build compiled successfully (`Route / 11.9 kB`, First Load JS `124 kB`); workspace secret scan found 0 configured findings; `git diff --check` passed.
+
+## 2026-07-22 session 42 — Main hotfix: readable citation titles in chat
+
+- Updated chat citation chips to display both the source node number and title, e.g. `15.1 · Site Engineer`, instead of only the number.
+- Kept citation chips compact with ellipsis on small screens to avoid breaking message layout.
+- Verification: frontend production build compiled successfully (`Route / 11.9 kB`, First Load JS `124 kB`); workspace secret scan found 0 configured findings; `git diff --check` passed.

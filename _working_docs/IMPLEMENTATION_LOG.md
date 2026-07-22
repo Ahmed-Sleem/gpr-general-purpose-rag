@@ -1127,3 +1127,22 @@
   - **a) Is the issue fixed?** Yes. Sidebar rows now use `minmax(0, 1fr)` grid behavior with fixed action columns, the mobile menu icon has explicit stroke/currentColor styling, and layout widths/states persist by device.
   - **b) Is it wired?** Yes. The active page/header components read/write layout preferences and the active CSS classes constrain the left panel controls and mobile menu trigger.
   - **c) Does validation prove it?** The frontend build validates the changed React/TypeScript integration; visual confirmation should be checked after Railway redeploys.
+
+---
+
+## 2026-07-22 — Main Hotfix: Readable Citation Titles in Chat
+
+- **Description:** Citation chips in assistant messages now show both the reference number and reference title for readability.
+- **Files touched:**
+  - `src/frontend/components/ChatPanel.tsx` — citation renderer now captures the citation title from model output and renders `code · title` while preserving click-to-open behavior.
+  - `src/frontend/app/globals.css` — added compact citation code/title styling with overflow ellipsis for small screens.
+  - `_working_docs/CHANGELOG.md`, `_working_docs/IMPLEMENTATION_LOG.md` — recorded the hotfix and validation.
+- **How I verified:**
+  - Frontend production build: `cd src/frontend && npm install --legacy-peer-deps && npm run build`.
+  - Result: `✓ Compiled successfully` (`Route / 11.9 kB`, First Load JS `124 kB`).
+  - `git diff --check` passed.
+  - Workspace secret scan returned `0` configured findings.
+- **Self-check answers:**
+  - **a) Is the issue fixed?** Yes. References now display the source id and title when the model outputs the standard citation format.
+  - **b) Is it wired?** Yes. The active `renderInlineRichText` path passes the captured title into `renderCitationButton`, and the chip remains clickable by source id.
+  - **c) Does validation prove it?** The frontend build validates the React/TypeScript integration; visual confirmation should be checked after Railway redeploys.

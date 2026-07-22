@@ -223,22 +223,27 @@ export const ChatPanel: React.FC = () => {
       .replace(/&#39;/g, "'");
   };
 
-  const renderCitationButton = (code: string, key: string) => (
-    <button
-      key={key}
-      onClick={() => setInspectingNodeId(code)}
-      className="source-chip"
-      type="button"
-      title={language === "ar" ? "انقر لفحص البطاقة وقراءة النص الكامل" : "Click to inspect exact source node"}
-      aria-label={`Open source ${code}`}
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: "12px", height: "12px", stroke: "currentColor", fill: "none", strokeWidth: 2 }}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7 4h7l3 3v13H7z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M14 4v4h4" />
-      </svg>
-      <span>{code}</span>
-    </button>
-  );
+  const renderCitationButton = (code: string, title: string | undefined, key: string) => {
+    const cleanTitle = (title || "").replace(/^[-:\s]+/, "").trim();
+    const displayLabel = cleanTitle ? `${code} · ${cleanTitle}` : code;
+    return (
+      <button
+        key={key}
+        onClick={() => setInspectingNodeId(code)}
+        className="source-chip"
+        type="button"
+        title={cleanTitle ? `${code} — ${cleanTitle}` : (language === "ar" ? "انقر لفحص البطاقة وقراءة النص الكامل" : "Click to inspect exact source node")}
+        aria-label={`Open source ${displayLabel}`}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: "12px", height: "12px", stroke: "currentColor", fill: "none", strokeWidth: 2 }}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 4h7l3 3v13H7z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14 4v4h4" />
+        </svg>
+        <span className="source-chip-code">{code}</span>
+        {cleanTitle ? <span className="source-chip-title">{cleanTitle}</span> : null}
+      </button>
+    );
+  };
 
   const renderInlineMarkdownOnly = (text: string, keyPrefix: string) => {
     const parts: React.ReactNode[] = [];
@@ -273,7 +278,7 @@ export const ChatPanel: React.FC = () => {
       if (match.index > lastIdx) {
         nodes.push(...([] as React.ReactNode[]).concat(renderInlineMarkdownOnly(decoded.slice(lastIdx, match.index), `${keyPrefix}_seg_${idx}`)));
       }
-      nodes.push(renderCitationButton(match[1] || "1", `${keyPrefix}_cite_${idx++}`));
+      nodes.push(renderCitationButton(match[1] || "1", match[2], `${keyPrefix}_cite_${idx++}`));
       lastIdx = match.index + match[0].length;
     }
     if (lastIdx < decoded.length) {

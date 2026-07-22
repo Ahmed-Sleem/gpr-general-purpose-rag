@@ -1589,3 +1589,25 @@ body[dir="rtl"] .chat-item.removing-empty {
         gap: 8px;
     }
 }
+
+/* Show source title beside citation number for readability. */
+.message .bubble .content .source-chip {
+    max-width: min(100%, 260px);
+    white-space: nowrap;
+}
+.source-chip-code {
+    font-weight: 800;
+    flex: 0 0 auto;
+}
+.source-chip-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.86;
+}
+@media (max-width: 768px) {
+    .message .bubble .content .source-chip {
+        max-width: min(100%, 210px);
+    }
+}
