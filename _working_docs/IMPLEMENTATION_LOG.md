@@ -1163,3 +1163,29 @@
   - **a) Is the request fixed?** Yes. README now includes a current product screenshot without clutter.
   - **b) Is it wired?** Yes. The screenshot path is relative and GitHub-compatible.
   - **c) Does validation prove it?** The asset exists and README references it; no app rebuild is needed for documentation-only changes.
+
+---
+
+## 2026-07-23 — README Screenshot Gallery Refresh
+
+- **Description:** Used the supplied current project screenshots to improve the GitHub README without clutter.
+- **Files touched:**
+  - `docs/assets/gpr-01-welcome-light.png`
+  - `docs/assets/gpr-02-grounded-answer-light.png`
+  - `docs/assets/gpr-03-source-card-light.png`
+  - `docs/assets/gpr-04-grounded-answer-dark.png`
+  - `docs/assets/gpr-05-dark-chat-map-overview.png`
+  - `docs/assets/gpr-06-dark-split-map.png`
+  - `docs/assets/gpr-07-water-manager-map-focus.png`
+  - `docs/assets/gpr-08-water-manager-stream-map.png`
+  - `docs/assets/gpr-09-map-node-focus.png`
+  - `README.md`
+  - `_working_docs/CHANGELOG.md`, `_working_docs/IMPLEMENTATION_LOG.md`
+- **How I verified:**
+  - Generated optimized screenshot assets at 1600px width from the supplied images.
+  - Verified every `docs/assets/...` path referenced by README exists.
+  - Ran workspace secret scan for configured PAT/provider/PEM/admin-password patterns: `0` findings.
+- **Self-check answers:**
+  - **a) Is the request fixed?** Yes. All available current screenshots are renamed meaningfully and used in the README.
+  - **b) Is it wired?** Yes. The README uses GitHub-compatible relative image paths and a compact gallery layout.
+  - **c) Does validation prove it?** Yes. Asset reference validation confirms no broken image links, and the screenshot files are tracked under `docs/assets/`.

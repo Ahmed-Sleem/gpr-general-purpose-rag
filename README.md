@@ -35,10 +35,31 @@ Security note: this is stronger than browser-local API keys, but it is still dev
 ## Product Preview
 
 <p align="center">
-  <img src="docs/assets/gpr-settings-vault.png" alt="GPR encrypted API key vault and workflow settings modal" width="920" />
+  <img src="docs/assets/gpr-05-dark-chat-map-overview.png" alt="GPR dark mode chat workspace with live knowledge map" width="920" />
 </p>
 
-The screenshot above shows the current encrypted API-key vault and workflow settings modal. It is intentionally the only large image in the README so the page stays clean and direct while still showing the product's monochrome, focused interface style.
+A compact 3-panel workspace: conversation history on the left, grounded streaming chat in the center, and a live knowledge map on the right. The screenshots below show the main states without turning the README into a screenshot dump.
+
+| State | Preview |
+|---|---|
+| **Clean start / new chat** | <img src="docs/assets/gpr-01-welcome-light.png" alt="GPR light mode welcome screen" width="420" /> |
+| **Grounded answer with citations** | <img src="docs/assets/gpr-02-grounded-answer-light.png" alt="GPR grounded answer in light mode" width="420" /> |
+| **Source card inspector** | <img src="docs/assets/gpr-03-source-card-light.png" alt="GPR source card inspector modal" width="420" /> |
+| **Dark mode answer** | <img src="docs/assets/gpr-04-grounded-answer-dark.png" alt="GPR grounded answer in dark mode" width="420" /> |
+| **Encrypted API-key vault** | <img src="docs/assets/gpr-settings-vault.png" alt="GPR encrypted API key vault settings" width="420" /> |
+
+<details>
+<summary>More interface states</summary>
+
+| Map + chat states | Preview |
+|---|---|
+| Dark chat with full map | <img src="docs/assets/gpr-05-dark-chat-map-overview.png" alt="Dark chat with full knowledge map" width="420" /> |
+| Narrow split map | <img src="docs/assets/gpr-06-dark-split-map.png" alt="Dark split map layout" width="420" /> |
+| Water manager answer with map focus | <img src="docs/assets/gpr-07-water-manager-map-focus.png" alt="Water sector manager answer and map focus" width="420" /> |
+| Streaming answer with highlighted node | <img src="docs/assets/gpr-08-water-manager-stream-map.png" alt="Streaming answer with highlighted graph node" width="420" /> |
+| Focused graph node cluster | <img src="docs/assets/gpr-09-map-node-focus.png" alt="Focused graph node cluster" width="420" /> |
+
+</details>
 
 ## Key Capabilities
 

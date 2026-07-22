@@ -721,3 +721,10 @@
 - Added a compact Product Preview section to `README.md` with one representative screenshot of the encrypted API-key vault / workflow settings modal.
 - Stored the optimized screenshot at `docs/assets/gpr-settings-vault.png` so GitHub renders it directly without cluttering the README.
 - Kept the README focused: one large visual, concise caption, current vault/streaming/graph architecture unchanged.
+
+## 2026-07-23 session 44 — README screenshot gallery refresh
+
+- Added all available current app screenshots under clear names in `docs/assets/`.
+- Updated README Product Preview from a single screenshot into a clean, compact gallery: one hero screenshot, a short main-state table, and a collapsible "More interface states" section to avoid clutter.
+- Screenshot assets were renamed by state: welcome light, grounded answer light, source card, dark answer, dark chat/map overview, split map, water manager map focus, streaming map focus, and focused graph cluster.
+- Verification: README asset references all resolve; workspace secret scan found 0 configured findings.
