@@ -32,6 +32,14 @@ Security note: this is stronger than browser-local API keys, but it is still dev
 
 ---
 
+## Product Preview
+
+<p align="center">
+  <img src="docs/assets/gpr-settings-vault.png" alt="GPR encrypted API key vault and workflow settings modal" width="920" />
+</p>
+
+The screenshot above shows the current encrypted API-key vault and workflow settings modal. It is intentionally the only large image in the README so the page stays clean and direct while still showing the product's monochrome, focused interface style.
+
 ## Key Capabilities
 
 | Capability | Current implementation |

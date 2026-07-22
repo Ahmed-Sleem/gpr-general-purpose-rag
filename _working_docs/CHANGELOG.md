@@ -715,3 +715,9 @@
 - Updated chat citation chips to display both the source node number and title, e.g. `15.1 · Site Engineer`, instead of only the number.
 - Kept citation chips compact with ellipsis on small screens to avoid breaking message layout.
 - Verification: frontend production build compiled successfully (`Route / 11.9 kB`, First Load JS `124 kB`); workspace secret scan found 0 configured findings; `git diff --check` passed.
+
+## 2026-07-22 session 43 — README product preview screenshot
+
+- Added a compact Product Preview section to `README.md` with one representative screenshot of the encrypted API-key vault / workflow settings modal.
+- Stored the optimized screenshot at `docs/assets/gpr-settings-vault.png` so GitHub renders it directly without cluttering the README.
+- Kept the README focused: one large visual, concise caption, current vault/streaming/graph architecture unchanged.

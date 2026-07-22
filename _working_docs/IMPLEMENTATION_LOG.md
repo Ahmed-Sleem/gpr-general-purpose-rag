@@ -1146,3 +1146,20 @@
   - **a) Is the issue fixed?** Yes. References now display the source id and title when the model outputs the standard citation format.
   - **b) Is it wired?** Yes. The active `renderInlineRichText` path passes the captured title into `renderCitationButton`, and the chip remains clickable by source id.
   - **c) Does validation prove it?** The frontend build validates the React/TypeScript integration; visual confirmation should be checked after Railway redeploys.
+
+---
+
+## 2026-07-22 — README Product Preview Screenshot Update
+
+- **Description:** Added a clean, non-cluttered README screenshot section using the available current UI screenshot.
+- **Files touched:**
+  - `docs/assets/gpr-settings-vault.png` — optimized representative screenshot of the encrypted API-key vault/workflow settings modal.
+  - `README.md` — added a centered Product Preview section with concise caption.
+  - `_working_docs/CHANGELOG.md`, `_working_docs/IMPLEMENTATION_LOG.md` — recorded the documentation update.
+- **How I verified:**
+  - Confirmed screenshot asset exists at `docs/assets/gpr-settings-vault.png` and is referenced by README.
+  - Workspace secret scan returned `0` configured findings.
+- **Self-check answers:**
+  - **a) Is the request fixed?** Yes. README now includes a current product screenshot without clutter.
+  - **b) Is it wired?** Yes. The screenshot path is relative and GitHub-compatible.
+  - **c) Does validation prove it?** The asset exists and README references it; no app rebuild is needed for documentation-only changes.
