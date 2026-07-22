@@ -1,5 +1,5 @@
 """Models package exporting universal relational ORMs, domain DTOs, and legacy HR schemas."""
-from .orm import Base, DocumentORM, ChunkORM, ChunkConnectionORM, DocumentTableORM
+from .orm import Base, DocumentORM, ChunkORM, ChunkConnectionORM, DocumentTableORM, VaultProfileORM
 from .domain import (
     TOCTreeNode, ChunkDTO, ChunkConnectionDTO, DocumentTableDTO,
     DocumentDTO, GraphNodeDTO, GraphLinkDTO, GraphViewDTO

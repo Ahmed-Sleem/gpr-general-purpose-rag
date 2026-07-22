@@ -18,12 +18,12 @@ try:
     from .db.session import init_db, AsyncSessionLocal
     from .models.orm import DocumentORM, ChunkORM
     from .services.ingestion.universal_pipeline import process_document_pipeline
-    from .api import auth_router, documents_router, chat_router
+    from .api import auth_router, documents_router, chat_router, vault_router
 except ImportError:
     from db.session import init_db, AsyncSessionLocal
     from models.orm import DocumentORM, ChunkORM
     from services.ingestion.universal_pipeline import process_document_pipeline
-    from api import auth_router, documents_router, chat_router
+    from api import auth_router, documents_router, chat_router, vault_router
 
 
 async def _auto_index_sample_manual():
@@ -68,21 +68,29 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="GPR — General Purpose RAG API Server",
-    description="Universal Relational RAG & Obsidian Graph Backend without Vector DBs, featuring force-directed network queries, 2-Step Authentication, and dynamic API key management.",
+    description="Universal Relational RAG & Obsidian Graph Backend without Vector DBs, featuring force-directed network queries and encrypted no-login device API-key vault support.",
     version="1.0.0",
     lifespan=lifespan
 )
 
-# CORS configuration enabling Next.js 15 frontend communication
+def _allowed_origins() -> list[str]:
+    """Read explicit browser origins for cookie-capable CORS; wildcard is unsafe with credentials."""
+    raw = os.getenv("GPR_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+    origins = [item.strip() for item in raw.split(",") if item.strip()]
+    return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+
+# CORS configuration enabling Next.js 15 frontend communication with HttpOnly vault cookies.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(auth_router)
+app.include_router(vault_router)
 app.include_router(documents_router)
 app.include_router(chat_router)
 

@@ -10,7 +10,7 @@ Defines multi-document persistence tables for Universal Relational RAG & Obsidia
 
 from datetime import datetime, timezone
 import uuid
-from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -87,3 +87,28 @@ class DocumentTableORM(Base):
     rows_json = Column(Text, default="[]")
 
     document = relationship("DocumentORM", back_populates="tables")
+
+class VaultProfileORM(Base):
+    """
+    Device-only encrypted API-key vault profiles.
+
+    WHY: GPR intentionally keeps a no-login UX, so API keys are encrypted server-side
+    and scoped to a high-entropy device secret stored in an HttpOnly cookie. The
+    database stores only encrypted key material plus non-secret display metadata.
+    """
+    __tablename__ = "vault_profiles"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    device_hash = Column(String(128), index=True, nullable=False)
+    label = Column(String(160), nullable=False)
+    provider = Column(String(32), index=True, nullable=False)
+    model = Column(String(160), nullable=False)
+    encrypted_key = Column(Text, nullable=False)
+    nonce = Column(String(64), nullable=False)
+    key_fingerprint = Column(String(128), index=True, nullable=False)
+    key_hint = Column(String(16), nullable=True)
+    is_active = Column(Boolean, default=False, index=True)
+    created_at = Column(String(64), default=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at = Column(String(64), default=lambda: datetime.now(timezone.utc).isoformat())
+    last_used_at = Column(String(64), nullable=True)
+

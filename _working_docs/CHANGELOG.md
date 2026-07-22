@@ -577,3 +577,11 @@
 - Appended current implementation gaps `GAP-GPR-41` through `GAP-GPR-50` to `_working_docs/AUDIT_AND_TODO.md`.
 - Closed GAP-GPR-41 by adding deterministic backend test fixtures, repo-relative sample paths, curated graph seeding for API/chat tests, a small markdown upload fixture, and JSON token decoding in chat stream tests.
 - Verification: `PYTHONPATH=. pytest -q tests/` from `src/backend` passed: `16 passed, 1 warning in 35.99s`.
+
+## 2026-07-22 session 36 — GAP-GPR-42 backend encrypted vault foundation
+
+- Added backend encrypted vault foundation for no-login device-based API-key storage.
+- Added `VaultProfileORM`, AES-256-GCM crypto helpers, HttpOnly device cookie identity, shared provider-check helper, `/api/v1/vault` router, and explicit CORS origin parsing for cookie readiness.
+- Added vault tests proving cookie bootstrap, encrypted-at-rest storage, metadata-only API responses, device isolation, active-profile switching, deletion behavior, cross-device decrypt failure, and master-key validation.
+- Verification: `GPR_VAULT_MASTER_KEY=<test-key> GPR_COOKIE_SECURE=false PYTHONPATH=. pytest -q tests/` from `src/backend` passed: `21 passed, 1 warning in 36.78s`.
+- Secret scan after the vault changes found 0 configured findings.

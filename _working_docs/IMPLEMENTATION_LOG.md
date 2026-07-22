@@ -683,3 +683,39 @@
   - **a) Is the gap fully fixed?** Yes. The previous clean-DB failures are fixed: tests no longer rely on missing `/home/user/uploads` paths, curated graph tests seed `HR-MANUAL-V1` deterministically, and stream assertions decode JSON token payloads correctly.
   - **b) Is everything wired and ready for production?** Yes for the test baseline. This does not change production behavior; it makes the validation foundation reliable before vault/streaming implementation begins.
   - **c) Is my test really validating that?** Yes. The full backend suite now passes from `src/backend` with a clean deterministic fixture setup, proving API, auth, ingestion, chat streaming fallback, and universal pipeline tests can all run successfully before the next gap.
+
+---
+
+## 2026-07-22 — GAP-GPR-42: Device-Only Encrypted Server Vault Backend
+
+- **Gap ID + one-line description:** GAP-GPR-42 — Added the backend foundation for the no-login encrypted device API-key vault using AES-256-GCM, HttpOnly device identity cookies, explicit CORS origins, vault profile APIs, and deterministic vault tests.
+- **Files touched:**
+  - `src/backend/requirements.txt` — added `cryptography>=42.0.0` for AES-GCM authenticated encryption.
+  - `src/backend/models/orm.py` — added `VaultProfileORM` storing encrypted key material, nonce, keyed fingerprint, key hint, provider/model metadata, active flag, and timestamps.
+  - `src/backend/models/__init__.py` — exported `VaultProfileORM` through the models package.
+  - `src/backend/services/vault_crypto.py` — added master-key normalization, AES-256-GCM encryption/decryption, authenticated associated data binding, keyed API-key fingerprinting, and device-secret hashing.
+  - `src/backend/services/device_identity.py` — added `gpr_device_secret` HttpOnly cookie creation and server-side device hash derivation.
+  - `src/backend/services/provider_clients.py` — added shared provider-check helper that performs real provider checks and fails closed if dependencies/providers are unavailable.
+  - `src/backend/api/vault.py` — added `/api/v1/vault/bootstrap`, profile list/create/activate/delete/test endpoints returning metadata only and never raw keys.
+  - `src/backend/api/__init__.py` and `src/backend/main.py` — mounted the vault router and replaced wildcard credentialed CORS with explicit `GPR_ALLOWED_ORIGINS` parsing and local defaults.
+  - `src/backend/tests/test_vault.py` — added backend vault tests covering HttpOnly cookie bootstrap, encryption-at-rest, metadata-only responses, one-active-profile behavior, device isolation, cross-device decryption failure, and master-key validation.
+  - `_working_docs/AUDIT_AND_TODO.md` — marked GAP-GPR-42 closed with verification evidence.
+- **Tests added/updated:**
+  - Added `src/backend/tests/test_vault.py`.
+- **How I verified:**
+  - Installed `cryptography>=42.0.0` in the sandbox test venv.
+  - Syntax check:
+    - `PYTHONPATH=. python -m py_compile services/vault_crypto.py services/device_identity.py services/provider_clients.py api/vault.py models/orm.py main.py tests/test_vault.py`
+  - Vault-specific tests:
+    - `GPR_VAULT_MASTER_KEY=<test-key> PYTHONPATH=. pytest -q tests/test_vault.py`
+    - Result: `5 passed in 1.16s`.
+  - Full backend suite:
+    - `GPR_VAULT_MASTER_KEY=<test-key> GPR_COOKIE_SECURE=false PYTHONPATH=. pytest -q tests/`
+    - Result: `21 passed, 1 warning in 36.78s`.
+  - Secret scan:
+    - Workspace text scan for configured PAT/provider/PEM/admin-password patterns found `0` findings. Test dummy key-shaped strings in `test_vault.py` were treated as deliberate non-secret fixtures.
+  - Cleaned ignored runtime artifacts afterward: `src/backend/data/gpr_workspace.db`, `__pycache__`, and `.pytest_cache`.
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes. The backend now has a working encrypted vault API, encrypted-at-rest storage, HttpOnly device identity, explicit CORS origins for cookie readiness, and tests proving metadata-only responses, encryption/decryption, device isolation, and active-profile behavior.
+  - **b) Is everything wired and ready for production?** Yes for the backend foundation. `vault_router` is mounted in FastAPI, `VaultProfileORM` is on the active SQLAlchemy Base, and provider checking is centralized. Frontend migration and chat/upload consumption of vault profiles intentionally remain for GAP-GPR-43.
+  - **c) Is my test really validating that?** Yes. The new tests inspect both HTTP behavior and stored DB records: raw keys are absent from responses, ciphertext differs from plaintext, decrypt succeeds only with correct associated device/profile metadata, and a second device cannot list the first device's profiles.
