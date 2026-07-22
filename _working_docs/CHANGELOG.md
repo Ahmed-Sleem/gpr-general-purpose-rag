@@ -569,3 +569,11 @@
 - Replaced current documented values with placeholders; normalized a fake secret-shaped test fixture; removed local transient mappings/mirror and pruned reflogs/objects.
 - Verified clean reachable-history and workspace scans for configured credential patterns, GitHub `main` synchronization, and zero GitHub Secret Scanning alerts.
 - No product behavior changed in this security-only release.
+
+## 2026-07-22 session 36 — GAP-GPR-41 test baseline repair started implementation branch
+
+- Created fresh branch `feat/gpr-vault-streaming-ui-polish-20260722` from clean `origin/main`.
+- Added the enriched JSON-schema viewer/app support requirement to `_working_docs/DETAILED_IMPLEMENTATION_PLAN_2026-07-22.md` so Ahmed's future manual JSON update is part of implementation scope.
+- Appended current implementation gaps `GAP-GPR-41` through `GAP-GPR-50` to `_working_docs/AUDIT_AND_TODO.md`.
+- Closed GAP-GPR-41 by adding deterministic backend test fixtures, repo-relative sample paths, curated graph seeding for API/chat tests, a small markdown upload fixture, and JSON token decoding in chat stream tests.
+- Verification: `PYTHONPATH=. pytest -q tests/` from `src/backend` passed: `16 passed, 1 warning in 35.99s`.

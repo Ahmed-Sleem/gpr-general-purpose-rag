@@ -655,3 +655,31 @@
   - **a) Is the gap fully fixed?** Yes for repository-controlled current files and reachable GitHub history: current/history scans are clean and GitHub Secret Scanning reports no alerts. Rotating any credential that was exposed remains the owner/provider-side protection step; history rewriting cannot remove copies from third-party clones, cached artifacts, or the chat transcript.
   - **b) Is everything wired and ready for production?** Yes: production source files were byte-identical through the rewrite. The repository now uses placeholders rather than documented credential values. A preventive scanner gate remains scheduled in GAP-GPR-38.
   - **c) Is my test really validating that?** Yes: scans inspect every reachable commit, not only HEAD; the manifest proves no production source content changed; remote fetch comparison proves GitHub now serves the rewritten `main`; GitHub’s alert API independently reported zero secret-scanning alerts.
+
+---
+
+## 2026-07-22 — GAP-GPR-41: Test Baseline Repair and Deterministic Fixtures
+
+- **Gap ID + one-line description:** GAP-GPR-41 — Repaired the backend test baseline so the suite passes from a clean repository/database without relying on `/home/user/uploads` side effects or stale graph-count assumptions.
+- **Files touched:**
+  - `src/backend/tests/conftest.py` — added repo-root path helpers, `SAMPLE_HR_PDF`, `reset_universal_tables()`, and `seed_curated_fixture()` for deterministic test setup.
+  - `src/backend/tests/test_api.py` — switched API upload test to a small generated Markdown fixture, seeded curated graph explicitly, and updated graph assertions for the current 80-node production dataset.
+  - `src/backend/tests/test_ingestion.py` — replaced hardcoded `/home/user/uploads/...` PDF path with repo-relative `SAMPLE_HR_PDF`.
+  - `src/backend/tests/test_react_agent.py` — seeded curated graph explicitly and decoded JSON SSE token payloads before citation assertions.
+  - `src/backend/tests/test_universal_pipeline.py` — reset universal tables at module start and replaced hardcoded PDF path with repo-relative `SAMPLE_HR_PDF`.
+  - `_working_docs/AUDIT_AND_TODO.md` — marked GAP-GPR-41 closed with verification evidence.
+  - `_working_docs/DETAILED_IMPLEMENTATION_PLAN_2026-07-22.md` — added the enriched JSON-schema support requirement and implementation details requested by Ahmed.
+- **Tests added/updated:**
+  - Added shared test fixture helper: `src/backend/tests/conftest.py`.
+  - Updated backend API/chat/ingestion/universal-pipeline tests to use deterministic fixtures.
+- **How I verified:**
+  - Syntax check:
+    - `PYTHONPATH=. python -m py_compile tests/conftest.py tests/test_api.py tests/test_react_agent.py tests/test_universal_pipeline.py tests/test_ingestion.py`
+  - Full backend test suite:
+    - `cd src/backend && PYTHONPATH=. pytest -q tests/`
+    - Result: `16 passed, 1 warning in 35.99s`.
+  - Cleaned ignored runtime artifacts afterward: `src/backend/data/gpr_workspace.db`, `__pycache__`, and `.pytest_cache`.
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes. The previous clean-DB failures are fixed: tests no longer rely on missing `/home/user/uploads` paths, curated graph tests seed `HR-MANUAL-V1` deterministically, and stream assertions decode JSON token payloads correctly.
+  - **b) Is everything wired and ready for production?** Yes for the test baseline. This does not change production behavior; it makes the validation foundation reliable before vault/streaming implementation begins.
+  - **c) Is my test really validating that?** Yes. The full backend suite now passes from `src/backend` with a clean deterministic fixture setup, proving API, auth, ingestion, chat streaming fallback, and universal pipeline tests can all run successfully before the next gap.

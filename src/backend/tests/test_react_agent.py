@@ -13,6 +13,7 @@ import json
 from httpx import AsyncClient, ASGITransport
 from main import app
 from db.session import init_db
+from tests.conftest import seed_curated_fixture
 
 
 @pytest.fixture(scope="module")
@@ -22,7 +23,7 @@ def anyio_backend():
 
 @pytest.fixture(scope="module")
 async def setup_db():
-    await init_db()
+    await seed_curated_fixture()
 
 
 @pytest.mark.anyio
@@ -54,7 +55,8 @@ async def test_streaming_chat_arabic_with_graph_event(setup_db):
                         if "active_node_ids" in data_json:
                             active_nodes.extend(data_json["active_node_ids"])
                     elif events and events[-1] == "token":
-                        tokens.append(data_str)
+                        token_json = json.loads(data_str)
+                        tokens.append(token_json.get("token", ""))
 
             assert "agent_search" in events, "Expected live Obsidian Graph camera activation SSE event"
             assert "token" in events, "Expected streaming response tokens"

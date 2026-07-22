@@ -12,11 +12,12 @@ import os
 import json
 import pytest
 from ingestion.parse_hr_pdf import parse_pdf_structure, is_arabic, normalize_pdfplumber_table_cell
+from tests.conftest import SAMPLE_HR_PDF
 
 
 @pytest.fixture(scope="module")
 def sample_pdf_path():
-    path = "/home/user/uploads/hr_extracted/hr_source.pdf"
+    path = str(SAMPLE_HR_PDF)
     if not os.path.exists(path):
         pytest.skip(f"Source PDF not found at {path}")
     return path

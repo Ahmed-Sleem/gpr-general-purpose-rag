@@ -13,6 +13,7 @@ import os
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import init_db, AsyncSessionLocal
+from tests.conftest import SAMPLE_HR_PDF, reset_universal_tables
 from db.repositories import DocumentRepository, ChunkRepository, GraphRepository, TableRepository
 from services.ingestion.universal_pipeline import process_document_pipeline
 
@@ -25,11 +26,12 @@ def anyio_backend():
 @pytest.fixture(scope="module")
 async def setup_db():
     await init_db()
+    await reset_universal_tables()
 
 
 @pytest.mark.anyio
 async def test_universal_pdf_ingestion(setup_db):
-    pdf_path = "/home/user/uploads/hr_extracted/hr_source.pdf"
+    pdf_path = str(SAMPLE_HR_PDF)
     if not os.path.exists(pdf_path):
         pytest.skip(f"Source PDF not found at {pdf_path}")
 
