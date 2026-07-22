@@ -1335,3 +1335,63 @@ body.dark-mode .chat-input-area {
         max-width: 340px !important;
     }
 }
+
+/* Hotfix: keep the settings button a true round-square, not a wide rectangle. */
+#apiKeyBtn {
+    width: var(--header-height) !important;
+    min-width: var(--header-height) !important;
+    max-width: var(--header-height) !important;
+    height: var(--header-height) !important;
+    flex: 0 0 var(--header-height) !important;
+    padding: 0 !important;
+    border-radius: var(--radius-btn) !important;
+    gap: 0 !important;
+}
+
+/* Hotfix: ChatGPT/Claude-like compact composer action sizing. */
+:root {
+    --composer-action-size: 34px;
+    --composer-min-height: 46px;
+    --composer-max-input-height: 140px;
+}
+.chat-input-area {
+    padding: 7px 8px;
+}
+.composer-shell {
+    min-height: var(--composer-min-height);
+    align-items: flex-end;
+}
+.composer-input {
+    min-height: 34px;
+    max-height: var(--composer-max-input-height);
+    padding-block: 7px;
+    padding-inline-start: 8px;
+    padding-inline-end: calc(var(--composer-action-size) + 14px);
+    line-height: 1.45;
+}
+.composer-send {
+    width: var(--composer-action-size) !important;
+    height: var(--composer-action-size) !important;
+    min-width: var(--composer-action-size) !important;
+    inset-inline-end: 3px;
+    inset-block-end: 3px;
+    border-radius: 9px !important;
+    box-shadow: none;
+}
+.composer-send svg {
+    width: 15px !important;
+    height: 15px !important;
+}
+.composer-send:hover {
+    transform: translateY(-1px);
+}
+@media (max-width: 768px) {
+    :root { --composer-action-size: 34px; }
+    #apiKeyBtn {
+        width: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+        height: 34px !important;
+        flex-basis: 34px !important;
+    }
+}

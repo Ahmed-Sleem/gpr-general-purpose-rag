@@ -1016,3 +1016,20 @@
   - **a) Is the gap fully fixed?** Yes. The branch has passed backend tests, frontend build, shell syntax checks, whitespace check, and secret scans.
   - **b) Is everything wired and ready for production?** The feature branch is merge-ready from local validation. Production deployment is intentionally not triggered because `main` has not been merged/pushed pending Ahmed approval.
   - **c) Is my test really validating that?** Yes. The backend suite exercises vault, streaming contracts, prompt builders, curated JSON round trip, graph/search APIs, ingestion, and chat tests; the frontend production build validates active React/Next integration; secret scans check both workspace and reachable history.
+
+---
+
+## 2026-07-22 — Main Hotfix: Settings Button and Composer Send Sizing
+
+- **Description:** Fixed the Settings toolbar button shape and refined the chat composer send/stop button proportions after live UI feedback.
+- **Files touched:**
+  - `src/frontend/components/Header.tsx` — reinforced the Settings button as `36px x 36px`, fixed-basis, round-square, icon-only.
+  - `src/frontend/app/globals.css` — overrode stale `#apiKeyBtn` width/min-width rules, reduced composer action size to 34px, tightened input padding, and kept the send/stop button bottom-right anchored with smaller icon sizing.
+  - `_working_docs/CHANGELOG.md`, `_working_docs/IMPLEMENTATION_LOG.md` — recorded the hotfix and validation.
+- **How I verified:**
+  - Ran `cd src/frontend && npm install --legacy-peer-deps && npm run build`.
+  - Result: `✓ Compiled successfully` (`Route / 11.3 kB`, First Load JS `124 kB`).
+- **Self-check answers:**
+  - **a) Is the issue fixed?** Yes. CSS now forces `#apiKeyBtn` to use the same square dimensions as the other toolbar buttons, and composer send/stop is compact rather than oversized.
+  - **b) Is it wired?** Yes. The active `Header.tsx` and `ChatPanel.tsx` classes/IDs are covered by the CSS overrides.
+  - **c) Does validation prove it?** Build validation proves the changed frontend compiles; visual confirmation should be done on the Railway deployment after this main push completes.

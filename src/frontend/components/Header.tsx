@@ -58,7 +58,7 @@ export const Header: React.FC = () => {
             </svg>
           </button>
 
-          {/* Settings Button (SVG Cog/Gear only + pulsing status dot) */}
+          {/* Settings Button (round-square SVG cog) */}
           <button
             className="tool-btn"
             id="apiKeyBtn"
@@ -66,7 +66,7 @@ export const Header: React.FC = () => {
             onClick={() => setIsSettingsOpen(true)}
             aria-label="Settings and API models"
             title={language === "ar" ? "الإعدادات ومراحل الاسترجاع ومفاتيح API" : "Settings, Workflow Cycles & API Keys"}
-            style={{ width: "36px", height: "36px", borderRadius: "10px", padding: 0, justifyContent: "center", gap: 0 }}
+            style={{ width: "36px", height: "36px", minWidth: "36px", maxWidth: "36px", flex: "0 0 36px", borderRadius: "10px", padding: 0, justifyContent: "center", gap: 0 }}
           >
             <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px" }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>

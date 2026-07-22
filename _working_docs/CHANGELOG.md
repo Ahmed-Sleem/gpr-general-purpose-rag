@@ -668,3 +668,9 @@
 - `git diff --check origin/main` passed after whitespace cleanup.
 - Workspace and reachable-history secret scans returned 0 configured findings.
 - Branch is 10 commits ahead and 0 behind `origin/main`; main merge/push still requires Ahmed approval.
+
+## 2026-07-22 session 37 — Main hotfix: settings button and composer send sizing
+
+- Fixed header Settings button so it remains a true round-square icon button matching adjacent toolbar buttons instead of stretching into a wide rectangle.
+- Reduced and refined composer send/stop button sizing to a compact ChatGPT/Claude-style 34px round-square while preserving the existing monochrome design language and bottom-right anchoring.
+- Verification: frontend production build compiled successfully (`Route / 11.3 kB`, First Load JS `124 kB`).
