@@ -19,14 +19,43 @@ from sqlalchemy import select
 try:
     from ..models.orm import ChunkORM, DocumentORM
     from .tools import execute_agent_tool
+    from .prompts import build_final_answer_messages, build_navigation_control_prompt, parse_control_decision
 except ImportError:
     from models.orm import ChunkORM, DocumentORM
     from agent.tools import execute_agent_tool
+    from agent.prompts import build_final_answer_messages, build_navigation_control_prompt, parse_control_decision
 
 try:
     from openai import AsyncOpenAI
 except ImportError:
     AsyncOpenAI = None
+
+
+def _chunk_to_prompt_context(chunk: ChunkORM) -> Dict[str, Any]:
+    """Convert a chunk ORM row into enriched prompt context without trusting metadata as instructions."""
+    try:
+        metadata = json.loads(chunk.metadata_json or "{}")
+    except Exception:
+        metadata = {}
+    return {
+        "id": chunk.chunk_code,
+        "title": chunk.title,
+        "title_ar": metadata.get("name_ar"),
+        "content": chunk.content,
+        "content_ar": metadata.get("content_ar"),
+        "metadata": {
+            "aliases": metadata.get("aliases") or [],
+            "keywords_ar": metadata.get("keywords_ar") or [],
+            "keywords_en": metadata.get("keywords_en") or [],
+            "role_profile": metadata.get("role_profile"),
+            "kpis": metadata.get("kpis") or [],
+            "answerable_questions": metadata.get("answerable_questions") or [],
+            "not_answered_here": metadata.get("not_answered_here") or [],
+            "approval_status": metadata.get("approval_status"),
+            "last_verified": metadata.get("last_verified"),
+            "confidence": metadata.get("confidence"),
+        },
+    }
 
 
 async def _load_toc_summary_and_chunks(session: AsyncSession, document_id: Optional[str] = None):
@@ -318,33 +347,38 @@ async def run_agent_stream(
     )
     client = AsyncOpenAI(api_key=api_key, base_url=base_url)
 
-    system_intro = f"""You are the GPR Grounded Assistant (`{provider}/{model}`).
-You have access to the Table of Contents (`TOC Tree`) of our approved corporate knowledge base.
-Your job is to navigate node by node across up to {workflow_cycles} cycles (`max_cycles = {workflow_cycles}`) to answer the user query clearly and naturally.
-
-TOC Tree:
-{toc_summary_str}
-
-CRITICAL CYCLE RULES (`OPTIONAL REVIEW & NO REPLICATION`):
-1. OPTIONAL REVIEW: Node inspection is NOT mandatory. If the user sends a simple greeting (like "Hi", "Hello", "كيف حالك"), asks a general question, or asks something where TOC inspection is unnecessary, output your response immediately right on Cycle 1:
-   ANSWER: <your conversational response>
-2. TO INSPECT A NODE: If you need to check a specific section from the TOC above, output exactly on its own line:
-   NODE_REQUEST: <node_id>
-3. NO REPLICATION (`NEVER REPEAT A NODE`): Do NOT request the same node ID twice across cycles. Once a node is inspected, do not output NODE_REQUEST for it again.
-4. FINAL CYCLE / COMPLETE ANSWER: If you have enough information or if this is the final cycle (`Cycle {workflow_cycles}`), you MUST output:
-   ANSWER: <your complete, detailed conversational explanation with exact inline citations like [Source: Section X.Y - Title]>
-   OR if the topic is completely absent from the manual:
-   REFUSAL: Sorry, this information is not available in the currently approved documents.
-"""
-
-    messages: List[Dict[str, Any]] = [{"role": "system", "content": system_intro}]
-    if history:
-        for h in history[-4:]:
-            messages.append({"role": h.get("role", "user"), "content": h.get("content", "")})
-    messages.append({"role": "user", "content": message})
-
     inspected_node_ids = set()
     accumulated_node_ids = []
+    inspected_contexts: List[Dict[str, Any]] = []
+
+    async def stream_final_answer(cycle_number: int):
+        yield {
+            "event": "cycle_step",
+            "data": json.dumps({
+                "cycle": cycle_number,
+                "max_cycles": workflow_cycles,
+                "status": f"Cycle {cycle_number}/{workflow_cycles}: Synthesizing live grounded response..."
+            }, ensure_ascii=False)
+        }
+        final_messages = build_final_answer_messages(
+            provider=provider,
+            model=model,
+            language=language.lower(),
+            user_message=message,
+            history=history,
+            chunks=inspected_contexts,
+        )
+        stream_resp = await client.chat.completions.create(
+            model=model,
+            messages=final_messages,
+            temperature=0.1,
+            stream=True
+        )
+        async for stream_chunk in stream_resp:
+            delta_str = stream_chunk.choices[0].delta.content or ""
+            if delta_str:
+                yield {"event": "token", "data": json.dumps({"token": delta_str}, ensure_ascii=False)}
+        yield {"event": "done", "data": "completed"}
 
     try:
         for cycle in range(1, workflow_cycles + 1):
@@ -359,119 +393,72 @@ CRITICAL CYCLE RULES (`OPTIONAL REVIEW & NO REPLICATION`):
                 }, ensure_ascii=False)
             }
 
-            if cycle > 1:
-                messages.append({
-                    "role": "user",
-                    "content": f"We are now in Cycle {cycle} of {workflow_cycles}. {'THIS IS THE FINAL CYCLE. You have NO MORE NODE REQUESTS ALLOWED. You MUST output ANSWER: ... or REFUSAL: ... right now.' if is_final_cycle else 'If you need another node from TOC, output NODE_REQUEST: <id>. Otherwise output ANSWER: ... or REFUSAL: ...'}"
-                })
-
             if is_final_cycle:
-                yield {
-                    "event": "cycle_step",
-                    "data": json.dumps({
-                        "cycle": cycle,
-                        "max_cycles": workflow_cycles,
-                        "status": f"Cycle {cycle}/{workflow_cycles}: Synthesizing live grounded response from inspected nodes..."
-                    }, ensure_ascii=False)
-                }
-                stream_resp = await client.chat.completions.create(
-                    model=model,
-                    messages=messages,
-                    temperature=0.1,
-                    stream=True
-                )
-                msg_content = ""
-                ans_started = False
-                async for stream_chunk in stream_resp:
-                    delta_str = stream_chunk.choices[0].delta.content or ""
-                    if not delta_str:
-                        continue
-                    msg_content += delta_str
-                    if ans_started:
-                        yield {"event": "token", "data": json.dumps({"token": delta_str}, ensure_ascii=False)}
-                    elif "ANSWER:" in msg_content:
-                        ans_started = True
-                        parts = msg_content.split("ANSWER:")
-                        if len(parts) > 1 and parts[-1]:
-                            yield {"event": "token", "data": json.dumps({"token": parts[-1]}, ensure_ascii=False)}
-                    elif "REFUSAL:" in msg_content:
-                        ans_started = True
-                        parts = msg_content.split("REFUSAL:")
-                        if len(parts) > 1 and parts[-1]:
-                            yield {"event": "token", "data": json.dumps({"token": parts[-1]}, ensure_ascii=False)}
-                    elif len(msg_content) > 16 and not any(tag in msg_content for tag in ["NODE_REQUEST:", "ANSWER:", "REFUSAL:"]):
-                        ans_started = True
-                        yield {"event": "token", "data": json.dumps({"token": msg_content}, ensure_ascii=False)}
-
-                yield {"event": "done", "data": "completed"}
+                async for final_event in stream_final_answer(cycle):
+                    yield final_event
                 return
+
+            control_prompt = build_navigation_control_prompt(
+                provider=provider,
+                model=model,
+                language=language.lower(),
+                workflow_cycles=workflow_cycles,
+                toc_summary=toc_summary_str,
+                inspected_node_ids=inspected_node_ids,
+            )
+            control_messages: List[Dict[str, Any]] = [{"role": "system", "content": control_prompt}]
+            if history:
+                for h in history[-3:]:
+                    if h.get("role") in {"user", "assistant"}:
+                        control_messages.append({"role": h.get("role", "user"), "content": h.get("content", "")})
+            control_messages.append({"role": "user", "content": message})
+            if inspected_contexts:
+                control_messages.append({
+                    "role": "user",
+                    "content": f"Already inspected context metadata: {json.dumps(inspected_contexts, ensure_ascii=False)[:3000]}"
+                })
 
             response = await client.chat.completions.create(
                 model=model,
-                messages=messages,
-                temperature=0.1
+                messages=control_messages,
+                temperature=0,
+                max_tokens=220,
             )
             msg_content = (response.choices[0].message.content or "").strip()
-            messages.append({"role": "assistant", "content": msg_content})
+            try:
+                decision = parse_control_decision(msg_content)
+            except ValueError:
+                decision = None
 
-            # Check if model requests a node from TOC (`No Replication enforced`)
-            if "NODE_REQUEST:" in msg_content and not is_final_cycle:
-                for line in msg_content.split("\n"):
-                    if "NODE_REQUEST:" in line:
-                        requested_id = line.split("NODE_REQUEST:")[-1].strip()
-                        if requested_id in inspected_node_ids:
-                            messages.append({
-                                "role": "user",
-                                "content": f"Node `{requested_id}` was ALREADY inspected (`No Replication rule`). Do NOT repeat node requests. Either request a different un-inspected node ID or output ANSWER: right now."
-                            })
-                            break
-                        inspected_node_ids.add(requested_id)
-                        matched_chunk = chunks_map.get(requested_id)
-                        
-                        if matched_chunk:
-                            accumulated_node_ids.append(matched_chunk.chunk_code)
-                            yield {
-                                "event": "cycle_step",
-                                "data": json.dumps({
-                                    "cycle": cycle,
-                                    "max_cycles": workflow_cycles,
-                                    "status": f"Cycle {cycle}/{workflow_cycles}: Requested inspection of Node [{matched_chunk.chunk_code}] ({matched_chunk.title})..."
-                                }, ensure_ascii=False)
-                            }
-                            yield {
-                                "event": "agent_search",
-                                "data": json.dumps({
-                                    "query": f"Cycle {cycle}/{workflow_cycles}: Inspecting {matched_chunk.title}",
-                                    "active_node_ids": accumulated_node_ids,
-                                    "last_active_id": matched_chunk.chunk_code,
-                                    "cycle": cycle,
-                                    "max_cycles": workflow_cycles
-                                }, ensure_ascii=False)
-                            }
-                            messages.append({
-                                "role": "user",
-                                "content": f"Protected Content of Node `{matched_chunk.chunk_code}` ({matched_chunk.title}):\n\n{matched_chunk.content}\n\nReview this carefully."
-                            })
-                        break
-                continue
+            if decision and decision.action == "request_node":
+                requested_id = (decision.node_id or "").strip()
+                matched_chunk = chunks_map.get(requested_id)
+                if matched_chunk and requested_id not in inspected_node_ids:
+                    inspected_node_ids.add(requested_id)
+                    accumulated_node_ids.append(matched_chunk.chunk_code)
+                    inspected_contexts.append(_chunk_to_prompt_context(matched_chunk))
+                    yield {
+                        "event": "cycle_step",
+                        "data": json.dumps({
+                            "cycle": cycle,
+                            "max_cycles": workflow_cycles,
+                            "status": f"Cycle {cycle}/{workflow_cycles}: Requested inspection of Node [{matched_chunk.chunk_code}] ({matched_chunk.title})..."
+                        }, ensure_ascii=False)
+                    }
+                    yield {
+                        "event": "agent_search",
+                        "data": json.dumps({
+                            "query": f"Cycle {cycle}/{workflow_cycles}: Inspecting {matched_chunk.title}",
+                            "active_node_ids": accumulated_node_ids,
+                            "last_active_id": matched_chunk.chunk_code,
+                            "cycle": cycle,
+                            "max_cycles": workflow_cycles
+                        }, ensure_ascii=False)
+                    }
+                    continue
 
-            # Check if model outputs ANSWER or REFUSAL early on cycle < workflow_cycles -> stream exact JSON tokens cleanly!
-            final_ans = msg_content
-            if "ANSWER:" in msg_content:
-                final_ans = msg_content.split("ANSWER:")[-1].strip()
-            elif "REFUSAL:" in msg_content:
-                final_ans = msg_content.split("REFUSAL:")[-1].strip()
-
-            lines = final_ans.split("\n")
-            for idx_line, line in enumerate(lines):
-                if line.strip():
-                    words = line.split()
-                    for word in words:
-                        yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-                if idx_line < len(lines) - 1:
-                    yield {"event": "token", "data": json.dumps({"token": "\n"}, ensure_ascii=False)}
-
-            yield {"event": "done", "data": "completed"}
+            async for final_event in stream_final_answer(cycle):
+                yield final_event
             return
 
         # Fallback completion if loop terminates

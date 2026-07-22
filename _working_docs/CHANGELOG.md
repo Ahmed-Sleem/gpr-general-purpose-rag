@@ -614,3 +614,12 @@
 - Updated Obsidian graph search/display and CitationDrawer to use bilingual/enriched node data.
 - Added `test_curated_schema.py` proving enriched JSON build/seed/API/search round trip.
 - Verification: backend suite `21 passed in 36.38s`; frontend build compiled successfully; secret scan found 0 configured findings.
+
+## 2026-07-22 session 36 — GAP-GPR-45 prompt/control hardening
+
+- Added centralized versioned prompt builders in `src/backend/agent/prompts.py`.
+- Added strict JSON navigation control parsing to replace brittle user-visible `NODE_REQUEST:` / `ANSWER:` / `REFUSAL:` protocol in the online OpenAI-compatible path.
+- Added retrieved-context prompt-injection boundaries, citation rules, language rules, refusal behavior, and exact provider healthcheck prompt builder.
+- Updated ingestion prompt generation to use the new versioned prompt builder.
+- Added `test_prompts.py` covering prompt security/citation/schema requirements and control parser behavior.
+- Verification: prompt/chat targeted tests `7 passed in 1.18s`; full backend suite `26 passed in 37.76s`; secret scan found 0 configured findings.

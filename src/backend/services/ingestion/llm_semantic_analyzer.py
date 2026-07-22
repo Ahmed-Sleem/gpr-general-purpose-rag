@@ -18,6 +18,10 @@ except ImportError:
     from models.orm import ChunkORM, ChunkConnectionORM
 
 from .normalizer import fix_kerning
+try:
+    from ...agent.prompts import build_ingestion_prompt
+except ImportError:
+    from agent.prompts import build_ingestion_prompt
 
 try:
     from openai import AsyncOpenAI
@@ -58,20 +62,12 @@ async def analyze_and_chunk_with_llm(
                 if len(raw_text.strip()) < 15:
                     continue
 
-                prompt = f"""You are the GPR Universal Semantic Ingestion Engine.
-Clean, synthesize, and divide the following text section into FULL, COMPLETE, SELF-CONTAINED atomic semantic chunks.
-Each chunk must be comprehensive, self-explanatory, and between 150 to 450 words with no broken fragments.
-Text to analyze:
-Title: {title}
-Content: {raw_text[:1400]}
-
-Return ONLY a JSON array of objects. Each object must have:
-- "chunk_code": string sequence
-- "title": concise descriptive heading
-- "clean_content": complete self-contained text passage
-- "chunk_type": "heading", "text", "table", "kpi_row", or "escalation"
-- "connections": list of objects `[{{"target_concept": "key concept name or section title", "relation_type": "semantic_link", "explanation": "why connected"}}]`
-"""
+                prompt = build_ingestion_prompt(
+                    title=title,
+                    content=raw_text,
+                    code=code,
+                    page_number=page_num,
+                )
                 response = await client.chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": prompt}],

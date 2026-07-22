@@ -830,3 +830,33 @@
   - **a) Is the gap fully fixed?** Yes. The project can now consume Ahmed's enriched JSON source, preserve its structured metadata, and expose it through graph/search/viewer paths.
   - **b) Is everything wired and ready for production?** Yes for enriched data integration. The backend data path includes the new source, the curated production graph was regenerated, existing DBs receive a metadata column migration, and frontend graph/drawer viewers can use the new metadata.
   - **c) Is my test really validating that?** Yes. The new test validates source selection, build output, relation type preservation, DB seeding, graph API enriched fields, Arabic metadata, role/KPI metadata, and metadata-backed search.
+
+---
+
+## 2026-07-22 — GAP-GPR-45: Prompt/Control Protocol Hardening
+
+- **Gap ID + one-line description:** GAP-GPR-45 — Centralized and versioned production prompts, added strict JSON navigation control parsing, RAG prompt-injection boundaries, citation/language/refusal rules, and prompt tests.
+- **Files touched:**
+  - `src/backend/agent/prompts.py` — added `AGENT_PROMPT_VERSION`, `INGESTION_PROMPT_VERSION`, strict `AgentControlDecision`, JSON control parser, navigation prompt builder, final-answer prompt builder, retrieved-context delimiter builder, ingestion prompt builder, and provider healthcheck prompt.
+  - `src/backend/agent/react_agent.py` — online OpenAI-compatible path now uses structured JSON navigation decisions and a separate final-answer streaming prompt with enriched retrieved context instead of relying on displayed `NODE_REQUEST:`/`ANSWER:`/`REFUSAL:` control prose.
+  - `src/backend/services/ingestion/llm_semantic_analyzer.py` — replaced inline ingestion prompt with the versioned ingestion prompt builder.
+  - `src/backend/services/provider_clients.py` — uses the centralized exact `OK` healthcheck prompt.
+  - `src/backend/tests/test_prompts.py` — added tests for navigation JSON requirements, control parser validation, citation requirements, retrieved-context injection boundaries, ingestion prompt schema rules, and exact provider healthcheck prompt.
+  - `_working_docs/AUDIT_AND_TODO.md` — marked GAP-GPR-45 closed with verification evidence.
+- **Tests added/updated:**
+  - Added `src/backend/tests/test_prompts.py`.
+- **How I verified:**
+  - Syntax check:
+    - `PYTHONPATH=. python -m py_compile agent/prompts.py agent/react_agent.py services/ingestion/llm_semantic_analyzer.py services/provider_clients.py tests/test_prompts.py`
+  - Targeted prompt/chat tests:
+    - `GPR_VAULT_MASTER_KEY=<test-key> GPR_COOKIE_SECURE=false PYTHONPATH=. pytest -q tests/test_prompts.py tests/test_react_agent.py`
+    - Result: `7 passed in 1.18s`.
+  - Full backend suite:
+    - `GPR_VAULT_MASTER_KEY=<test-key> GPR_COOKIE_SECURE=false PYTHONPATH=. pytest -q tests/`
+    - Result: `26 passed in 37.76s`.
+  - Secret scan:
+    - Workspace text scan for configured PAT/provider/PEM/admin-password patterns found `0` findings, excluding deliberate dummy key-shaped backend test fixtures and tracked JSON data files.
+- **Self-check answers:**
+  - **a) Is the gap fully fixed?** Yes. Production prompt text is now centralized/versioned, the online navigation path uses strict JSON control decisions, final-answer prompts include citation/language/refusal rules, and retrieved context is explicitly delimited as untrusted data.
+  - **b) Is everything wired and ready for production?** Yes for prompt/control hardening. The online OpenAI-compatible ReAct path imports and uses the new prompt builders; Gemini true streaming conversion remains scheduled for GAP-GPR-46.
+  - **c) Is my test really validating that?** Yes. The tests assert prompt safety/citation/schema clauses and verify that free-text control tags are rejected while strict JSON control decisions are accepted.

@@ -12,6 +12,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 try:
+    from ..agent.prompts import build_provider_healthcheck_prompt
+except ImportError:
+    from agent.prompts import build_provider_healthcheck_prompt
+
+try:
     from openai import AsyncOpenAI
 except ImportError:  # pragma: no cover - exercised only if dependency missing
     AsyncOpenAI = None
@@ -64,7 +69,7 @@ async def check_provider_connection(provider: str, model: str, api_key: str) -> 
                 res = await http_client.post(
                     url,
                     headers={"Content-Type": "application/json", "X-goog-api-key": key_clean},
-                    json={"contents": [{"parts": [{"text": "Return exactly: OK"}]}]},
+                    json={"contents": [{"parts": [{"text": build_provider_healthcheck_prompt()}]}]},
                 )
                 if res.status_code == 200:
                     data = res.json()
@@ -88,7 +93,7 @@ async def check_provider_connection(provider: str, model: str, api_key: str) -> 
         client = AsyncOpenAI(api_key=key_clean, base_url=base_url_for_provider(provider_clean), timeout=8.0)
         response = await client.chat.completions.create(
             model=model_clean,
-            messages=[{"role": "user", "content": "Return exactly: OK"}],
+            messages=[{"role": "user", "content": build_provider_healthcheck_prompt()}],
             max_tokens=4,
             temperature=0,
         )
