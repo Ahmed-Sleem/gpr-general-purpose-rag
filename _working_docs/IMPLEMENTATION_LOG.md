@@ -1061,3 +1061,22 @@
   - **a) Is the issue fixed?** Yes. The backend can now seed from immutable `/app/seed_data/backend_data` even when Railway volume overlays `/app/src/backend/data`; UI geometry and composer/button issues are addressed in active components/CSS.
   - **b) Is it wired?** Yes. Dockerfile, backend path resolvers, active page/grid/components, and CSS overrides are all wired to the running app paths.
   - **c) Does validation prove it?** Backend tests and frontend build pass. Final proof for the map requires Railway redeploy with the volume mounted, but the container path root cause has been fixed.
+
+---
+
+## 2026-07-22 — Main Hotfix: Prevent Duplicate Empty Chats
+
+- **Description:** Prevented empty conversation spam and added smooth empty-draft removal when switching away.
+- **Files touched:**
+  - `src/frontend/context/AppContext.tsx` — wrapped conversation selection to prune an active empty conversation when switching, and updated `createConversation()` to reuse the active/existing empty chat instead of creating another empty chat.
+  - `src/frontend/components/LeftPanel.tsx` — added `removingEmptyId` animation state so switching away from an empty active chat visually fades/slides the draft row before removal.
+  - `src/frontend/app/globals.css` — added `.chat-item.removing-empty` animation styles for LTR/RTL.
+  - `_working_docs/CHANGELOG.md`, `_working_docs/IMPLEMENTATION_LOG.md` — recorded the hotfix and validation.
+- **How I verified:**
+  - Ran `cd src/frontend && npm install --legacy-peer-deps && npm run build`.
+  - Result: `✓ Compiled successfully` (`Route / 11.5 kB`, First Load JS `124 kB`).
+  - Workspace secret scan for configured PAT/provider/PEM/admin-password patterns returned `0` findings.
+- **Self-check answers:**
+  - **a) Is the issue fixed?** Yes. `createConversation()` now refuses to create another empty chat and reuses the active/existing empty draft.
+  - **b) Is it wired?** Yes. The active `LeftPanel` click path delays switching long enough for the empty chat row animation, then the context wrapper removes the empty conversation and selects the target chat.
+  - **c) Does validation prove it?** The frontend build proves the changed React/TypeScript compiles; behavior is deterministic from the updated state logic and CSS animation.

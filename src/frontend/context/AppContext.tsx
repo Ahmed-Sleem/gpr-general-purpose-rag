@@ -145,7 +145,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       turns: []
     }
   ]);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>("default_conv");
+  const [activeConversationId, setActiveConversationIdState] = useState<string | null>("default_conv");
 
   const hasLoadedFromStorage = useRef<boolean>(false);
 
@@ -308,7 +308,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
 
       setConversations(initialConvs);
-      setActiveConversationId(activeConvId || (initialConvs.length > 0 ? initialConvs[0].id : "default_conv"));
+      setActiveConversationIdState(activeConvId || (initialConvs.length > 0 ? initialConvs[0].id : "default_conv"));
 
       await initializeVault(devId);
       hasLoadedFromStorage.current = true;
@@ -395,7 +395,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const setActiveConversationId = (id: string | null) => {
+    if (!id) {
+      setActiveConversationIdState(null);
+      return;
+    }
+    setConversations(prev => {
+      const active = prev.find(c => c.id === activeConversationId);
+      if (active && active.id !== id && active.turns.length === 0) {
+        return prev.filter(c => c.id !== active.id);
+      }
+      return prev;
+    });
+    setActiveConversationIdState(id);
+  };
+
   const createConversation = () => {
+    const active = conversations.find(c => c.id === activeConversationId);
+    if (active && active.turns.length === 0) {
+      setActiveConversationIdState(active.id);
+      return;
+    }
+
+    const existingEmpty = conversations.find(c => c.turns.length === 0);
+    if (existingEmpty) {
+      setActiveConversationIdState(existingEmpty.id);
+      return;
+    }
+
     const newId = `conv_${Date.now()}`;
     const newConv: Conversation = {
       id: newId,
@@ -404,7 +431,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       turns: []
     };
     setConversations(prev => [newConv, ...prev]);
-    setActiveConversationId(newId);
+    setActiveConversationIdState(newId);
   };
 
   const addTurnToConversation = (turn: ConversationTurn) => {
@@ -432,10 +459,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           created_at: new Date().toISOString(),
           turns: []
         };
-        setActiveConversationId(defaultConv.id);
+        setActiveConversationIdState(defaultConv.id);
         return [defaultConv];
       } else if (activeConversationId === id) {
-        setActiveConversationId(updated[0].id);
+        setActiveConversationIdState(updated[0].id);
       }
       return updated;
     });
@@ -449,7 +476,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       turns: []
     };
     setConversations([defaultConv]);
-    setActiveConversationId(defaultConv.id);
+    setActiveConversationIdState(defaultConv.id);
     localStorage.setItem(`gpr_conversations_${deviceId}`, JSON.stringify([defaultConv]));
   };
 

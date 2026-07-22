@@ -12,6 +12,7 @@ export const LeftPanel: React.FC = () => {
   const { conversations, activeConversationId, setActiveConversationId, createConversation, deleteConversation, deleteAllConversations, language, t } = useApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+  const [removingEmptyId, setRemovingEmptyId] = useState<string | null>(null);
 
   const filtered = conversations.filter(c =>
     c.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -121,10 +122,21 @@ export const LeftPanel: React.FC = () => {
             <div
               key={conv.id}
               onClick={() => {
+                if (conv.id === activeConversationId) return;
+                const activeConv = conversations.find(c => c.id === activeConversationId);
+                if (activeConv && activeConv.turns.length === 0) {
+                  setRemovingEmptyId(activeConv.id);
+                  window.setTimeout(() => {
+                    setActiveConversationId(conv.id);
+                    setRemovingEmptyId(null);
+                    document.body.classList.remove("mobile-sidebar-open");
+                  }, 220);
+                  return;
+                }
                 setActiveConversationId(conv.id);
                 document.body.classList.remove("mobile-sidebar-open");
               }}
-              className={`chat-item ${isSelected ? "active" : ""}`}
+              className={`chat-item ${isSelected ? "active" : ""} ${removingEmptyId === conv.id ? "removing-empty" : ""}`}
               role="listitem"
               tabIndex={0}
               aria-current={isSelected ? "true" : undefined}

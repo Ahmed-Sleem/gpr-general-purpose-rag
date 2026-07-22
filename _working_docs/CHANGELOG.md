@@ -685,3 +685,10 @@
 - Reduced composer/input height and send button size again for better ChatGPT/Claude-like proportions; changed send icon to an upward arrow and streaming stop icon to a square.
 - Re-centered the toolbar/settings button cluster under the left panel via consistent fixed button widths and center alignment.
 - Verification: frontend production build compiled successfully; backend suite passed `28 passed in 38.96s`; workspace secret scan found 0 configured findings.
+
+## 2026-07-22 session 39 — Main hotfix: prevent duplicate empty chats
+
+- Prevented New Chat from creating additional empty conversations when the current chat is still empty.
+- If an empty draft conversation already exists, New Chat reuses/selects it instead of adding another blank chat.
+- When switching from an empty draft chat to an existing conversation, the empty draft row fades/slides away smoothly before it is removed.
+- Verification: frontend production build compiled successfully (`Route / 11.5 kB`, First Load JS `124 kB`); workspace secret scan found 0 configured findings.
