@@ -2,10 +2,11 @@
 Master FastAPI Application (`src/backend/main.py`).
 
 Initializes the GPR — General Purpose RAG & Obsidian Graph Backend:
-- Configures CORS middleware for Next.js GPR GUI (`localhost:3000`, `gpr-web`).
-- Mounts modular routers (`/api/v1/auth`, `/api/v1/documents`, `/api/v1/chat`).
-- Initializes relational multi-document tables (`init_db`) and checks pre-indexed sample manuals on startup via modern Lifespan handler.
-- All terminal output and system logging strictly in English.
+- Configures CORS middleware for Next.js GPR GUI.
+- Mounts modular routers (`/api/v1/documents`, `/api/v1/chat`).
+- Device-only encrypted vault mode (no login/OTP code).
+- Initializes relational multi-document tables and seeds golden 80-node dataset on startup.
+- All terminal output strictly in English.
 """
 
 import os
@@ -18,12 +19,12 @@ try:
     from .db.session import init_db, AsyncSessionLocal
     from .models.orm import DocumentORM, ChunkORM
     from .services.ingestion.universal_pipeline import process_document_pipeline
-    from .api import auth_router, documents_router, chat_router
+    from .api import documents_router, chat_router
 except ImportError:
     from db.session import init_db, AsyncSessionLocal
     from models.orm import DocumentORM, ChunkORM
     from services.ingestion.universal_pipeline import process_document_pipeline
-    from api import auth_router, documents_router, chat_router
+    from api import documents_router, chat_router
 
 
 async def _auto_index_sample_manual():
@@ -68,7 +69,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="GPR — General Purpose RAG API Server",
-    description="Universal Relational RAG & Obsidian Graph Backend without Vector DBs, featuring force-directed network queries, 2-Step Authentication, and dynamic API key management.",
+    description="Universal Relational RAG & Obsidian Graph Backend without Vector DBs, featuring force-directed network queries and dynamic API key management (device-only encrypted vault).",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -82,7 +83,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
 app.include_router(documents_router)
 app.include_router(chat_router)
 

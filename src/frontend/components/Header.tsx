@@ -60,6 +60,23 @@ export const Header: React.FC = () => {
             </svg>
           </button>
 
+          {/* Mobile Menu Button (Hamburger SVG) - visible only on mobile */}
+          <button
+            className="tool-btn mobile-sidebar-btn"
+            id="mobileMenuBtn"
+            type="button"
+            onClick={() => {
+              document.body.classList.toggle("mobile-sidebar-open");
+            }}
+            aria-label="Open menu"
+            title={language === "ar" ? "فتح القائمة" : "Open Menu"}
+            style={{ width: "36px", height: "36px", borderRadius: "8px", padding: 0, justifyContent: "center" }}
+          >
+            <svg viewBox="0 0 24 24" style={{ width: "18px", height: "18px" }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.25" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
           {/* Settings Button (SVG Cog/Gear only + pulsing status dot) */}
           <button
             className="tool-btn"

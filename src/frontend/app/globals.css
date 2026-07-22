@@ -704,6 +704,29 @@ body[dir="rtl"] .chat-item:hover {
     flex-direction: column;
     gap: var(--space-3);
     padding: var(--space-1) var(--space-1) var(--space-2) var(--space-1);
+    
+    /* Subtle top & bottom fade (best practice for long chat feeds) */
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 24px,
+        black calc(100% - 32px),
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 24px,
+        black calc(100% - 32px),
+        transparent 100%
+    );
+}
+
+/* Composer shadow separation */
+.chat-input-area {
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 5;
 }
 
 .message {
@@ -893,6 +916,29 @@ body[dir="rtl"] .chat-item:hover {
     letter-spacing: 0.01em;
     border: 1px solid var(--color-accent);
 }
+
+/* Fixed send button — always stays at bottom-right of composer shell */
+.composer-shell {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+}
+
+.send-btn-fixed {
+    position: absolute;
+    bottom: var(--space-2);
+    right: var(--space-2);
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
 .send-btn:hover {
     background: var(--color-accent-hover);
     border-color: var(--color-accent-hover);
@@ -1011,8 +1057,8 @@ body[dir="rtl"] .chat-item:hover {
    ============================================================ */
 @media (max-width: 1100px) {
     :root {
-        --left-width: 220px;
-        --right-width: 240px;
+        --left-width: 260px; /* Minimum width to always show search + 2 buttons with equal spacing */
+        --right-width: 290px;
         --gutter: 10px;
         --edge: 14px;
         --title-height: 42px;

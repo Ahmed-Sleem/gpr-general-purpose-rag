@@ -169,13 +169,9 @@ CRITICAL CYCLE RULES (`OPTIONAL REVIEW & NO REPLICATION`):
             elif "REFUSAL:" in msg_content:
                 final_ans = msg_content.split("REFUSAL:")[-1].strip()
 
-            lines = final_ans.split("\n")
-            for idx_line, line in enumerate(lines):
-                if line.strip():
-                    for word in line.split():
-                        yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-                if idx_line < len(lines) - 1:
-                    yield {"event": "token", "data": json.dumps({"token": "\n"}, ensure_ascii=False)}
+            # Real streaming already handled in final cycle path above.
+            # For non-streaming early ANSWER/REFUSAL on non-final cycles we emit the full text as one delta.
+            yield {"event": "token", "data": json.dumps({"token": final_ans}, ensure_ascii=False)}
             yield {"event": "done", "data": "completed"}
             return
 
@@ -234,14 +230,12 @@ async def run_agent_stream(
         if not is_pytest:
             if any(msg_clean == g or msg_clean.startswith(g + " ") for g in greetings):
                 greet_ans = "مرحباً بك! أنا مساعد GPR المؤسسي الذكي المعتمد لحل استفسارات الهيكل التنظيمي، وبطاقات مؤشرات الأداء، والمسؤوليات الوظيفية ببيانات موثقة دقيقة. كيف يمكنني مساعدتك اليوم؟" if is_ar else "Hello! I am your GPR Grounded Corporate Assistant. I navigate our official organizational structure, KPI tables, and job responsibilities manual to provide exact, verified answers. How can I help you explore the manual today?"
-                for word in greet_ans.split():
-                    yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
+                yield {"event": "token", "data": json.dumps({"token": greet_ans}, ensure_ascii=False)}
                 yield {"event": "done", "data": "completed"}
                 return
             if any(msg_clean == q or msg_clean.startswith(q + " ") for q in identity_qs):
                 ident_ans = "أنا مساعد GPR (General Purpose RAG) المؤسسي المعتمد لشركة كيان المملكة. على عكس روبوتات الدردشة العامة، أنا متصل مباشرة بدليل الهيكل التنظيمي الكامل المكون من 80 بطاقة معرفية ومؤشرات الأداء وصلاحيات المسؤولين، حيث أقوم بالتنقل وتحليل الفهرس للوصول إلى الإجابة الدقيقة الموثقة." if is_ar else "I am the GPR (General Purpose RAG) Grounded Assistant for Kayan Al-Mamlaka Company. Unlike standard chatbots, I have direct, verified access to our 80-node Table of Contents and full organizational manual. I navigate section by section across up to 6 cycles to deliver detailed, authoritative answers with exact citations."
-                for word in ident_ans.split():
-                    yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
+                yield {"event": "token", "data": json.dumps({"token": ident_ans}, ensure_ascii=False)}
                 yield {"event": "done", "data": "completed"}
                 return
 
@@ -294,17 +288,8 @@ async def run_agent_stream(
         ans_body = f"{content_str.strip()}\n\n"
         citation_str = f"[المصدر: القسم {code_str} - {title_str}]" if is_ar else f"[Source: Section {code_str} - {title_str}]"
         
-        for word in ans_prefix.split():
-            yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-        yield {"event": "token", "data": json.dumps({"token": "\n\n"}, ensure_ascii=False)}
-        for word in ans_title.split():
-            yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-        yield {"event": "token", "data": json.dumps({"token": "\n\n"}, ensure_ascii=False)}
-        for word in ans_body.split():
-            yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-        yield {"event": "token", "data": json.dumps({"token": "\n\n"}, ensure_ascii=False)}
-        for word in citation_str.split():
-            yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
+        full_fallback = ans_prefix + "\n\n" + ans_title + "\n\n" + ans_body + "\n\n" + citation_str
+        yield {"event": "token", "data": json.dumps({"token": full_fallback}, ensure_ascii=False)}
         yield {"event": "done", "data": "completed"}
         return
 
@@ -462,22 +447,13 @@ CRITICAL CYCLE RULES (`OPTIONAL REVIEW & NO REPLICATION`):
             elif "REFUSAL:" in msg_content:
                 final_ans = msg_content.split("REFUSAL:")[-1].strip()
 
-            lines = final_ans.split("\n")
-            for idx_line, line in enumerate(lines):
-                if line.strip():
-                    words = line.split()
-                    for word in words:
-                        yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
-                if idx_line < len(lines) - 1:
-                    yield {"event": "token", "data": json.dumps({"token": "\n"}, ensure_ascii=False)}
-
+            yield {"event": "token", "data": json.dumps({"token": final_ans}, ensure_ascii=False)}
             yield {"event": "done", "data": "completed"}
             return
 
         # Fallback completion if loop terminates
         terminal_msg = "Sorry, this information is not available in the currently approved documents." if not is_ar else "عذراً، هذه المعلومة غير متوفرة في دليل الهيكل التنظيمي المعتمد حالياً."
-        for word in terminal_msg.split():
-            yield {"event": "token", "data": json.dumps({"token": f"{word} "}, ensure_ascii=False)}
+        yield {"event": "token", "data": json.dumps({"token": terminal_msg}, ensure_ascii=False)}
         yield {"event": "done", "data": "completed"}
 
     except Exception as e:

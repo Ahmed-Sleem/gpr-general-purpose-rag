@@ -23,6 +23,7 @@ export const ChatPanel: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
+  const streamingContentRef = useRef("");
   const [activeSearchStatus, setActiveSearchStatus] = useState<string | null>(null);
   const [cycleLogs, setCycleLogs] = useState<string[]>([]);
   const [copyConvSuccess, setCopyConvSuccess] = useState(false);
@@ -54,6 +55,10 @@ export const ChatPanel: React.FC = () => {
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 40;
     if (isAtBottom && turns.length > 0) {
       setShowCopyBtn(true);
+    }
+    // Show "new output" pill when user scrolled up during streaming
+    if (!isAtBottom && isStreaming) {
+      // Could add a state for "newOutputAvailable" here if desired
     }
   };
 
@@ -118,59 +123,65 @@ export const ChatPanel: React.FC = () => {
       let sseBuffer = "";
 
       if (reader) {
-        let currentEvent = "token";
+        let currentEvent = "delta";
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
           sseBuffer += decoder.decode(value, { stream: true });
-          const lines = sseBuffer.split("\n");
+          const lines = sseBuffer.split(/\r?\n/);
           sseBuffer = lines.pop() || "";
 
           for (const line of lines) {
             const trimmedLine = line.trim();
             if (!trimmedLine) continue;
 
-            const colonIdx = trimmedLine.indexOf(":");
-            if (colonIdx !== -1) {
-              const prefix = trimmedLine.slice(0, colonIdx).trim();
-              const valStr = trimmedLine.slice(colonIdx + 1).trim();
+            if (trimmedLine.startsWith("event:")) {
+              currentEvent = trimmedLine.slice(6).trim();
+              continue;
+            }
 
-              if (prefix === "event") {
-                currentEvent = valStr;
-              } else if (prefix === "data") {
-                if (currentEvent === "agent_search") {
-                  try {
-                    const searchData = JSON.parse(valStr);
-                    if (searchData.active_node_ids && searchData.active_node_ids.length > 0) {
-                      setActiveGraphNodeIds(searchData.active_node_ids);
-                    }
-                    if (searchData.query) {
-                      setActiveSearchStatus(language === "ar" ? `🔍 استرجاع في الخريطة: "${searchData.query}"` : `🔍 Graph querying: "${searchData.query}"`);
-                    }
-                  } catch (err) {}
-                } else if (currentEvent === "cycle_step") {
-                  try {
-                    const stepObj = JSON.parse(valStr);
-                    if (stepObj.status) {
-                      setActiveSearchStatus(stepObj.status);
-                      accumulatedLogs.push(stepObj.status);
-                      setCycleLogs([...accumulatedLogs]);
-                    }
-                  } catch (err) {}
-                } else if (currentEvent === "token") {
-                  try {
-                    const tokenObj = JSON.parse(valStr);
-                    if (tokenObj.token !== undefined) {
-                      partialText += tokenObj.token;
-                    } else {
-                      partialText += valStr;
-                    }
-                  } catch (err) {
+            if (trimmedLine.startsWith("data:")) {
+              const valStr = trimmedLine.slice(5).trim();
+
+              if (currentEvent === "agent_search" || currentEvent === "status") {
+                try {
+                  const searchData = JSON.parse(valStr);
+                  if (searchData.active_node_ids && searchData.active_node_ids.length > 0) {
+                    setActiveGraphNodeIds(searchData.active_node_ids);
+                  }
+                  if (searchData.query || searchData.status) {
+                    const statusText = searchData.query || searchData.status;
+                    setActiveSearchStatus(language === "ar" ? `🔍 ${statusText}` : `🔍 ${statusText}`);
+                  }
+                } catch (err) {}
+              } else if (currentEvent === "cycle_step" || currentEvent === "status") {
+                try {
+                  const stepObj = JSON.parse(valStr);
+                  if (stepObj.status) {
+                    setActiveSearchStatus(stepObj.status);
+                    accumulatedLogs.push(stepObj.status);
+                    setCycleLogs([...accumulatedLogs]);
+                  }
+                } catch (err) {}
+              } else if (currentEvent === "delta" || currentEvent === "token") {
+                try {
+                  const tokenObj = JSON.parse(valStr);
+                  if (tokenObj.content !== undefined) {
+                    partialText += tokenObj.content;
+                  } else if (tokenObj.token !== undefined) {
+                    partialText += tokenObj.token;
+                  } else {
                     partialText += valStr;
                   }
-                  setStreamingContent(partialText);
+                } catch (err) {
+                  partialText += valStr;
                 }
+                streamingContentRef.current = partialText;
+                // Use requestAnimationFrame for smooth real-time updates without layout thrash
+                requestAnimationFrame(() => {
+                  setStreamingContent(streamingContentRef.current);
+                });
               }
             }
           }
@@ -203,8 +214,23 @@ export const ChatPanel: React.FC = () => {
 
   const renderMarkdownContent = (text: string) => {
     if (!text) return null;
+    
+    // Conservative partial-markdown repair for streaming (close unclosed syntax)
+    let repaired = text;
+    const fenceCount = (repaired.match(/```/g) || []).length;
+    if (fenceCount % 2 === 1) repaired += "\n```";
+    
+    const boldCount = (repaired.match(/\*\*/g) || []).length;
+    if (boldCount % 2 === 1) repaired += "**";
+    
+    const italicCount = (repaired.match(/(?<!\*)\*(?!\*)/g) || []).length;
+    if (italicCount % 2 === 1) repaired += "*";
+    
+    const codeCount = (repaired.match(/`/g) || []).length;
+    if (codeCount % 2 === 1) repaired += "`";
+
     // Basic structured markdown rendering for real-time output
-    const lines = text.split("\n");
+    const lines = repaired.split("\n");
     const elements: React.ReactNode[] = [];
     let listItems: React.ReactNode[] = [];
     let listKey = 0;
@@ -217,19 +243,16 @@ export const ChatPanel: React.FC = () => {
     };
 
     lines.forEach((line, i) => {
-      // Heading
       if (line.startsWith("## ") || line.startsWith("# ")) {
         flushList();
         elements.push(<h3 key={`h_${i}`} style={{ fontWeight: 700, fontSize: "15px", margin: "10px 0 6px 0", color: "var(--text-primary)" }}>{line.replace(/^##? /, "")}</h3>);
         return;
       }
-      // List item
       if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
         const content = line.trim().slice(2);
         listItems.push(<li key={`li_${i}`} style={{ marginBottom: "4px", fontSize: "13px", lineHeight: 1.6 }}>{renderInlineMarkdown(content)}</li>);
         return;
       }
-      // Empty line -> flush list and add break
       if (line.trim() === "") {
         flushList();
         elements.push(<div key={`br_${i}`} style={{ height: "6px" }} />);
@@ -346,7 +369,7 @@ export const ChatPanel: React.FC = () => {
                 {turn.role === "assistant" && turn.cycle_logs && turn.cycle_logs.some(l => l.includes("Inspecting") || l.includes("Requested inspection") || l.includes("inspecting")) && (
                   <div style={{
                     background: "var(--color-slate)", border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: "12px",
+                    borderRadius: "var(--radius-sm)", padding: "var(--space-3)", margin: "var(--space-2) 0",
                     display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "var(--text-meta)"
                   }}>
                     <div style={{ fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -462,9 +485,9 @@ export const ChatPanel: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Chat Input Area */}
+      {/* Chat Input Area — Fixed send button at bottom-right (best-practice AI composer) */}
       <div className="chat-input-area" id="chatInputArea">
-        <div className="composer-row">
+        <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="composer-shell">
           <textarea
             ref={textareaRef}
             id="chatInput"
@@ -473,7 +496,6 @@ export const ChatPanel: React.FC = () => {
             value={inputMessage}
             onChange={(e) => {
               setInputMessage(e.target.value);
-              // Auto-grow height up to max-height
               const ta = e.target;
               ta.style.height = "auto";
               const scrollHeight = ta.scrollHeight;
@@ -484,7 +506,7 @@ export const ChatPanel: React.FC = () => {
               }
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                 e.preventDefault();
                 handleSend();
               }
@@ -495,20 +517,19 @@ export const ChatPanel: React.FC = () => {
             rows={1}
           />
           <button
-            className="send-btn"
+            className="send-btn send-btn-fixed"
             id="sendButton"
             onClick={handleSend}
             disabled={isStreaming || !inputMessage.trim()}
             aria-label="Send message"
             title={language === "ar" ? "إرسال الاستفسار" : "Send Query"}
             type="button"
-            style={{ padding: "8px 12px", minWidth: "38px", borderRadius: "8px", justifyContent: "center" }}
           >
-            <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px" }}>
+            <svg viewBox="0 0 24 24" style={{ width: "18px", height: "18px" }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
             </svg>
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
